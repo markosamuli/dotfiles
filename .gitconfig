@@ -1,0 +1,64 @@
+[user]
+	name = Marko Kirves
+	email = marko.kirves@thisisdare.com
+	username = marko.kirves
+[alias]
+	co = checkout
+	ci = commit
+	# br = branch
+	# st = status
+  # graph = log --decorate --color=always --graph
+  g = log --oneline --decorate --color=always --graph
+  pullr = pull --rebase
+  hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+  # https://github.com/cypher/dotfiles/blob/master/gitconfig
+  amend = commit --amend -C HEAD	
+  authors = "!git log --pretty=format:%aN | sort | uniq -c | sort -rn"	
+	c = commit
+	ca = commit --amend	
+	d = diff
+	dc = diff --cached
+	ds = diff --staged
+	dt = difftool
+	irb = rebase --interactive
+	l = "!git log --graph --pretty='tformat:%C(yellow)%h{%C(green)%ar{%C(bold blue)%an{%C(red)%d%C(reset) %s' $* | column -t -s '{' | less -FXRS"
+	ls-ignored = ls-files --exclude-standard --ignored --others
+	m = merge
+	pick = cherry-pick
+	news = log -p HEAD@{1}..HEAD@{0}
+	rb = rebase
+	rba = rebase --abort
+	rbc = rebase --continue
+	rbs = rebase --skip	
+	wd = diff --word-diff="color"
+	wds = diff --word-diff="color" --staged
+	undo = reset --soft HEAD^	
+	s = status --short --branch
+	b = branch -vv	
+[color]
+	branch = auto
+	diff = auto
+	interactive = auto
+	status = auto
+[merge]
+	# Include summaries of merged commits in newly created merge commit messages
+	log = true
+[core]
+	excludesfile = ~/.gitignore_global
+	editor = /usr/bin/vim  
+[difftool "Kaleidoscope"]
+	cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
+[mergetool "Kaleidoscope"]
+	cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
+	trustExitCode = true
+[diff]
+	tool = Kaleidoscope
+[difftool]
+	prompt = false
+[mergetool]
+	prompt = false
+[merge]
+	tool = Kaleidoscope
+[push]
+	default = upstream
