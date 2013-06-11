@@ -1,7 +1,7 @@
 [user]
-	name = Marko Kirves
+	name = Marko Samuli Kirves
 	email = marko.kirves@thisisdare.com
-	username = marko.kirves
+	username = markosamuli
 [alias]
 	co = checkout
 	ci = commit
@@ -61,4 +61,4 @@
 [merge]
 	tool = Kaleidoscope
 [push]
-	default = upstream
+	default = simple
