@@ -36,6 +36,10 @@
 	undo = reset --soft HEAD^	
 	s = status --short --branch
 	b = branch -vv	
+	ff = !git fetch && git wtf
+	changes = "!f() { git log --pretty='tformat:%C(yellow)%h{%C(green)%ar{%C(bold blue)%an{%C(red)%d%C(reset) %s' $1..$2 | column -t -s '{'; }; f"
+	branchname = !git branch | grep \"^*\" | awk '{ print $2 }'
+	today = log --stat --since=\"1 Day Ago\" --graph --pretty=oneline --abbrev-commit --date=relative
 [color]
 	branch = auto
 	diff = auto
@@ -61,4 +65,4 @@
 [merge]
 	tool = Kaleidoscope
 [push]
-	default = simple
+	default = upstream
