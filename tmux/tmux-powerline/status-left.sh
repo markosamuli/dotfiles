@@ -22,12 +22,12 @@ tmux_session_info+=(["separator"]="${separator_right_bold}")
 #tmux_session_info+=(["separator_fg"]="default")
 register_segment "tmux_session_info"
 
-declare -A hostname
-hostname+=(["script"]="${segments_path}/hostname.sh")
-hostname+=(["foreground"]="colour0")
-hostname+=(["background"]="colour33")
-hostname+=(["separator"]="${separator_right_bold}")
-register_segment "hostname"
+# declare -A hostname
+# hostname+=(["script"]="${segments_path}/hostname.sh")
+# hostname+=(["foreground"]="colour0")
+# hostname+=(["background"]="colour33")
+# hostname+=(["separator"]="${separator_right_bold}")
+# register_segment "hostname"
 
 declare -A lan_ip
 lan_ip+=(["script"]="${segments_path}/lan_ip.sh")
