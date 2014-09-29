@@ -5,16 +5,13 @@
 [alias]
 	co = checkout
 	ci = commit
-	# br = branch
-	# st = status
-  # graph = log --decorate --color=always --graph
-  g = log --oneline --decorate --color=always --graph
-  pullr = pull --rebase
-  hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+  	g = log --oneline --decorate --color=always --graph
+  	pullr = pull --rebase
+  	hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
 	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
-  # https://github.com/cypher/dotfiles/blob/master/gitconfig
-  amend = commit --amend -C HEAD	
-  authors = "!git log --pretty=format:%aN | sort | uniq -c | sort -rn"	
+  	# https://github.com/cypher/dotfiles/blob/master/gitconfig
+  	amend = commit --amend -C HEAD	
+  	authors = "!git log --pretty=format:%aN | sort | uniq -c | sort -rn"	
 	c = commit
 	ca = commit --amend	
 	d = diff
@@ -39,7 +36,7 @@
 	ff = !git fetch && git wtf
 	changes = "!f() { git log --pretty='tformat:%C(yellow)%h{%C(green)%ar{%C(bold blue)%an{%C(red)%d%C(reset) %s' $1..$2 | column -t -s '{'; }; f"
 	branchname = !git branch | grep \"^*\" | awk '{ print $2 }'
-	today = log --stat --since=\"1 Day Ago\" --graph --pretty=oneline --abbrev-commit --date=relative
+	today = log --stat --since=\"1 Day Ago\" --graph --pretty=oneline --abbrev-commit --date=relative	
 [color]
 	branch = auto
 	diff = auto
