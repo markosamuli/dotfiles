@@ -10,3 +10,8 @@ iTerm and tmux
 - Install powerline fonts from the fonts directory
 - Import themes from iterm directory
 - Change font to Menlo for Powerline
+
+tmux
+----
+
+	brew install reattach-to-user-namespace
