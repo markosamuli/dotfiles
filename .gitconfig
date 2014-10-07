@@ -46,7 +46,7 @@
 	# Include summaries of merged commits in newly created merge commit messages
 	log = true
 [core]
-	excludesfile = ~/.gitignore_global
+	excludesfile = /Users/markosamuli/.gitignore_global
 	editor = /usr/bin/vim  
 [difftool "Kaleidoscope"]
 	cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
@@ -63,3 +63,9 @@
 	tool = Kaleidoscope
 [push]
 	default = upstream
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
