@@ -46,7 +46,15 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git brew history tmux)
+plugins=(git brew history tmux rbenv bundler virtualenv virtualenvwrapper)
+
+# Set '-CC' option for iTerm2 tmux integration
+ZSH_TMUX_ITERM2=false
+
+export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python
+export VIRTUALENVWRAPPER_VIRTUALENV=/usr/local/bin/virtualenv
+
+export PATH="/usr/local/sbin:/usr/local/bin:$PATH"
 
 source $ZSH/oh-my-zsh.sh
 
@@ -55,7 +63,7 @@ source $ZSH/oh-my-zsh.sh
 # export PATH="$HOME/bin:/usr/local/sbin:/usr/local/bin:/usr/local/share/npm/bin:/Users/markosamuli/.rvm/gems/ruby-1.9.3-p429/bin:/Users/markosamuli/.rvm/gems/ruby-1.9.3-p429@global/bin:/Users/markosamuli/.rvm/rubies/ruby-1.9.3-p429/bin:/Users/markosamuli/.rvm/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:$PATH"
 # export MANPATH="/usr/local/man:$MANPATH"
 
-export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+# export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
@@ -74,6 +82,12 @@ export EDITOR='vim'
 
 # ssh
 export SSH_KEY_PATH="~/.ssh/id_rsa"
+
+# The next line updates PATH for the Google Cloud SDK.
+source $HOME/google-cloud-sdk/path.zsh.inc
+
+# The next line enables bash completion for gcloud.
+source $HOME/google-cloud-sdk/completion.zsh.inc
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
