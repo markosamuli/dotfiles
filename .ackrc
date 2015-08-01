@@ -19,3 +19,6 @@
 
 # Drupal
 --type-set=drupal=.php,.inc,.module,.install,.info,.engine
+
+# PHP
+--type-add=php=.inc
