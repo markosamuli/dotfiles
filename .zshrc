@@ -130,3 +130,7 @@ export PATH=$PATH:/usr/local/opt/gettext/bin
 # Setup path to Go binary and the Go workspace
 export GOPATH=$HOME/Projects/golang
 export PATH=$PATH:$GOPATH/bin:/usr/local/opt/go/libexec/bin
+
+docker-ip() {
+  boot2docker ip 2> /dev/null
+}
