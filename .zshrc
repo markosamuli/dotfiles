@@ -109,4 +109,11 @@ export JAVA_7_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_67.jdk/Contents/Ho
 alias java7='export JAVA_HOME=$JAVA_7_HOME;echo JAVA_HOME=$JAVA_7_HOME'
 # alias java8='export JAVA_HOME=$JAVA_8_HOME;echo JAVA_HOME=$JAVA_8_HOME'
 export JAVA_HOME=$JAVA_7_HOME
+
+# Load local aliases
+source $HOME/.aliases
+
+# GitHub API token to avoid Homebrew hitting GitHub API limites
+source $HOME/.homebrew
+
 alias subl="sublime"
