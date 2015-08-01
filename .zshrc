@@ -46,7 +46,7 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git brew history tmux rbenv bundler virtualenv virtualenvwrapper)
+plugins=(git brew history tmux rvm bundler virtualenv virtualenvwrapper)
 
 # Set '-CC' option for iTerm2 tmux integration
 ZSH_TMUX_ITERM2=false
