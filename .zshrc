@@ -117,3 +117,16 @@ source $HOME/.aliases
 source $HOME/.homebrew
 
 alias subl="sublime"
+
+# RVM
+export PATH=$PATH:$HOME/.rvm/bin
+
+# Composer binaries
+export PATH=$HOME/.composer/vendor/bin:$PATH
+
+# Gettext tools
+export PATH=$PATH:/usr/local/opt/gettext/bin
+
+# Setup path to Go binary and the Go workspace
+export GOPATH=$HOME/Projects/golang
+export PATH=$PATH:$GOPATH/bin:/usr/local/opt/go/libexec/bin
