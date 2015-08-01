@@ -134,3 +134,6 @@ export PATH=$PATH:$GOPATH/bin:/usr/local/opt/go/libexec/bin
 docker-ip() {
   boot2docker ip 2> /dev/null
 }
+
+# SCM Breeze (https://github.com/ndbroadbent/scm_breeze)
+[ -s "$HOME/.scm_breeze/scm_breeze.sh" ] && source "$HOME/.scm_breeze/scm_breeze.sh"
