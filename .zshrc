@@ -51,8 +51,12 @@ plugins=(git brew history tmux rvm bundler virtualenv virtualenvwrapper)
 # Set '-CC' option for iTerm2 tmux integration
 ZSH_TMUX_ITERM2=false
 
-export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python
+export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python
 export VIRTUALENVWRAPPER_VIRTUALENV=/usr/local/bin/virtualenv
+
+# brew install python
+#export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python
+#export VIRTUALENVWRAPPER_VIRTUALENV=/usr/local/bin/virtualenv
 
 export PATH="/usr/local/sbin:/usr/local/bin:$PATH"
 
