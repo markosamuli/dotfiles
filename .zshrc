@@ -58,6 +58,8 @@ export VIRTUALENVWRAPPER_VIRTUALENV=/usr/local/bin/virtualenv
 #export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python
 #export VIRTUALENVWRAPPER_VIRTUALENV=/usr/local/bin/virtualenv
 
+export GITCHANGELOG_CONFIG_FILENAME="$HOME/.gitchangelog.rc"
+
 export PATH="/usr/local/sbin:/usr/local/bin:$PATH"
 
 source $ZSH/oh-my-zsh.sh
