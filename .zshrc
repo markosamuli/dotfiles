@@ -104,4 +104,9 @@ source $HOME/google-cloud-sdk/completion.zsh.inc
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+export JAVA_7_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_67.jdk/Contents/Home
+# export JAVA_8_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home
+alias java7='export JAVA_HOME=$JAVA_7_HOME;echo JAVA_HOME=$JAVA_7_HOME'
+# alias java8='export JAVA_HOME=$JAVA_8_HOME;echo JAVA_HOME=$JAVA_8_HOME'
+export JAVA_HOME=$JAVA_7_HOME
 alias subl="sublime"
