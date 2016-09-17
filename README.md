@@ -41,6 +41,5 @@ My favourite aliases are in my `.gitconfig` with the top commands below:
 - `git pullr` - pull with rebase
 - `git wd` - word diff changes
 - `git wds` - word diff staged changes
-```
 
 My default diff and merge tool is [Kaleidoscope](http://www.kaleidoscopeapp.com/).
