@@ -2,6 +2,7 @@
 	name = Marko Samuli Kirves
 	email = marko.kirves@bynd.com
 	username = markosamuli
+	signingkey = 5AA7F963
 [alias]
 	co = checkout
 	ci = commit
@@ -51,7 +52,7 @@
 	log = true
 [core]
 	excludesfile = /Users/markosamuli/.gitignore_global
-	editor = /usr/bin/vim  
+	editor = /usr/local/bin/vim
 [difftool "Kaleidoscope"]
 	cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
 [mergetool "Kaleidoscope"]
@@ -73,3 +74,5 @@
 [mergetool "sourcetree"]
 	cmd = /usr/local/bin/ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
 	trustExitCode = true
+[http]
+	cookiefile = /Users/markosamuli/.gitcookies

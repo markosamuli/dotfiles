@@ -1,5 +1,5 @@
 # ~/.gitignore_global
-# vim:set ft=sh ai et ts=2 tw=80 sts=2 sw=2: 
+# vim:set ft=sh ai et ts=2 tw=80 sts=2 sw=2:
 
 # Compiled source #
 ###################
@@ -24,7 +24,8 @@
 *.zip
 
 # Keep current installed version in a local file
-.npm_installed_version
+#.npm_installed_version
+#.jspm_installed_version
 
 # OS generated files #
 ######################
@@ -37,3 +38,16 @@ Icon?
 ehthumbs.db
 Thumbs.db
 Desktop.ini
+
+# Editors #
+###########
+.idea/*
+.idea
+
+# Ignore autoenv and pyenv scripts
+.autoenv.zsh
+.autoenv_leave.zsh
+.python-version
+
+# Gem Bundle
+.bundle

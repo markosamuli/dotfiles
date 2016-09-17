@@ -1,12 +1,28 @@
+# Load powerlevel9k theme customations
+source $HOME/.dotfiles/powerlevel9k.zsh
+
+# Load antigen
+source $HOME/.dotfiles/antigen/antigen.zsh
+
+# Load the oh-my-zsh's library.
+antigen use oh-my-zsh
+
 # Path to your oh-my-zsh installation.
-export ZSH=$HOME/.oh-my-zsh
+# export ZSH=$HOME/.oh-my-zsh
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
 # ZSH_THEME="robbyrussell"
-ZSH_THEME="sunrise"
+# ZSH_THEME="sunrise"
+
+# Load the theme.
+# antigen theme sunrise
+# antigen theme agnoster
+
+# Load powerlevel9k theme https://github.com/bhilburn/powerlevel9k
+antigen theme bhilburn/powerlevel9k powerlevel9k
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -46,23 +62,49 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git brew history tmux rvm bundler virtualenv virtualenvwrapper)
+# plugins=(git brew history tmux rvm bundler virtualenv pyenv)
+
+# Bundles from the default repo (robbyrussell's oh-my-zsh).
+antigen bundles <<EOBUNDLES
+  git
+  brew
+  history
+  tmux
+  rvm
+  bundler
+  Tarrasch/zsh-autoenv
+EOBUNDLES
+
+# https://github.com/zsh-users/zsh-completions
+# antigen bundle zsh-users/zsh-completions src
+
+# https://github.com/zsh-users/zsh-syntax-highlighting
+# antigen bundle zsh-users/zsh-syntax-highlighting
+
+# Tell antigen you're done.
+antigen apply
 
 # Set '-CC' option for iTerm2 tmux integration
-ZSH_TMUX_ITERM2=false
+# ZSH_TMUX_ITERM2=false
 
-export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python
-export VIRTUALENVWRAPPER_VIRTUALENV=/usr/local/bin/virtualenv
+#export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python
+#export VIRTUALENVWRAPPER_VIRTUALENV=/usr/local/bin/virtualenv
 
 # brew install python
 #export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python
 #export VIRTUALENVWRAPPER_VIRTUALENV=/usr/local/bin/virtualenv
 
+# hide the “user@hostname” info when you’re logged in as yourself on your local machine.
+export DEFAULT_USER=markosamuli
+
+# We don't want cows when running Ansible
+export ANSIBLE_NOCOWS=1
+
+# Custom gitchangelog config
 export GITCHANGELOG_CONFIG_FILENAME="$HOME/.gitchangelog.rc"
 
-export PATH="/usr/local/sbin:/usr/local/bin:$PATH"
-
-source $ZSH/oh-my-zsh.sh
+# Local binaries and Homebrew paths
+export PATH="$HOME/bin:/usr/local/sbin:/usr/local/bin:$PATH"
 
 # User configuration
 
@@ -75,13 +117,11 @@ source $ZSH/oh-my-zsh.sh
 # export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-export EDITOR='vim'
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR='vim'
+else
+  export EDITOR='mvim'
+fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -89,11 +129,13 @@ export EDITOR='vim'
 # ssh
 export SSH_KEY_PATH="~/.ssh/id_rsa"
 
-# The next line updates PATH for the Google Cloud SDK.
-source $HOME/google-cloud-sdk/path.zsh.inc
-
-# The next line enables bash completion for gcloud.
-source $HOME/google-cloud-sdk/completion.zsh.inc
+# Load Google Cloud SDK
+if [ -d "$HOME/google-cloud-sdk" ]; then
+  # The next line updates PATH for the Google Cloud SDK.
+  source $HOME/google-cloud-sdk/path.zsh.inc
+  # The next line enables bash completion for gcloud.
+  source $HOME/google-cloud-sdk/completion.zsh.inc
+fi
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
@@ -104,36 +146,48 @@ source $HOME/google-cloud-sdk/completion.zsh.inc
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-export JAVA_7_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_67.jdk/Contents/Home
+# export JAVA_7_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_67.jdk/Contents/Home
 # export JAVA_8_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home
-alias java7='export JAVA_HOME=$JAVA_7_HOME;echo JAVA_HOME=$JAVA_7_HOME'
+# alias java7='export JAVA_HOME=$JAVA_7_HOME;echo JAVA_HOME=$JAVA_7_HOME'
 # alias java8='export JAVA_HOME=$JAVA_8_HOME;echo JAVA_HOME=$JAVA_8_HOME'
-export JAVA_HOME=$JAVA_7_HOME
+# export JAVA_HOME=$JAVA_7_HOME
 
 # Load local aliases
-source $HOME/.aliases
+[ -e "$HOME/.aliases" ] && source $HOME/.aliases
 
 # GitHub API token to avoid Homebrew hitting GitHub API limites
-source $HOME/.homebrew
-
-alias subl="sublime"
+[ -e "$HOME/.homebrew" ] && source $HOME/.homebrew
 
 # RVM
 export PATH=$PATH:$HOME/.rvm/bin
 
-# Composer binaries
-export PATH=$HOME/.composer/vendor/bin:$PATH
+if [ -d "$HOME/.composer" ]; then
+  # Composer binaries
+  export PATH=$PATH:$HOME/.composer/vendor/bin
+fi
 
 # Gettext tools
 export PATH=$PATH:/usr/local/opt/gettext/bin
 
 # Setup path to Go binary and the Go workspace
-export GOPATH=$HOME/Projects/golang
+export GOPATH=$HOME/golang
 export PATH=$PATH:$GOPATH/bin:/usr/local/opt/go/libexec/bin
 
-docker-ip() {
-  boot2docker ip 2> /dev/null
-}
+# Install n in home directory
+export N_PREFIX=$HOME
+
+# Set pyenv root
+#export PYENV_ROOT="$HOME/.pyenv"
 
 # SCM Breeze (https://github.com/ndbroadbent/scm_breeze)
-[ -s "$HOME/.scm_breeze/scm_breeze.sh" ] && source "$HOME/.scm_breeze/scm_breeze.sh"
+#[ -s "$HOME/.scm_breeze/scm_breeze.sh" ] && source "$HOME/.scm_breeze/scm_breeze.sh"
+
+# Initialise pyenv and pyenv-virtualenv if installed
+if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
+if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
+
+# Load kubectl autocompletion
+# source $HOME/Projects/kubernetes/contrib/completions/zsh/kubectl
+
+# Load Rackspace login details
+# source $HOME/.rackspace
