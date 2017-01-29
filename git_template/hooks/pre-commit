@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# validate file syntax before commit
+$GIT_DIR/hooks/syntaxchecker/pre-commit
+if [ $? -ne 0 ]
+then
+	exit 1
+fi

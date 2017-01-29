@@ -1,0 +1,8 @@
+#!/bin/bash
+
+$GIT_DIR/hooks/wipchecker/pre-push
+ret=$?
+if [ $ret -ne 0 ]
+then
+	exit $ret
+fi
