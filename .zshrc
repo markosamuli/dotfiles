@@ -1,98 +1,75 @@
-# Load powerlevel9k theme customations
-source $HOME/.dotfiles/powerlevel9k.zsh
+# shortcut to this dotfiles path is $ZSH
+export ZSH="$HOME/.dotfiles"
 
-# Load antigen
-source $HOME/.dotfiles/antigen/antigen.zsh
+# your project folder that we can `c [tab]` to
+export PROJECTS="$HOME/Projects"
 
-# Load the oh-my-zsh's library.
-antigen use oh-my-zsh
+# enable colour support
+export TERM="xterm-256color"
 
-# Path to your oh-my-zsh installation.
-# export ZSH=$HOME/.oh-my-zsh
+# set platform name so that we can run scripts based on the OS
+unamestr=$(uname)
+if [[ "$unamestr" == 'Linux' ]]; then
+  platform='linux'
+elif [[ "$unamestr" == 'Darwin' ]]; then
+  platform='macos'
+fi
 
-# Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
-# ZSH_THEME="robbyrussell"
-# ZSH_THEME="sunrise"
+###
+# Load ZSH configuration
+# See https://github.com/caarlos0/dotfiles/blob/master/zsh/zshrc.symlink
+###
 
-# Load the theme.
-# antigen theme sunrise
-# antigen theme agnoster
+# all of our zsh files
+typeset -U config_files
+config_files=($ZSH/*/*.zsh)
 
-# Load powerlevel9k theme https://github.com/bhilburn/powerlevel9k
-antigen theme bhilburn/powerlevel9k powerlevel9k
+# load the path files
+for file in ${(M)config_files:#*/path.zsh}; do
+  source "$file"
+done
 
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
+# load antibody plugins
+source ~/.bundles.txt
 
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
+# load everything but the path and completion files
+for file in ${${config_files:#*/path.zsh}:#*/completion.zsh}; do
+  source "$file"
+done
 
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
+autoload -Uz compinit
+typeset -i updated_at=$(date +'%j' -r ~/.zcompdump 2>/dev/null || stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)
+if [ $(date +'%j') != $updated_at ]; then
+  compinit
+else
+  compinit -C
+fi
 
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
+# load every completion after autocomplete loads
+for file in ${(M)config_files:#*/completion.zsh}; do
+  source "$file"
+done
 
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
+unset config_files updated_at
 
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
+# use .localrc for SUPER SECRET CRAP that you don't
+# want in your public, versioned repo.
+# shellcheck disable=SC1090
+[ -f ~/.localrc ] && . ~/.localrc
 
-# Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
+# Preferred editor for local and remote sessions
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR='vim'
+elif [[ "$platform" == "linux" ]]; then
+  export EDITOR='gvim'
+elif [[ "$platform" == "macos" ]]; then
+  export EDITOR='mvim'
+else
+  export EDITOR='vim'
+fi
 
-# Uncomment following line if you want to disable marking untracked files under
-# VCS as dirty. This makes repository status check for large repositories much,
-# much faster.
-DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-# plugins=(git brew history tmux rvm bundler virtualenv pyenv)
-
-# Bundles from the default repo (robbyrussell's oh-my-zsh).
-antigen bundles <<EOBUNDLES
-  git
-  brew
-  history
-  tmux
-  rvm
-  bundler
-  Tarrasch/zsh-autoenv
-EOBUNDLES
-
-# https://github.com/zsh-users/zsh-completions
-# antigen bundle zsh-users/zsh-completions src
-
-# https://github.com/zsh-users/zsh-syntax-highlighting
-# antigen bundle zsh-users/zsh-syntax-highlighting
-
-# Tell antigen you're done.
-antigen apply
-
-# Set '-CC' option for iTerm2 tmux integration
-# ZSH_TMUX_ITERM2=false
-
-#export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python
-#export VIRTUALENVWRAPPER_VIRTUALENV=/usr/local/bin/virtualenv
-
-# brew install python
-#export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python
-#export VIRTUALENVWRAPPER_VIRTUALENV=/usr/local/bin/virtualenv
+# SSH defaults
+export SSH_KEY_PATH="~/.ssh/id_rsa"
 
 # hide the “user@hostname” info when you’re logged in as yourself on your local machine.
 export DEFAULT_USER=markosamuli
@@ -103,91 +80,63 @@ export ANSIBLE_NOCOWS=1
 # Custom gitchangelog config
 export GITCHANGELOG_CONFIG_FILENAME="$HOME/.gitchangelog.rc"
 
-# Local binaries and Homebrew paths
-export PATH="$HOME/bin:/usr/local/sbin:/usr/local/bin:$PATH"
-
-# User configuration
-
-# export PATH="$HOME/bin:/usr/local/sbin:/usr/local/bin:/usr/local/share/npm/bin:/Users/markosamuli/.rvm/gems/ruby-1.9.3-p429/bin:/Users/markosamuli/.rvm/gems/ruby-1.9.3-p429@global/bin:/Users/markosamuli/.rvm/rubies/ruby-1.9.3-p429/bin:/Users/markosamuli/.rvm/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:$PATH"
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='vim'
-else
-  export EDITOR='mvim'
+# Load Google Cloud SDK from $HOME/opt, then /opt
+if [ -d "$HOME/opt/google-cloud-sdk" ]; then
+  export CLOUDSDK_ROOT_DIR="$HOME/opt/google-cloud-sdk"
+elif [ -d "/opt/google-cloud-sdk" ]; then
+  export CLOUDSDK_ROOT_DIR="/opt/google-cloud-sdk"
 fi
 
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# ssh
-export SSH_KEY_PATH="~/.ssh/id_rsa"
-
-# Load Google Cloud SDK
-if [ -d "$HOME/google-cloud-sdk" ]; then
+if [ -n "$CLOUDSDK_ROOT_DIR" ]; then
   # The next line updates PATH for the Google Cloud SDK.
-  source $HOME/google-cloud-sdk/path.zsh.inc
+  source $CLOUDSDK_ROOT_DIR/path.zsh.inc
   # The next line enables bash completion for gcloud.
-  source $HOME/google-cloud-sdk/completion.zsh.inc
+  source $CLOUDSDK_ROOT_DIR/completion.zsh.inc
 fi
 
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
+# Load GAE tools to Golang
+if [ -d "$HOME/opt/go_appengine" ]; then
+  export PATH=$PATH:$HOME/opt/go_appengine
+fi
 
-# export JAVA_7_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_67.jdk/Contents/Home
-# export JAVA_8_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home
-# alias java7='export JAVA_HOME=$JAVA_7_HOME;echo JAVA_HOME=$JAVA_7_HOME'
-# alias java8='export JAVA_HOME=$JAVA_8_HOME;echo JAVA_HOME=$JAVA_8_HOME'
-# export JAVA_HOME=$JAVA_7_HOME
+# Local binaries
+[ -d "$HOME/bin" ] && export PATH=$HOME/bin:$PATH
 
 # Load local aliases
 [ -e "$HOME/.aliases" ] && source $HOME/.aliases
 
-# GitHub API token to avoid Homebrew hitting GitHub API limites
-[ -e "$HOME/.homebrew" ] && source $HOME/.homebrew
+# Homebrew configuration
+[ -e "$HOME/.homebrewrc" ] && source $HOME/.homebrewrc
 
-# RVM
-export PATH=$PATH:$HOME/.rvm/bin
-
-if [ -d "$HOME/.composer" ]; then
-  # Composer binaries
-  export PATH=$PATH:$HOME/.composer/vendor/bin
-fi
-
-# Gettext tools
-export PATH=$PATH:/usr/local/opt/gettext/bin
-
-# Setup path to Go binary and the Go workspace
-export GOPATH=$HOME/golang
-export PATH=$PATH:$GOPATH/bin:/usr/local/opt/go/libexec/bin
-
-# Install n in home directory
-export N_PREFIX=$HOME
+# Composer binaries
+[ -d "$HOME/.composer" ] && export PATH=$PATH:$HOME/.composer/vendor/bin
 
 # Set pyenv root
-#export PYENV_ROOT="$HOME/.pyenv"
-
-# SCM Breeze (https://github.com/ndbroadbent/scm_breeze)
-#[ -s "$HOME/.scm_breeze/scm_breeze.sh" ] && source "$HOME/.scm_breeze/scm_breeze.sh"
+export PYENV_ROOT="$HOME/.pyenv"
 
 # Initialise pyenv and pyenv-virtualenv if installed
 if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
 
+# Initialise rbenv if installed
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+
 # Load kubectl autocompletion
 # source $HOME/Projects/kubernetes/contrib/completions/zsh/kubectl
 
-# Load Rackspace login details
-# source $HOME/.rackspace
+# Initialise nvm if installed
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+
+# Created by markosamuli.golang Ansible role
+export GOPATH=$HOME/Projects/golang
+export PATH=$PATH:$GOPATH/bin
+
+# Set paths to Hashicorp tools on Linux
+if [[ "$platform" == "linux" ]]; then
+  [ -d "/opt/terraform" ] && export PATH=/opt/terraform:$PATH
+  [ -d "/opt/packer" ] && export PATH=/opt/packer:$PATH
+fi
+
+# Load Google vendor tools and configuration
+[ -f ~/.googlerc ] && . ~/.googlerc

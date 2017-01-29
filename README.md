@@ -10,6 +10,15 @@ My `.zshrc` uses [antigen](https://github.com/zsh-users/antigen) plugin manager.
 
 My default theme is [powerlevel9k](https://github.com/bhilburn/powerlevel9k) with Powerline prompt.
 
+### Install antibody
+
+https://github.com/getantibody/antibody
+
+    curl -s https://raw.githubusercontent.com/getantibody/installer/master/install | bash -
+    echo 'source <(antibody init)' >> ~/.zshrc
+    antibody
+
+
 Aliases
 -------
 
