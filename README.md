@@ -6,26 +6,64 @@ zsh
 
 My default shell is Z shell.
 
-My `.zshrc` uses [antigen](https://github.com/zsh-users/antigen) plugin manager.
+Install [antibody](https://github.com/getantibody/antibody):
 
-My default theme is [powerlevel9k](https://github.com/bhilburn/powerlevel9k) with Powerline prompt.
-
-### Install antibody
-
-https://github.com/getantibody/antibody
-
-    curl -s https://raw.githubusercontent.com/getantibody/installer/master/install | bash -
-    echo 'source <(antibody init)' >> ~/.zshrc
-    antibody
-
+```
+curl -s https://raw.githubusercontent.com/getantibody/installer/master/install | bash -
+$HOME/.dotfiles/antibody/install.sh
+```
 
 Aliases
 -------
 
 Custom aliases and functions are in `.aliases`.
 
+Machine Setup
+-------------
+
+Download my machine setup Ansible playbooks:
+
+```
+wget https://github.com/markosamuli/machine/archive/master.zip
+unzip machine-master.zip
+cd machine-master
+```
+
+Or using Git:
+
+```
+git clone git@github.com:markosamuli/machine.git
+cd machine
+```
+
+Modify `main.yml` file to your requirements and run the setup script.
+
+```
+./setup
+```
+
+Editors
+-------
+
+### Visual Studio Code 
+
+Install extensions:
+
+- [EditorConfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
+
+Tools
+-----
+
+```
+brew install Caskroom/cask/kaleidoscope
+```
+
 Setup iTerm
 -----------
+
+```
+brew install Caskroom/cask/iterm2
+```
 
 - Install powerline fonts from the `powerlinefonts` directory
 - Import themes from `iterm` directory
@@ -52,3 +90,4 @@ My favourite aliases are in my `.gitconfig` with the top commands below:
 - `git wds` - word diff staged changes
 
 My default diff and merge tool is [Kaleidoscope](http://www.kaleidoscopeapp.com/).
+
