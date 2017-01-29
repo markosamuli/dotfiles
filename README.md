@@ -1,6 +1,13 @@
 My dotfiles for OS X El Capitan
 ===============================
 
+Install
+-------
+
+```
+git clone https://github.com/markosamuli/dotfiles.git ~/.dotfiles
+```
+
 zsh
 ---
 
@@ -11,6 +18,21 @@ Install [antibody](https://github.com/getantibody/antibody):
 ```
 curl -s https://raw.githubusercontent.com/getantibody/installer/master/install | bash -
 $HOME/.dotfiles/antibody/install.sh
+```
+
+Symlink `.zshrc` to your home directory:
+
+```
+ln -s ~/.dotfiles/.zshrc ~/.zshrc
+```
+
+bash
+----
+
+The `.bashrc` contains just few bits for compatibility.
+
+```
+ln -s ~/.dotfiles/.bashrc ~/.bashrc
 ```
 
 Aliases
@@ -42,17 +64,25 @@ Modify `main.yml` file to your requirements and run the setup script.
 ./setup
 ```
 
-Editors
--------
+EditorConfig
+------------
 
-### Visual Studio Code 
+Symlink [EditorConfig](http://editorconfig.org/) file:
+
+```
+ln -s ~/.dotfiles/.editorconfig ~/.editorconfig
+```
 
 Install extensions:
 
-- [EditorConfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
+- Visual Studio Code [EditorConfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
 
-Tools
------
+The `.editorconfig` file should meet [Google Style Guides](https://github.com/google/styleguide).
+
+Kaleidoscope
+------------
+
+I'm using [Kaleidoscope](http://www.kaleidoscopeapp.com/) as my default diff/merge tool on Mac.
 
 ```
 brew install Caskroom/cask/kaleidoscope
@@ -60,6 +90,8 @@ brew install Caskroom/cask/kaleidoscope
 
 Setup iTerm
 -----------
+
+I'm using [iTerm2](https://www.iterm2.com/) as my default terminal on Mac.
 
 ```
 brew install Caskroom/cask/iterm2
@@ -79,7 +111,21 @@ brew install reattach-to-user-namespace
 Git
 ---
 
-My favourite aliases are in `.gitconfig.example` with the top commands below:
+Copy [.gitconfig.example](.gitconfig.example) file for my aliases and few defaults:
+
+```
+cp ~/.dotfiles/.gitconfig.example ~/.gitconfig
+```
+
+See [.gitconfig.govuskuolfi](.gitconfig.govuskuolfi) for my OS X specific tools configuration.
+
+```
+ln ~/.dotfiles/.git_template ~/.git_template
+ln ~/.dotfiles/.gitchangelog.rc ~/.gitchangelog.rc
+ln ~/.dotfiles/.gitignore_global ~/.gitignore_global
+```
+
+My favourite aliases:
 
 - `git co` - checkout
 - `git ci` - commit
@@ -88,8 +134,6 @@ My favourite aliases are in `.gitconfig.example` with the top commands below:
 - `git pullr` - pull with rebase
 - `git wd` - word diff changes
 - `git wds` - word diff staged changes
-
-My default diff and merge tool is [Kaleidoscope](http://www.kaleidoscopeapp.com/).
 
 License
 -------
