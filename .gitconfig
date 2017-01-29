@@ -6,7 +6,6 @@
 [alias]
 	co = checkout
 	ci = commit
-  	# g = log --oneline --decorate --color=always --graph
   	pullr = pull --rebase
   	hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
 
@@ -17,7 +16,7 @@
   	# https://github.com/cypher/dotfiles/blob/master/gitconfig
   	amend = commit --amend -C HEAD
   	authors = "!git log --pretty=format:%aN | sort | uniq -c | sort -rn"
-	# c = commit
+	
 	ca = commit --amend
 	d = diff
 	dc = diff --cached
