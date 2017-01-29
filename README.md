@@ -66,7 +66,7 @@ brew install Caskroom/cask/iterm2
 ```
 
 - Install powerline fonts from the `powerlinefonts` directory
-- Import themes from `iterm` directory
+- Import [Solarized](https://github.com/altercation/solarized) themes from `iterm` directory
 - Change iTerm2 font to `Meslo LG M DZ Regular for Powerline`
 
 tmux
