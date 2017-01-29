@@ -71,9 +71,6 @@ fi
 # SSH defaults
 export SSH_KEY_PATH="~/.ssh/id_rsa"
 
-# hide the “user@hostname” info when you’re logged in as yourself on your local machine.
-export DEFAULT_USER=markosamuli
-
 # We don't want cows when running Ansible
 export ANSIBLE_NOCOWS=1
 
