@@ -79,7 +79,7 @@ brew install reattach-to-user-namespace
 Git
 ---
 
-My favourite aliases are in my `.gitconfig` with the top commands below:
+My favourite aliases are in `.gitconfig.example` with the top commands below:
 
 - `git co` - checkout
 - `git ci` - commit
