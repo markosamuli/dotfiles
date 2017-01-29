@@ -1,4 +1,16 @@
 #!/bin/sh
+#
+# Copyright 2017 Marko Samuli Kirves. All Rights Reserved.
+#
+# Create new virtualenv and .autoenv.zsh files for a project.
+# The virtualenv name will be based on the current directory, so you
+# should run this in your project root.
+#
+# Requires:
+# - https://github.com/yyuu/pyenv
+# - https://github.com/yyuu/pyenv-virtualenv
+# - https://github.com/Tarrasch/zsh-autoenv
+###
 
 if [ -z "$1" ]; then
   virtualenv=$(basename $(pwd))

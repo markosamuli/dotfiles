@@ -91,3 +91,7 @@ My favourite aliases are in `.gitconfig.example` with the top commands below:
 
 My default diff and merge tool is [Kaleidoscope](http://www.kaleidoscopeapp.com/).
 
+License
+-------
+
+See [License](LICENSE) 
