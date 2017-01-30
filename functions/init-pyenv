@@ -29,7 +29,7 @@ pyenv_root=${PYENV_ROOT:=${HOME}/.pyenv}
 python_installed=$(pyenv versions | grep ${python_version})
 if [ "${python_installed}" == "" ]; then
   echo "*** Install Python ${python_version}..."
-  pyenv install --verbose ${python_version} || { echo "Failed to install ${python_version}"; exit 1; }
+  pyenv install --verbose ${python_version} || { echo "Failed to install ${python_version}"; return 1; }
 fi
 
 if [ -d "${pyenv_root}/versions/${virtualenv}" ]; then
