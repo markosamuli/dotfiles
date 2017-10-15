@@ -189,10 +189,11 @@ setup_zsh
 setup_antibody
 
 # Setup dotfile symlinks
-setup_dotfile .editorconfig
+setup_dotfile .aliases
 setup_dotfile .zshrc 
 setup_dotfile .bashrc
 setup_dotfile .gitignore_global
+setup_dotfile .editorconfig
 
 # Setup tmux config if installed
 setup_tmux
