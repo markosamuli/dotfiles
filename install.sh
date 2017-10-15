@@ -171,6 +171,11 @@ function setup_dotfile {
     ln -s $DOTFILES/$dotfile ~/$dotfile
 }
 
+function setup_tmux {
+    command -v tmux 1>/dev/null 2>&1 || return 0
+    setup_dotfile .tmux.conf
+}
+
 # Clone dotfiles
 download_dotfiles
 
@@ -187,3 +192,7 @@ setup_antibody
 setup_dotfile .editorconfig
 setup_dotfile .zshrc 
 setup_dotfile .bashrc
+setup_dotfile .gitignore_global
+
+# Setup tmux config if installed
+setup_tmux
