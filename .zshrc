@@ -7,6 +7,9 @@ export PROJECTS="$HOME/Projects"
 # enable colour support
 export TERM="xterm-256color"
 
+# enable timestamps in history
+export HIST_STAMPS="yyyy-mm-dd"
+
 # set platform name so that we can run scripts based on the OS
 unamestr=$(uname)
 if [[ "$unamestr" == 'Linux' ]]; then
