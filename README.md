@@ -1,39 +1,17 @@
-My dotfiles for OS X El Capitan
-===============================
+My dotfiles
+===========
 
 Install
 -------
 
 ```
-git clone https://github.com/markosamuli/dotfiles.git ~/.dotfiles
+curl -s https://raw.githubusercontent.com/markosamuli/dotfiles/master/install.sh | bash -
 ```
 
-zsh
----
-
-My default shell is Z shell.
-
-Install [antibody](https://github.com/getantibody/antibody):
-
-```
-curl -s https://raw.githubusercontent.com/getantibody/installer/master/install | bash -
-$HOME/.dotfiles/antibody/install.sh
-```
-
-Symlink `.zshrc` to your home directory:
-
-```
-ln -s ~/.dotfiles/.zshrc ~/.zshrc
-```
-
-bash
-----
-
-The `.bashrc` contains just few bits for compatibility.
-
-```
-ln -s ~/.dotfiles/.bashrc ~/.bashrc
-```
+- Install and configure zsh as default shell.
+- Install [antibody](https://github.com/getantibody/antibody)
+- Create symlinks in `~/.zshrc` and `~/.bashrc`
+- Create [EditorConfig](http://editorconfig.org/) symlink in `~/.editorconfig`
 
 Aliases
 -------
@@ -66,12 +44,6 @@ Modify `main.yml` file to your requirements and run the setup script.
 
 EditorConfig
 ------------
-
-Symlink [EditorConfig](http://editorconfig.org/) file:
-
-```
-ln -s ~/.dotfiles/.editorconfig ~/.editorconfig
-```
 
 Install extensions:
 
