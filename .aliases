@@ -1,2 +1,9 @@
 # Sublime
 alias subl='sublime'
+
+# Shell
+alias h='history'
+
+# Git
+alias gc='git commit'
+alias gco='git checkout'
