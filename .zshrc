@@ -82,6 +82,8 @@ export GITCHANGELOG_CONFIG_FILENAME="$HOME/.gitchangelog.rc"
 # Load Google Cloud SDK from $HOME/opt, then /opt
 if [ -d "$HOME/opt/google-cloud-sdk" ]; then
   export CLOUDSDK_ROOT_DIR="$HOME/opt/google-cloud-sdk"
+elif [ -d "$HOME/google-cloud-sdk" ]; then
+  export CLOUDSDK_ROOT_DIR="$HOME/google-cloud-sdk"
 elif [ -d "/opt/google-cloud-sdk" ]; then
   export CLOUDSDK_ROOT_DIR="/opt/google-cloud-sdk"
 fi
@@ -91,6 +93,8 @@ if [ -n "$CLOUDSDK_ROOT_DIR" ]; then
   source $CLOUDSDK_ROOT_DIR/path.zsh.inc
   # The next line enables bash completion for gcloud.
   source $CLOUDSDK_ROOT_DIR/completion.zsh.inc
+elif [ -d "/usr/share/google-cloud-sdk" ]; then
+  source /usr/share/google-cloud-sdk/completion.zsh.inc
 fi
 
 # Load GAE tools to Golang
@@ -100,6 +104,7 @@ fi
 
 # Local binaries
 [ -d "$HOME/bin" ] && export PATH=$HOME/bin:$PATH
+[ -d "$HOME/.local/bin" ] && export PATH=$HOME/.local/bin:$PATH
 
 # Load local aliases
 [ -e "$HOME/.aliases" ] && source $HOME/.aliases
@@ -110,13 +115,6 @@ fi
 # Composer binaries
 [ -d "$HOME/.composer" ] && export PATH=$PATH:$HOME/.composer/vendor/bin
 
-# Set pyenv root
-export PYENV_ROOT="$HOME/.pyenv"
-
-# Initialise pyenv and pyenv-virtualenv if installed
-if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
-if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
-
 # Initialise rbenv if installed
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
@@ -125,7 +123,7 @@ if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
 # Initialise nvm if installed
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" # This loads nvm
 
 # Created by markosamuli.golang Ansible role
 export GOPATH=$HOME/Projects/golang
@@ -133,9 +131,33 @@ export PATH=$PATH:$GOPATH/bin
 
 # Set paths to Hashicorp tools on Linux
 if [[ "$platform" == "linux" ]]; then
-  [ -d "/opt/terraform" ] && export PATH=/opt/terraform:$PATH
-  [ -d "/opt/packer" ] && export PATH=/opt/packer:$PATH
+  [ -d "/opt/terraform" ] && [ ! -e "/usr/local/bin/terraform" ] && export PATH=/opt/terraform:$PATH
+  [ -d "/opt/packer" ] && [ ! -e "/usr/local/bin/packer" ] && export PATH=/opt/packer:$PATH
 fi
 
-# Load Google vendor tools and configuration
-[ -f ~/.googlerc ] && . ~/.googlerc
+# Add gofabric8 binary to the path
+[ -d "$HOME/.fabric8" ] && export PATH="$PATH:$HOME/.fabric8/bin"
+
+# BEGIN ANSIBLE MANAGED BLOCK: pyenv
+# Add pyenv into path if installed into default location
+if [ -d "$HOME/.pyenv" ]; then
+  export PYENV_ROOT="$HOME/.pyenv"
+  export PATH="$PYENV_ROOT/bin:$PATH"
+fi
+# Initialise pyenv and pyenv-virtualenv if installed
+if command -v pyenv 1>/dev/null 2>&1; then eval "$(pyenv init -)"; fi
+if command -v pyenv-virtualenv-init 1>/dev/null 2>&1; then eval "$(pyenv virtualenv-init -)"; fi
+# END ANSIBLE MANAGED BLOCK: pyenv
+
+export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+
+# https://github.com/asdf-vm/asdf
+if [ -d "$HOME/.asdf" ]; then
+  . $HOME/.asdf/asdf.sh
+  . $HOME/.asdf/completions/asdf.bash
+fi
+
+# https://wiki.lineageos.org/adb_fastboot_guide.html
+# if [ -d "$HOME/src/platform-tools" ]; then
+#   export PATH="$HOME/src/platform-tools:$PATH"
+# fi
