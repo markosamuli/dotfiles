@@ -6,7 +6,9 @@
 *.md text eol=lf
 *.sh text eol=lf
 *.zsh text eol=lf
+*.txt text eol=lf
 
+.editorconfig text eol=lf
 .gitattributes text eol=lf
 .zshrc text eol=lf
 
