@@ -1,7 +1,7 @@
 
 #!/bin/zsh
 
-if [ "${OH_MY_ZSH}" != "true" ]; then
+if [[ "${OH_MY_ZSH}" != "true" ]]; then
   echo "do not load this if not using Oh My Zsh!"
   exit 1
 fi

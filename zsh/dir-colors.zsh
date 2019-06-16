@@ -1,7 +1,7 @@
 #!/bin/zsh
 
-if [ "${OH_MY_ZSH}" == "true" ]; then
-  # do not load if using oh-my-zsh
+# do not load if using oh-my-zsh
+if [[ "$OH_MY_ZSH" == "true" ]]; then
   exit 0
 fi
 
