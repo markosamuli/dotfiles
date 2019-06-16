@@ -31,14 +31,12 @@ unset unamestr
 if [ -d "$HOME/.oh-my-zsh" ]; then
   # Path to your oh-my-zsh installation.
   export ZSH="$HOME/.oh-my-zsh"
-  export OH_MY_ZSH="true"
 
   # initialise and load oh-my-zsh
   source $DOTFILES/oh-my-zsh/oh-my-zsh.zsh
 else
   # shortcut to this dotfiles path is $ZSH
   export ZSH="$DOTFILES"
-  export OH_MY_ZSH="false"
 
   # path for loading antibody bundles
   if [ -e "$HOME/.bundles.txt" ]; then

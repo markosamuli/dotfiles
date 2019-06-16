@@ -1,10 +1,8 @@
 
 #!/bin/zsh
 
-if [[ "${OH_MY_ZSH}" != "true" ]]; then
-  echo "do not load this if not using Oh My Zsh!"
-  exit 1
-fi
+# Use this later for checking if we're using oh-my-zsh
+OH_MY_ZSH="true"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
