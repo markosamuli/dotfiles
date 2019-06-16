@@ -8,7 +8,7 @@ OH_MY_ZSH="true"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="robbyrussell"
+ZSH_THEME=""
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -51,6 +51,14 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(git vscode)
 
 source $ZSH/oh-my-zsh.sh
+
+# Load pure prompt if oh-my-zsh theme is disabled
+# Do not enable the following (incompatible) plugins: vi-mode, virtualenv.
+# https://github.com/sindresorhus/pure#oh-my-zsh
+if [ "$ZSH_THEME" == "" ]; then
+  antibody bundle mafredri/zsh-async
+  antibody bundle sindresorhus/pure
+fi
