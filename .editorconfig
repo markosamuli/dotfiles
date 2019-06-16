@@ -66,6 +66,6 @@ indent_size = 2
 
 # Shell scripts
 # https://google.github.io/styleguide/shell.xml
-[*.sh]
+[{*.sh,*.zsh}]
 indent_style = space
 indent_size = 2
