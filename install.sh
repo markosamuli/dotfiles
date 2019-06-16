@@ -18,7 +18,7 @@ function install_antibody {
     echo "antibody is not installed."
     read -r -p "Do you want to install it now? [y/N] " response
     case "$response" in
-        [yY][eE][sS]|[yY]) 
+        [yY][eE][sS]|[yY])
             ;;
         *)
             echo "Skipping antibody setup."
@@ -27,7 +27,12 @@ function install_antibody {
     esac
 
     echo "*** Installing antibody..."
-    curl -s https://raw.githubusercontent.com/getantibody/installer/master/install | bash -
+    if [ "$(uname -s)" == "Darwin" ]; then
+      brew install getantibody/tap/antibody
+    else
+      command -v curl 1>/dev/null 2>&1 || { echo "cURL not installed."; exit 1; }
+      curl -sfL git.io/antibody | sudo sh -s - -b /usr/local/bin
+    fi
 }
 
 function install_zsh {
@@ -44,7 +49,7 @@ function install_zsh {
 }
 
 function install_zsh_darwin {
-    
+
     if [ "$(uname -s)" != "Darwin" ]; then
         exit 1
     fi
@@ -57,7 +62,7 @@ function install_zsh_darwin {
     echo "Homebrew zsh is not installed."
     read -r -p "Do you want to install it now? [y/N] " response
     case "$response" in
-        [yY][eE][sS]|[yY]) 
+        [yY][eE][sS]|[yY])
             ;;
         *)
             echo "Skipping zsh setup."
@@ -74,14 +79,14 @@ function install_zsh_debian {
 
     if [ "$(uname -s)" != "Debian" ]; then
         exit 1
-    fi   
-    
+    fi
+
     command -v zsh 1>/dev/null 2>&1 && return 0
 
     echo "zsh is not installed."
     read -r -p "Do you want to install it now? [y/N] " response
     case "$response" in
-        [yY][eE][sS]|[yY]) 
+        [yY][eE][sS]|[yY])
             ;;
         *)
             echo "Skipping zsh setup."
@@ -89,7 +94,7 @@ function install_zsh_debian {
             ;;
     esac
 
-    echo "*** Installing zsh..."    
+    echo "*** Installing zsh..."
     sudo apt-get install zsh
 }
 
@@ -104,7 +109,7 @@ function install_homebrew {
     echo "Homebrew not installed."
     read -r -p "Do you want to install it now? [y/N] " response
     case "$response" in
-        [yY][eE][sS]|[yY]) 
+        [yY][eE][sS]|[yY])
             ;;
         *)
             echo "Skipping Homebrew setup."
@@ -127,7 +132,7 @@ function setup_antibody {
 
     command -v antibody 1>/dev/null 2>&1 || { echo "antibody is not installed."; exit 1; }
 
-    if [ ! -d $DOTFILES/antibody ]; then 
+    if [ ! -d $DOTFILES/antibody ]; then
         echo "$DOTFILES/antibody does not exist"
         return 1
     fi
@@ -190,7 +195,7 @@ setup_antibody
 
 # Setup dotfile symlinks
 setup_dotfile .aliases
-setup_dotfile .zshrc 
+setup_dotfile .zshrc
 setup_dotfile .bashrc
 setup_dotfile .gitignore_global
 setup_dotfile .editorconfig
