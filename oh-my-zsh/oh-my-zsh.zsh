@@ -55,10 +55,13 @@ plugins=(git vscode)
 
 source $ZSH/oh-my-zsh.sh
 
+# Dynamic antibody support
+source <(antibody init)
+
 # Load pure prompt if oh-my-zsh theme is disabled
 # Do not enable the following (incompatible) plugins: vi-mode, virtualenv.
 # https://github.com/sindresorhus/pure#oh-my-zsh
-if [ "$ZSH_THEME" == "" ]; then
+if [[ "$ZSH_THEME" == "" ]]; then
   antibody bundle mafredri/zsh-async
   antibody bundle sindresorhus/pure
 fi
