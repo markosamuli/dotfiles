@@ -63,6 +63,7 @@ indent_size = 2
 [{.bashrc,.zshrc,.zshrc.*}]
 indent_style = space
 indent_size = 2
+tab_width = 2
 
 # Shell scripts
 # https://google.github.io/styleguide/shell.xml

@@ -1,5 +1,5 @@
 #!/bin/zsh
 
 # load functions
-fpath=($ZSH/functions $fpath)
-autoload -U "$ZSH"/functions/*(:t)
+fpath=($DOTFILES/functions $fpath)
+autoload -U "$DOTFILES"/functions/*(:t)

@@ -11,4 +11,4 @@
 .zshrc text eol=lf
 
 functions/* text eol=lf
-git-template/* text eol=lf
+git_template/* text eol=lf

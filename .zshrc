@@ -1,5 +1,6 @@
-# shortcut to this dotfiles path is $ZSH
-export ZSH="$HOME/.dotfiles"
+# path to the local dotfiles repository
+export DOTFILES="$HOME/.dotfiles"
+export DOTFILES="$HOME/projects/github.com/markosamuli/dotfiles"
 
 # your project folder that we can `c [tab]` to
 export PROJECTS="$HOME/projects"
@@ -21,6 +22,23 @@ if [[ "$unamestr" == 'Linux' ]]; then
 elif [[ "$unamestr" == 'Darwin' ]]; then
   platform='macos'
 fi
+unset unamestr
+
+if [ -d "$HOME/.oh-my-zsh" ]; then
+  # Path to your oh-my-zsh installation.
+  export ZSH="$HOME/.oh-my-zsh"
+
+  # initialise and load oh-my-zsh
+  source $DOTFILES/oh-my-zsh/oh-my-zsh.zsh
+else
+  # shortcut to this dotfiles path is $ZSH
+  export ZSH="$DOTFILES"
+
+  # path for loading antibody bundles
+  if [ -e "$HOME/.bundles.txt" ]; then
+    antibody_bundles="$HOME/.bundles.txt"
+  fi
+fi
 
 ###
 # Load ZSH configuration
@@ -29,7 +47,10 @@ fi
 
 # all of our zsh files
 typeset -U config_files
-config_files=($ZSH/*/*.zsh)
+config_files=($DOTFILES/*/*.zsh)
+
+# remove antibody and oh-my-zsh configuration
+config_files=(${config_files:#*/oh-my-zsh/*.zsh})
 
 # load the path files
 for file in ${(M)config_files:#*/path.zsh}; do
@@ -37,7 +58,9 @@ for file in ${(M)config_files:#*/path.zsh}; do
 done
 
 # load antibody plugins
-source ~/.bundles.txt
+if [ -n "$antibody_bundles" ]; then
+  source "$antibody_bundles"
+fi
 
 # load everything but the path and completion files
 for file in ${${config_files:#*/path.zsh}:#*/completion.zsh}; do
@@ -52,12 +75,14 @@ else
   compinit -C
 fi
 
+autoload -U +X bashcompinit && bashcompinit
+
 # load every completion after autocomplete loads
 for file in ${(M)config_files:#*/completion.zsh}; do
   source "$file"
 done
 
-unset config_files updated_at
+unset config_files updated_at platform antibody_bundles
 
 # use .localrc for SUPER SECRET CRAP that you don't
 # want in your public, versioned repo.
