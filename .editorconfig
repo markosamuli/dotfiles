@@ -60,7 +60,7 @@ indent_style = space
 indent_size = 2
 
 # Shell configuration
-[{.bashrc,.zshrc}]
+[{.bashrc,.zshrc,.zshrc.*}]
 indent_style = space
 indent_size = 2
 
