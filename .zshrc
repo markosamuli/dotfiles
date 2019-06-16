@@ -1,9 +1,13 @@
-# path to the local dotfiles repository
-export DOTFILES="$HOME/.dotfiles"
-export DOTFILES="$HOME/projects/github.com/markosamuli/dotfiles"
-
 # your project folder that we can `c [tab]` to
 export PROJECTS="$HOME/projects"
+
+# path to the local dotfiles repository
+if [ -d "$HOME/.dotfiles" ]; then
+  export DOTFILES="$HOME/.dotfiles"
+else
+  echo "could not find dotfiles directory"
+  exit 1
+fi
 
 # enable colour support
 export TERM="xterm-256color"
