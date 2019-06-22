@@ -145,19 +145,17 @@ fi
 
 # Golang projects
 if [ -d "$HOME/Projects/golang" ]; then
-  export GOPATH=$HOME/Projects/golang
-  export PATH=$PATH:$GOPATH/bin
+export GOPATH=$HOME/Projects/golang
+export PATH=$PATH:$GOPATH/bin
 fi
 
 # BEGIN ANSIBLE MANAGED BLOCK: pyenv
-# Add pyenv into path if installed into default location
-if [ -d "$HOME/.pyenv" ]; then
-  export PYENV_ROOT="$HOME/.pyenv"
-  export PATH="$PYENV_ROOT/bin:$PATH"
+if [ -e "$HOME/.pyenv/.pyenvrc" ]; then
+  source $HOME/.pyenv/.pyenvrc
 fi
-# Initialise pyenv and pyenv-virtualenv if installed
-if command -v pyenv 1>/dev/null 2>&1; then eval "$(pyenv init -)"; fi
-if command -v pyenv-virtualenv-init 1>/dev/null 2>&1; then eval "$(pyenv virtualenv-init -)"; fi
+if [ -e "$HOME/.pyenv/completions/pyenv.bash" ]; then
+  source $HOME/.pyenv/completions/pyenv.bash
+fi
 # END ANSIBLE MANAGED BLOCK: pyenv
 
 # Set paths to Hashicorp tools on Linux
@@ -171,5 +169,11 @@ if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
 # Initialise nvm if installed
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# BEGIN ANSIBLE MANAGED BLOCK: asdf
+if [ -e "$HOME/.asdf/asdf.sh" ]; then
+  source $HOME/.asdf/asdf.sh
+  source $HOME/.asdf/completions/asdf.bash
+fi
+# END ANSIBLE MANAGED BLOCK: asdf

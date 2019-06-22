@@ -130,34 +130,38 @@ export GOPATH=$HOME/Projects/golang
 export PATH=$PATH:$GOPATH/bin
 
 # Set paths to Hashicorp tools on Linux
-if [[ "$platform" == "linux" ]]; then
-  [ -d "/opt/terraform" ] && [ ! -e "/usr/local/bin/terraform" ] && export PATH=/opt/terraform:$PATH
-  [ -d "/opt/packer" ] && [ ! -e "/usr/local/bin/packer" ] && export PATH=/opt/packer:$PATH
-fi
+# if [[ "$platform" == "linux" ]]; then
+#   [ -d "/opt/terraform" ] && [ ! -e "/usr/local/bin/terraform" ] && export PATH=/opt/terraform:$PATH
+#   [ -d "/opt/packer" ] && [ ! -e "/usr/local/bin/packer" ] && export PATH=/opt/packer:$PATH
+# fi
 
 # Add gofabric8 binary to the path
-[ -d "$HOME/.fabric8" ] && export PATH="$PATH:$HOME/.fabric8/bin"
+# [ -d "$HOME/.fabric8" ] && export PATH="$PATH:$HOME/.fabric8/bin"
 
 # BEGIN ANSIBLE MANAGED BLOCK: pyenv
-# Add pyenv into path if installed into default location
-if [ -d "$HOME/.pyenv" ]; then
-  export PYENV_ROOT="$HOME/.pyenv"
-  export PATH="$PYENV_ROOT/bin:$PATH"
+if [ -e "$HOME/.pyenv/.pyenvrc" ]; then
+  source $HOME/.pyenv/.pyenvrc
 fi
-# Initialise pyenv and pyenv-virtualenv if installed
-if command -v pyenv 1>/dev/null 2>&1; then eval "$(pyenv init -)"; fi
-if command -v pyenv-virtualenv-init 1>/dev/null 2>&1; then eval "$(pyenv virtualenv-init -)"; fi
+if [ -e "$HOME/.pyenv/completions/pyenv.zsh" ]; then
+  source $HOME/.pyenv/completions/pyenv.zsh
+fi
 # END ANSIBLE MANAGED BLOCK: pyenv
 
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 
 # https://github.com/asdf-vm/asdf
-if [ -d "$HOME/.asdf" ]; then
-  . $HOME/.asdf/asdf.sh
-  . $HOME/.asdf/completions/asdf.bash
-fi
+# if [ -d "$HOME/.asdf" ]; then
+#   . $HOME/.asdf/asdf.sh
+#   . $HOME/.asdf/completions/asdf.bash
+# fi
 
 # https://wiki.lineageos.org/adb_fastboot_guide.html
 # if [ -d "$HOME/src/platform-tools" ]; then
 #   export PATH="$HOME/src/platform-tools:$PATH"
 # fi
+# BEGIN ANSIBLE MANAGED BLOCK: asdf
+if [ -e "$HOME/.asdf/asdf.sh" ]; then
+  source $HOME/.asdf/asdf.sh
+  source $HOME/.asdf/completions/asdf.bash
+fi
+# END ANSIBLE MANAGED BLOCK: asdf
