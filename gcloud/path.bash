@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
 # Google Cloud SDK
-if [ -d "/usr/share/google-cloud-sdk" ]; then
-  # Google Cloud SDK installled with package manager
-else
+if [ ! -d "/usr/share/google-cloud-sdk" ]; then
   # Load Google Cloud SDK from $HOME/opt, then $HOME and finally /opt
   if [ -d "$HOME/opt/googlecloud-sdk" ]; then
     export CLOUDSDK_ROOT_DIR="$HOME/opt/google-cloud-sdk"
