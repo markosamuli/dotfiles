@@ -136,20 +136,3 @@ fi
 # END ANSIBLE MANAGED BLOCK: pyenv
 
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
-
-# https://github.com/asdf-vm/asdf
-# if [ -d "$HOME/.asdf" ]; then
-#   . $HOME/.asdf/asdf.sh
-#   . $HOME/.asdf/completions/asdf.bash
-# fi
-
-# https://wiki.lineageos.org/adb_fastboot_guide.html
-# if [ -d "$HOME/src/platform-tools" ]; then
-#   export PATH="$HOME/src/platform-tools:$PATH"
-# fi
-# BEGIN ANSIBLE MANAGED BLOCK: asdf
-if [ -e "$HOME/.asdf/asdf.sh" ]; then
-  source $HOME/.asdf/asdf.sh
-  source $HOME/.asdf/completions/asdf.bash
-fi
-# END ANSIBLE MANAGED BLOCK: asdf
