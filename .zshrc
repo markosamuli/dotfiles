@@ -102,10 +102,6 @@ if [ -d "$HOME/opt/go_appengine" ]; then
   export PATH=$PATH:$HOME/opt/go_appengine
 fi
 
-# Local binaries
-[ -d "$HOME/bin" ] && export PATH=$HOME/bin:$PATH
-[ -d "$HOME/.local/bin" ] && export PATH=$HOME/.local/bin:$PATH
-
 # Load local aliases
 [ -e "$HOME/.aliases" ] && source $HOME/.aliases
 
