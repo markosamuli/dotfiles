@@ -2,6 +2,9 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
+# shortcut to this dotfiles path is $ZSH
+export DOTFILES="$HOME/.dotfiles"
+
 # set platform name so that we can run scripts based on the OS
 unamestr=$(uname)
 if [[ "$unamestr" == 'Linux' ]]; then
@@ -16,17 +19,6 @@ case $- in
       *) return;;
 esac
 
-# don't put duplicate lines or lines starting with space in the history.
-# See bash(1) for more options
-HISTCONTROL=ignoreboth
-
-# append to the history file, don't overwrite it
-shopt -s histappend
-
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
-
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
@@ -38,92 +30,73 @@ shopt -s checkwinsize
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-# Command prompt in Ubuntu
-if [[ "$platform" == "linux" ]]; then
-
-  # set variable identifying the chroot you work in (used in the prompt below)
-  if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-      debian_chroot=$(cat /etc/debian_chroot)
-  fi
-
-  # set a fancy prompt (non-color, unless we know we "want" color)
-  case "$TERM" in
-      xterm-color|*-256color) color_prompt=yes;;
-  esac
-
-  # uncomment for a colored prompt, if the terminal has the capability; turned
-  # off by default to not distract the user: the focus in a terminal window
-  # should be on the output of commands, not on the prompt
-  #force_color_prompt=yes
-
-  if [ -n "$force_color_prompt" ]; then
-      if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-    # We have color support; assume it's compliant with Ecma-48
-    # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-    # a case would tend to support setf rather than setaf.)
-    color_prompt=yes
-      else
-    color_prompt=
-      fi
-  fi
-
-  if [ "$color_prompt" = yes ]; then
-      PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-  else
-      PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-  fi
-  unset color_prompt force_color_prompt
-
-  # If this is an xterm set the title to user@host:dir
-  case "$TERM" in
-  xterm*|rxvt*)
-      PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-      ;;
-  *)
-      ;;
-  esac
-
-  # enable color support of ls and also add handy aliases
-  if [ -x /usr/bin/dircolors ]; then
-      test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-      alias ls='ls --color=auto'
-      #alias dir='dir --color=auto'
-      #alias vdir='vdir --color=auto'
-
-      alias grep='grep --color=auto'
-      alias fgrep='fgrep --color=auto'
-      alias egrep='egrep --color=auto'
-  fi
-fi
-
-# colored GCC warnings and errors
-#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-
 # some more ls aliases
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
-
 if [[ "$platform" == "linux" ]]; then
   # Add an "alert" alias for long running commands.  Use like so:
   #   sleep 10; alert
   alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-
 fi
-
-# Local binaries
-[ -d "$HOME/bin" ] && export PATH=$HOME/bin:$PATH
-[ -d "$HOME/.local/bin" ] && export PATH=$HOME/.local/bin:$PATH
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
+
+# all of our bash files
+declare -a config_files path_files completion_files
+config_files=($DOTFILES/*/*.bash)
+
+# empty the list if we have no matches
+if [ "$config_files" = "$DOTFILES/*/*.bash" ]; then
+  config_files=()
+  path_files=()
+  completion_files=()
+else
+  # path files
+  path_files=($DOTFILES/*/path.bash)
+  if [ "$path_files" = "$DOTFILES/*/path.bash" ]; then
+    path_files=()
+  fi
+  # remove path_files from config_files
+  for file in "${path_files[@]}"; do
+    config_files=("${config_files[@]/$file}")
+  done
+  # completion files
+  completion_files=($DOTFILES/*/completion.bash)
+  if [ "$completion_files" = "$DOTFILES/*/completion.bash" ]; then
+    completion_files=()
+  fi
+  # remove completion_files from config_files
+  for file in "${completion_files[@]}"; do
+    config_files=("${config_files[@]/$file}")
+  done
+  # remove empty items in config_files
+  declare -a clean_config_files
+  for i in "${!config_files[@]}"; do
+    if [ "${config_files[i]}" != "" ]; then
+      clean_config_files+=( "${config_files[i]}" )
+    fi
+  done
+  config_files=("${clean_config_files[@]}")
+  unset clean_config_files
+fi
+
+# load the path files and remove from config_files
+for file in "${path_files[@]}"; do
+  source "$file"
+done
+
+# load everything but the path and completion files
+for file in "${config_files[@]}"; do
+  source "$file"
+done
 
 # Default bash completion on Ubuntu
 if [[ "$platform" == "linux" ]]; then
@@ -139,41 +112,9 @@ if [[ "$platform" == "linux" ]]; then
   fi
 fi
 
-if [ -d "/usr/share/google-cloud-sdk" ]; then
-  source /usr/share/google-cloud-sdk/completion.bash.inc
-fi
+# load every completion after autocomplete loads
+for file in "${completion_files[@]}"; do
+  source "$file"
+done
 
-# Golang projects
-if [ -d "$HOME/Projects/golang" ]; then
-export GOPATH=$HOME/Projects/golang
-export PATH=$PATH:$GOPATH/bin
-fi
-
-# BEGIN ANSIBLE MANAGED BLOCK: pyenv
-if [ -e "$HOME/.pyenv/.pyenvrc" ]; then
-  source $HOME/.pyenv/.pyenvrc
-fi
-if [ -e "$HOME/.pyenv/completions/pyenv.bash" ]; then
-  source $HOME/.pyenv/completions/pyenv.bash
-fi
-# END ANSIBLE MANAGED BLOCK: pyenv
-
-# Set paths to Hashicorp tools on Linux
-if [[ "$platform" == "linux" ]]; then
-  [ -d "/opt/terraform" ] && [ ! -e "/usr/local/bin/terraform" ] && export PATH=/opt/terraform:$PATH
-  [ -d "/opt/packer" ] && [ ! -e "/usr/local/bin/packer" ] && export PATH=/opt/packer:$PATH
-fi
-
-# Initialise rbenv if installed
-if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
-
-# Initialise nvm if installed
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-# BEGIN ANSIBLE MANAGED BLOCK: asdf
-if [ -e "$HOME/.asdf/asdf.sh" ]; then
-  source $HOME/.asdf/asdf.sh
-  source $HOME/.asdf/completions/asdf.bash
-fi
-# END ANSIBLE MANAGED BLOCK: asdf
+unset config_files completion_files path_files
