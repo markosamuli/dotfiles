@@ -79,24 +79,6 @@ export ANSIBLE_NOCOWS=1
 # Custom gitchangelog config
 export GITCHANGELOG_CONFIG_FILENAME="$HOME/.gitchangelog.rc"
 
-# Load Google Cloud SDK from $HOME/opt, then /opt
-if [ -d "$HOME/opt/google-cloud-sdk" ]; then
-  export CLOUDSDK_ROOT_DIR="$HOME/opt/google-cloud-sdk"
-elif [ -d "$HOME/google-cloud-sdk" ]; then
-  export CLOUDSDK_ROOT_DIR="$HOME/google-cloud-sdk"
-elif [ -d "/opt/google-cloud-sdk" ]; then
-  export CLOUDSDK_ROOT_DIR="/opt/google-cloud-sdk"
-fi
-
-if [ -n "$CLOUDSDK_ROOT_DIR" ]; then
-  # The next line updates PATH for the Google Cloud SDK.
-  source $CLOUDSDK_ROOT_DIR/path.zsh.inc
-  # The next line enables bash completion for gcloud.
-  source $CLOUDSDK_ROOT_DIR/completion.zsh.inc
-elif [ -d "/usr/share/google-cloud-sdk" ]; then
-  source /usr/share/google-cloud-sdk/completion.zsh.inc
-fi
-
 # Load GAE tools to Golang
 if [ -d "$HOME/opt/go_appengine" ]; then
   export PATH=$PATH:$HOME/opt/go_appengine
