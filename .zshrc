@@ -105,10 +105,6 @@ fi
 # Load local aliases
 [ -e "$HOME/.aliases" ] && source $HOME/.aliases
 
-# Initialise nvm if installed
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" # This loads nvm
-
 # Created by markosamuli.golang Ansible role
 export GOPATH=$HOME/Projects/golang
 export PATH=$PATH:$GOPATH/bin
