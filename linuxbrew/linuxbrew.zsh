@@ -1,7 +1,7 @@
 
 #!/bin/zsh
 
-# Load linuxbrew
-if [ -d "/home/linuxbrew" ]; then
+# Initialise Linuxbrew
+if [ -d "/home/linuxbrew/.linuxbrew" ]; then
   eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
 fi
