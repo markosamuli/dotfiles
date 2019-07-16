@@ -111,9 +111,3 @@ unset config_files completion_files path_files
 
 # use .localrc for secret
 [ -f ~/.localrc ] && . ~/.localrc
-
-# local alias definitions
-[ -e ~/.aliases ] && . ~/.aliases
-
-# bash only alias definitions
-[ -e ~/.bash_aliases ] && . ~/.bash_aliases
