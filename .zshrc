@@ -117,22 +117,6 @@ export NVM_DIR="$HOME/.nvm"
 export GOPATH=$HOME/Projects/golang
 export PATH=$PATH:$GOPATH/bin
 
-# Set paths to Hashicorp tools on Linux
-# if [[ "$platform" == "linux" ]]; then
-#   [ -d "/opt/terraform" ] && [ ! -e "/usr/local/bin/terraform" ] && export PATH=/opt/terraform:$PATH
-#   [ -d "/opt/packer" ] && [ ! -e "/usr/local/bin/packer" ] && export PATH=/opt/packer:$PATH
-# fi
 
-# Add gofabric8 binary to the path
-# [ -d "$HOME/.fabric8" ] && export PATH="$PATH:$HOME/.fabric8/bin"
-
-# BEGIN ANSIBLE MANAGED BLOCK: pyenv
-if [ -e "$HOME/.pyenv/.pyenvrc" ]; then
-  source $HOME/.pyenv/.pyenvrc
-fi
-if [ -e "$HOME/.pyenv/completions/pyenv.zsh" ]; then
-  source $HOME/.pyenv/completions/pyenv.zsh
-fi
-# END ANSIBLE MANAGED BLOCK: pyenv
 
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
