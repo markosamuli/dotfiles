@@ -5,6 +5,9 @@
 # shortcut to this dotfiles path is $ZSH
 export DOTFILES="$HOME/.dotfiles"
 
+# enable colour support
+export TERM="xterm-256color"
+
 # set platform name so that we can run scripts based on the OS
 unamestr=$(uname)
 if [[ "$unamestr" == 'Linux' ]]; then
@@ -30,23 +33,10 @@ shopt -s checkwinsize
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-# some more ls aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
-
 if [[ "$platform" == "linux" ]]; then
   # Add an "alert" alias for long running commands.  Use like so:
   #   sleep 10; alert
   alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-fi
-
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
 fi
 
 # all of our bash files
@@ -98,7 +88,7 @@ for file in "${config_files[@]}"; do
   source "$file"
 done
 
-# Default bash completion on Ubuntu
+# load default bash completion on Ubuntu
 if [[ "$platform" == "linux" ]]; then
   # enable programmable completion features (you don't need to enable
   # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -118,3 +108,12 @@ for file in "${completion_files[@]}"; do
 done
 
 unset config_files completion_files path_files
+
+# use .localrc for secret
+[ -f ~/.localrc ] && . ~/.localrc
+
+# local alias definitions
+[ -e ~/.aliases ] && . ~/.aliases
+
+# bash only alias definitions
+[ -e ~/.bash_aliases ] && . ~/.bash_aliases

@@ -1,9 +1,17 @@
 # Sublime
 alias subl='sublime'
 
-# Shell
+# Visual Studio Code
+alias vscode='code'
+
+# history
 alias h='history'
 
 # Git
 alias gc='git commit'
 alias gco='git checkout'
+
+# ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
