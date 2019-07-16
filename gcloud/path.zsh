@@ -4,8 +4,8 @@
 if [ -d "/usr/share/google-cloud-sdk" ]; then
   # Google Cloud SDK installled with package manager
 else
-  # Load Google Cloud SDK from $HOME/opt, $HOME and then /opt
-  if [ -d "$HOME/opt/google-cloud-sdk" ]; then
+  # Load Google Cloud SDK from $HOME/opt, then $HOME and finally /opt
+  if [ -d "$HOME/opt/googlecloud-sdk" ]; then
     export CLOUDSDK_ROOT_DIR="$HOME/opt/google-cloud-sdk"
   elif [ -d "$HOME/google-cloud-sdk" ]; then
     export CLOUDSDK_ROOT_DIR="$HOME/google-cloud-sdk"
