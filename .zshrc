@@ -112,7 +112,3 @@ export NVM_DIR="$HOME/.nvm"
 # Created by markosamuli.golang Ansible role
 export GOPATH=$HOME/Projects/golang
 export PATH=$PATH:$GOPATH/bin
-
-
-
-export PYENV_VIRTUALENV_DISABLE_PROMPT=1
