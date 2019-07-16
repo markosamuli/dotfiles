@@ -65,7 +65,3 @@ export SSH_KEY_PATH="~/.ssh/id_rsa"
 
 # Load local aliases
 [ -e "$HOME/.aliases" ] && source $HOME/.aliases
-
-# Created by markosamuli.golang Ansible role
-export GOPATH=$HOME/Projects/golang
-export PATH=$PATH:$GOPATH/bin
