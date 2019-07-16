@@ -60,8 +60,5 @@ unset config_files updated_at
 # shellcheck disable=SC1090
 [ -f ~/.localrc ] && . ~/.localrc
 
-# SSH defaults
-export SSH_KEY_PATH="~/.ssh/id_rsa"
-
 # Load local aliases
 [ -e "$HOME/.aliases" ] && source $HOME/.aliases
