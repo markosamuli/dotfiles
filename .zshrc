@@ -61,4 +61,4 @@ unset config_files updated_at
 [ -f ~/.localrc ] && . ~/.localrc
 
 # Load local aliases
-[ -e "$HOME/.aliases" ] && source $HOME/.aliases
+[ -e ~/.aliases ] && . ~/.aliases
