@@ -109,18 +109,6 @@ fi
 # Load local aliases
 [ -e "$HOME/.aliases" ] && source $HOME/.aliases
 
-# Homebrew configuration
-[ -e "$HOME/.homebrewrc" ] && source $HOME/.homebrewrc
-
-# Composer binaries
-[ -d "$HOME/.composer" ] && export PATH=$PATH:$HOME/.composer/vendor/bin
-
-# Initialise rbenv if installed
-if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
-
-# Load kubectl autocompletion
-# source $HOME/Projects/kubernetes/contrib/completions/zsh/kubectl
-
 # Initialise nvm if installed
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" # This loads nvm
