@@ -1,5 +1,6 @@
 #!/bin/zsh
 
+# Preferred editor for local and remote sessions, default to vim
 export EDITOR='vim'
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='vim'
