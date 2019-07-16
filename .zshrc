@@ -79,11 +79,6 @@ export ANSIBLE_NOCOWS=1
 # Custom gitchangelog config
 export GITCHANGELOG_CONFIG_FILENAME="$HOME/.gitchangelog.rc"
 
-# Load GAE tools to Golang
-if [ -d "$HOME/opt/go_appengine" ]; then
-  export PATH=$PATH:$HOME/opt/go_appengine
-fi
-
 # Load local aliases
 [ -e "$HOME/.aliases" ] && source $HOME/.aliases
 
