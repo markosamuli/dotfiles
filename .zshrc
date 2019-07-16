@@ -73,12 +73,6 @@ fi
 # SSH defaults
 export SSH_KEY_PATH="~/.ssh/id_rsa"
 
-# We don't want cows when running Ansible
-export ANSIBLE_NOCOWS=1
-
-# Custom gitchangelog config
-export GITCHANGELOG_CONFIG_FILENAME="$HOME/.gitchangelog.rc"
-
 # Load local aliases
 [ -e "$HOME/.aliases" ] && source $HOME/.aliases
 
