@@ -1,6 +1,6 @@
 #!/usr/bin/env/bash
 
 # tab completion for travis
-if [ -f /home/markosamuli/.travis/travis.sh ]; then
-  source /home/markosamuli/.travis/travis.sh
+if [ -f $HOME/.travis/travis.sh ]; then
+  source $HOME/.travis/travis.sh
 fi
