@@ -200,6 +200,13 @@ function setup_tmux {
     setup_dotfile .tmux.conf
 }
 
+function fix_permissions {
+    echo "*** Fix permissions in $DOTFILES..."
+    chmod -R og-rwx $DOTFILES
+    echo "*** Fix permissions in ~/.ssh..."
+    chmod -R og-rwx ~/.ssh
+}
+
 # Clone dotfiles
 download_dotfiles
 
@@ -221,3 +228,6 @@ setup_dotfile .editorconfig
 
 # Setup tmux config if installed
 setup_tmux
+
+# Fix permissions
+fix_permissions
