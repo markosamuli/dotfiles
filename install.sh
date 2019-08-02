@@ -164,7 +164,6 @@ function setup_antibody {
     antibody bundle < "$DOTFILES/antibody/bundles.txt" > ~/.bundles.txt
     antibody bundle sindresorhus/pure >> ~/.bundles.txt
     antibody bundle < "$DOTFILES/antibody/last_bundles.txt" >> ~/.bundles.txt
-
 }
 
 function setup_zsh {
@@ -203,6 +202,8 @@ function setup_tmux {
 function fix_permissions {
     echo "*** Fix permissions in $DOTFILES..."
     chmod -R og-rwx $DOTFILES
+    echo "*** Fix permissions in ~/.cache..."
+    chmod -R og-rwx ~/.cache
     echo "*** Fix permissions in ~/.ssh..."
     chmod -R og-rwx ~/.ssh
 }
