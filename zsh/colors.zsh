@@ -1,4 +1,5 @@
 #!/bin/zsh
+# vim :set ts=2 sw=2 sts=2 et :
 
 # do not load if using oh-my-zsh
 if [[ "$OH_MY_ZSH" != "true" ]]; then

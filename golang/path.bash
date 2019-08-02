@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# vim :set ts=2 sw=2 sts=2 et :
 
 # Set GOPATH if not previously defined
 if [ -z "$GOPATH" ]; then

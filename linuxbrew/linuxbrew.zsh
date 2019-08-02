@@ -1,5 +1,6 @@
 
 #!/bin/zsh
+# vim :set ts=2 sw=2 sts=2 et :
 
 # Initialise Linuxbrew
 if [ -d "/home/linuxbrew/.linuxbrew" ]; then
