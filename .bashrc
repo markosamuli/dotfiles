@@ -1,9 +1,14 @@
-# ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
 
-# shortcut to this dotfiles path is $ZSH
-export DOTFILES="$HOME/.dotfiles"
+# vim :set ts=2 sw=2 sts=2 et :
+# ~/.bashrc: executed by bash(1) for non-login shells.
+
+# path to the local dotfiles repository
+if [ -d "$HOME/.dotfiles" ]; then
+  export DOTFILES="$HOME/.dotfiles"
+else
+  echo "could not find ~/.dotfiles directory"
+  return
+fi
 
 # enable colour support
 export TERM="xterm-256color"

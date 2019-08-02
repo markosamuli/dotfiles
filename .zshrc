@@ -1,3 +1,7 @@
+
+# vim :set ts=2 sw=2 sts=2 et :
+# ~/.zshrc: executed by zsh(1) for non-login shells.
+
 # your project folder that we can `c [tab]` to
 export PROJECTS="$HOME/projects"
 
@@ -5,8 +9,8 @@ export PROJECTS="$HOME/projects"
 if [ -d "$HOME/.dotfiles" ]; then
   export DOTFILES="$HOME/.dotfiles"
 else
-  echo "could not find dotfiles directory"
-  exit 1
+  echo "could not find ~/.dotfiles directory"
+  return
 fi
 
 # enable colour support
