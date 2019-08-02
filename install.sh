@@ -38,8 +38,8 @@ function install_antibody {
 function install_zsh {
     if [ "$(uname -s)" == "Darwin" ]; then
         install_zsh_darwin
-    elif [ "$(uname -s)" == "Debian" ]; then
-        install_zsh_debian
+    elif [ "$(uname -s)" == "Linux" ]; then
+        install_zsh_linux
     else
         command -v zsh 1>/dev/null 2>&1 && return 0
         echo "Unsupported OS or distribution: $(uname -s)"
@@ -49,10 +49,6 @@ function install_zsh {
 }
 
 function install_zsh_darwin {
-
-    if [ "$(uname -s)" != "Darwin" ]; then
-        exit 1
-    fi
 
     local zsh_bin=$(which zsh)
     if [ "$zsh_bin" == "/usr/local/bin/zsh" ]; then
@@ -75,11 +71,34 @@ function install_zsh_darwin {
     brew install zsh
 }
 
-function install_zsh_debian {
-
-    if [ "$(uname -s)" != "Debian" ]; then
-        exit 1
+function linux_distrib {
+    local id
+    local distrib_id
+    if [ -e "/etc/lsb-release" ]; then
+      distrib_id=$(cat /etc/lsb-release | grep DISTRIB_ID= | cut -d= -f2)
+      echo "${distrib_id}" | awk '{print tolower($0)}'
+    elif [ -e "/etc/os-release" ]; then
+      id=$(cat /etc/os-release | grep ID= | cut -d= -f2)
+      echo "${id}"
     fi
+}
+
+function install_zsh_linux {
+    local distrib
+    distrib=$(linux_distrib)
+    if [ "${distrib}" == "ubuntu" ]; then
+      install_zsh_debian
+    elif [ "${distrib}" == "debian" ]; then
+      install_zsh_debian
+    else
+      command -v zsh 1>/dev/null 2>&1 && return 0
+      echo "Unsupported OS or distribution: $(uname -s)"
+      echo "zsh is not installed."
+      exit 1
+    fi
+}
+
+function install_zsh_debian {
 
     command -v zsh 1>/dev/null 2>&1 && return 0
 
@@ -158,7 +177,7 @@ function setup_zsh {
         }
     fi
     if [ "$SHELL" != "$zsh_bin" ]; then
-        echo "*** Updating user shell..."
+        echo "*** Updating user shell to zsh..."
         chsh -s $zsh_bin
     fi
 }
