@@ -22,13 +22,15 @@ export HIST_STAMPS="yyyy-mm-dd"
 # set platform name so that we can run scripts based on the OS
 unamestr=$(uname)
 if [[ "$unamestr" == 'Linux' ]]; then
+  platform='linux'
   if grep -q Microsoft /proc/version; then
-    platform='wsl'
+    platform_wsl='true'
   else
-    platform='linux'
+    platform_wsl='false'
   fi
 elif [[ "$unamestr" == 'Darwin' ]]; then
   platform='macos'
+  platform_wsl='false'
 fi
 unset unamestr
 
@@ -90,7 +92,7 @@ for file in ${(M)config_files:#*/completion.zsh}; do
   source "$file"
 done
 
-unset config_files updated_at platform antibody_bundles
+unset config_files updated_at platform platform_wsl antibody_bundles
 
 # use .localrc for SUPER SECRET CRAP that you don't
 # want in your public, versioned repo.

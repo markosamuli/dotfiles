@@ -16,10 +16,17 @@ export TERM="xterm-256color"
 # set platform name so that we can run scripts based on the OS
 unamestr=$(uname)
 if [[ "$unamestr" == 'Linux' ]]; then
-  platform='linux'
+  platform='linux'  
+  if grep -q Microsoft /proc/version; then
+    platform_wsl='true'
+  else
+    platform_wsl='false'
+  fi
 elif [[ "$unamestr" == 'Darwin' ]]; then
   platform='macos'
+  platform_wsl='false'
 fi
+unset unamestr
 
 # If not running interactively, don't do anything
 case $- in
@@ -112,7 +119,7 @@ for file in "${completion_files[@]}"; do
   source "$file"
 done
 
-unset config_files completion_files path_files
+unset config_files platform platform_wsl completion_files path_files
 
 # use .localrc for secret
 [ -f ~/.localrc ] && . ~/.localrc
