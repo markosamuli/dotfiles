@@ -8,8 +8,9 @@ if [[ "$platform" == "linux" ]]; then
 fi
 
 aws_vault_prompt_precmd() {
+  local cloud=$emoji[cloud]
   if [[ -n "$AWS_VAULT" ]]; then
-    PROMPT="%F{cyan}${AWS_VAULT:-}%f "$PROMPT
+    PROMPT='%F{cyan}'"$cloud ${AWS_VAULT:-}"'%f '$PROMPT
   fi
 }
 
