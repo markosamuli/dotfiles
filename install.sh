@@ -4,12 +4,68 @@
 DOTFILES_REPO=https://github.com/markosamuli/dotfiles.git
 DOTFILES=$HOME/.dotfiles
 
+###
+# Print error into STDERR
+###
+function error() {
+    echo "$@" 1>&2
+}
+
+###
+# Get latest antibody version
+###
+function latest_antibody_version() {
+    local latest_release=""
+    local errmsg="Failed to get latest antibody release"
+    latest_release=$(get_latest_release getantibody/antibody)
+    [ -z "${latest_release}" ] && { error "${errmsg}"; return 1; }
+    echo "${latest_release/v/}"
+}
+
+###
+# Get installed antibody version
+###
+function installed_antibody_version() {
+    local version=""
+    command -v antibody 1>/dev/null 2>&1 || return 1
+    version=$(antibody -v 2>&1 | grep 'antibody version' | awk '{ print $3 }')
+    echo ${version/v/}
+}
+
+###
+# Get latest release for a GitHub repository
+###
+function get_latest_release() {
+    local repository=$1
+    local url="https://api.github.com/repos/${repository}/releases/latest"
+    if [ ! -z "$GITHUB_OAUTH_TOKEN" ]; then
+        url="${url}?access_token=${GITHUB_OAUTH_TOKEN}"
+    fi
+    curl --silent "${url}" | \
+        grep '"tag_name":' | \
+        sed -E 's/.*"([^"]+)".*/\1/'
+}
+
 function download_dotfiles() {
   # Do we need to download the dotfiles?
   if [ ! -d "$DOTFILES" ]; then
     echo "*** Cloning dotfiles from GitHub..."
     git clone $DOTFILES_REPO $DOTFILES
   fi
+}
+
+function install_antibody_with_homebrew() {
+  echo "*** Installing antibody with Homebrew..."
+  brew install getantibody/tap/antibody
+}
+
+function install_antibody_with_installer() {
+  echo "*** Installing antibody with the installer..."
+  command -v curl 1>/dev/null 2>&1 || {
+    echo "cURL not installed."
+    exit 1
+  }
+  curl -sfL git.io/antibody | sudo sh -s - -b /usr/local/bin
 }
 
 function install_antibody() {
@@ -19,23 +75,45 @@ function install_antibody() {
   echo "antibody is not installed."
   read -r -p "Do you want to install it now? [y/N] " response
   case "$response" in
-  [yY][eE][sS] | [yY]) ;;
-
-  *)
-    echo "Skipping antibody setup."
-    return 0
-    ;;
+    [yY][eE][sS] | [yY]) ;;
+    *)
+      echo "Skipping antibody setup."
+      return 0
+      ;;
   esac
 
-  echo "*** Installing antibody..."
   if [ "$(uname -s)" == "Darwin" ]; then
-    brew install getantibody/tap/antibody
+    install_antibody_with_homebrew
   else
-    command -v curl 1>/dev/null 2>&1 || {
-      echo "cURL not installed."
-      exit 1
-    }
-    curl -sfL git.io/antibody | sudo sh -s - -b /usr/local/bin
+    install_antibody_with_installer
+  fi
+}
+
+function update_antibody() {
+
+  local latest_version
+  latest_version=$(latest_antibody_version)
+  installed_version=$(installed_antibody_version)
+  if [ "${latest_version}" == "${installed_version}" ]; then
+    return 0
+  fi
+
+  echo "Latest antibody version: ${latest_version}"
+  echo "Installed antibody version: ${installed_version}"
+  read -r -p "Do you want to upgrade? [y/N] " response
+
+  case "$response" in
+    [yY][eE][sS] | [yY]) ;;
+    *)
+      echo "Skipping antibody upgrade."
+      return 0
+      ;;
+  esac
+
+  if [ "$(uname -s)" == "Darwin" ]; then
+    install_antibody_with_homebrew
+  else
+    install_antibody_with_installer
   fi
 }
 
@@ -62,12 +140,11 @@ function install_zsh_darwin() {
   echo "Homebrew zsh is not installed."
   read -r -p "Do you want to install it now? [y/N] " response
   case "$response" in
-  [yY][eE][sS] | [yY]) ;;
-
-  *)
-    echo "Skipping zsh setup."
-    return 0
-    ;;
+    [yY][eE][sS] | [yY]) ;;
+    *)
+      echo "Skipping zsh setup."
+      return 0
+      ;;
   esac
 
   command -v brew 1>/dev/null 2>&1 || {
@@ -112,12 +189,11 @@ function install_zsh_debian() {
   echo "zsh is not installed."
   read -r -p "Do you want to install it now? [y/N] " response
   case "$response" in
-  [yY][eE][sS] | [yY]) ;;
-
-  *)
-    echo "Skipping zsh setup."
-    return 0
-    ;;
+    [yY][eE][sS] | [yY]) ;;
+    *)
+      echo "Skipping zsh setup."
+      return 0
+      ;;
   esac
 
   echo "*** Installing zsh..."
@@ -135,12 +211,11 @@ function install_homebrew() {
   echo "Homebrew not installed."
   read -r -p "Do you want to install it now? [y/N] " response
   case "$response" in
-  [yY][eE][sS] | [yY]) ;;
-
-  *)
-    echo "Skipping Homebrew setup."
-    return 0
-    ;;
+    [yY][eE][sS] | [yY]) ;;
+    *)
+      echo "Skipping Homebrew setup."
+      return 0
+      ;;
   esac
 
   echo "*** Installing Homebrew..."
@@ -180,6 +255,7 @@ function setup_antibody() {
 }
 
 function setup_zsh() {
+  local ushell
   command -v zsh 1>/dev/null 2>&1 || {
     echo "zsh is not installed."
     exit 1
@@ -191,10 +267,15 @@ function setup_zsh() {
       sudo sh -c "echo $zsh_bin >> /etc/shells"
     }
   fi
-  if [ "$SHELL" != "$zsh_bin" ]; then
-    echo "*** Updating user shell to zsh..."
-    chsh -s $zsh_bin
+  if [ "$(uname -s)" == "Linux" ]; then
+    ushell=$(getent passwd $LOGNAME | cut -d: -f7)
+    [ "$ushell" == "$zsh_bin" ] && return 0
+  else
+    [ "$SHELL" == "$zsh_bin" ] && return 0
   fi
+
+  echo "*** Updating user shell to $zsh_bin..."
+  chsh -s $zsh_bin
 }
 
 function setup_dotfile() {
@@ -231,6 +312,9 @@ download_dotfiles
 install_homebrew
 install_zsh
 install_antibody
+
+# Update requirements
+update_antibody
 
 # Configure zsh
 setup_zsh
