@@ -2,3 +2,4 @@ mafredri/zsh-async
 zsh-users/zsh-completions
 Tarrasch/zsh-autoenv
 robbyrussell/oh-my-zsh path:plugins/vscode
+robbyrussell/oh-my-zsh path:plugins/emoji
