@@ -1,7 +1,12 @@
 #!/bin/zsh
+# vim :set ts=2 sw=2 sts=2 et :
 
 # WSL specific configuration
 if [[ "$platform" == "wsl" ]]; then
   # precommit on Windows filesystem
-  export SKIP=check-executables-have-shebangs
+  if [ -z "$SKIP" ]; then
+    export SKIP="check-executables-have-shebangs"
+  else
+    export SKIP="check-executables-have-shebangs,$SKIP"
+  fi
 fi

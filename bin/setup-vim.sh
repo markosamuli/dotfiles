@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# vim :set ts=2 sw=2 sts=2 et :
 
 command_exists() {
   command -v "$1" >/dev/null 2>&1 ;
@@ -8,7 +9,7 @@ command_exists() {
 brew install vim
 brew install macvim
 
-# Install vim-plug 
+# Install vim-plug
 # http://junegunn.kr/2013/09/writing-my-own-vim-plugin-manager/
 if [ ! -e "$HOME/.vim/autoload/plug.vim" ]; then
 	echo '*** Install vim-plug'

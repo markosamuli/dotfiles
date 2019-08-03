@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
+# vim :set ts=2 sw=2 sts=2 et :
 
 ## Command history configuration
 if [ -z "$HISTFILE" ]; then
-    HISTFILE=$HOME/.bash_history
+  HISTFILE=$HOME/.bash_history
 fi
 
 # don't put duplicate lines or lines starting with space in the history.
