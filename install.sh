@@ -77,9 +77,9 @@ function install_antibody() {
   case "$response" in
     [yY][eE][sS] | [yY]) ;;
     *)
-    echo "Skipping antibody setup."
-    return 0
-    ;;
+      echo "Skipping antibody setup."
+      return 0
+      ;;
   esac
 
   if [ "$(uname -s)" == "Darwin" ]; then
@@ -90,7 +90,7 @@ function install_antibody() {
 }
 
 function update_antibody() {
-  
+
   local latest_version
   latest_version=$(latest_antibody_version)
   installed_version=$(installed_antibody_version)
@@ -107,7 +107,7 @@ function update_antibody() {
     *)
       echo "Skipping antibody upgrade."
       return 0
-    ;;
+      ;;
   esac
 
   if [ "$(uname -s)" == "Darwin" ]; then
@@ -140,12 +140,11 @@ function install_zsh_darwin() {
   echo "Homebrew zsh is not installed."
   read -r -p "Do you want to install it now? [y/N] " response
   case "$response" in
-  [yY][eE][sS] | [yY]) ;;
-
-  *)
-    echo "Skipping zsh setup."
-    return 0
-    ;;
+    [yY][eE][sS] | [yY]) ;;
+    *)
+      echo "Skipping zsh setup."
+      return 0
+      ;;
   esac
 
   command -v brew 1>/dev/null 2>&1 || {
@@ -190,12 +189,11 @@ function install_zsh_debian() {
   echo "zsh is not installed."
   read -r -p "Do you want to install it now? [y/N] " response
   case "$response" in
-  [yY][eE][sS] | [yY]) ;;
-
-  *)
-    echo "Skipping zsh setup."
-    return 0
-    ;;
+    [yY][eE][sS] | [yY]) ;;
+    *)
+      echo "Skipping zsh setup."
+      return 0
+      ;;
   esac
 
   echo "*** Installing zsh..."
@@ -213,12 +211,11 @@ function install_homebrew() {
   echo "Homebrew not installed."
   read -r -p "Do you want to install it now? [y/N] " response
   case "$response" in
-  [yY][eE][sS] | [yY]) ;;
-
-  *)
-    echo "Skipping Homebrew setup."
-    return 0
-    ;;
+    [yY][eE][sS] | [yY]) ;;
+    *)
+      echo "Skipping Homebrew setup."
+      return 0
+      ;;
   esac
 
   echo "*** Installing Homebrew..."
