@@ -4,7 +4,8 @@
 DOTFILES_REPO=https://github.com/markosamuli/dotfiles.git
 DOTFILES=$HOME/.dotfiles
 
-HOMEBREW_INSTALL="https://raw.githubusercontent.com/Homebrew/install/master/install"
+GITHUB_RAW=https://raw.githubusercontent.com
+HOMEBREW_INSTALL=${GITHUB_RAW}/Homebrew/install/master/install
 
 ###
 # Print error into STDERR
