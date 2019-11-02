@@ -4,6 +4,8 @@
 DOTFILES_REPO=https://github.com/markosamuli/dotfiles.git
 DOTFILES=$HOME/.dotfiles
 
+HOMEBREW_INSTALL="https://raw.githubusercontent.com/Homebrew/install/master/install"
+
 ###
 # Print error into STDERR
 ###
@@ -132,7 +134,8 @@ function install_zsh {
 
 function install_zsh_darwin {
 
-    local zsh_bin=$(which zsh)
+    local zsh_bin=""
+    zsh_bin=$(which zsh)
     if [ "$zsh_bin" == "/usr/local/bin/zsh" ]; then
         return 0
     fi
@@ -219,7 +222,7 @@ function install_homebrew {
     esac
 
     echo "*** Installing Homebrew..."
-    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" ||
+    ruby -e "$(curl -fsSL ${HOMEBREW_INSTALL})" ||
     {
         echo "Failed to install Homebrew"
         exit 1
@@ -260,7 +263,8 @@ function setup_zsh {
         echo "zsh is not installed."
         exit 1
     }
-    local zsh_bin=$(which zsh)
+    local zsh_bin=""
+    zsh_bin=$(which zsh)
     if [ "$zsh_bin" == "/usr/local/bin/zsh" ]; then
         grep -q $zsh_bin /etc/shells || {
             echo "*** Adding $zsh_bin to /etc/shells..."
