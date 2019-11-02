@@ -92,9 +92,7 @@ cp ~/.dotfiles/.gitconfig.example ~/.gitconfig
 See [.gitconfig.govuskuolfi](.gitconfig.govuskuolfi) for my OS X specific tools configuration.
 
 ```
-ln ~/.dotfiles/.git_template ~/.git_template
 ln ~/.dotfiles/.gitchangelog.rc ~/.gitchangelog.rc
-ln ~/.dotfiles/.gitignore_global ~/.gitignore_global
 ```
 
 My favourite aliases:
@@ -110,4 +108,4 @@ My favourite aliases:
 License
 -------
 
-See [License](LICENSE) 
+See [License](LICENSE)
