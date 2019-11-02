@@ -1,4 +1,3 @@
-
 #!/bin/zsh
 
 # Use this later for checking if we're using oh-my-zsh
