@@ -1,17 +1,17 @@
 # http://betterthangrep.com/
- 
+
 # Ignore some directories
 --ignore-dir=.idea/
 --ignore-dir=.git/
 --ignore-dir=node_modules/
- 
+
 # CSS and SASS
 --type-add=css=scss
 
 # CoffeeScript
 --type-set=coffeescript=.coffee
 --type-set=coffee=.coffee
- 
+
 # Node.js
 --type-set=jade=.jade
 --type-set=feature=.feature

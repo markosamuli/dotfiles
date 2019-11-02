@@ -7,7 +7,7 @@ Plug 'altercation/vim-colors-solarized'
 Plug 'fatih/vim-go'
 " Plug 'Valloric/YouCompleteMe'
 Plug 'kien/ctrlp.vim'
-Plug 'tpope/vim-fugitive' 
+Plug 'tpope/vim-fugitive'
 
 call plug#end()
 
@@ -32,7 +32,7 @@ let g:go_fmt_command = "goimports"
 let g:netrw_liststyle=3
 
 " Ignore files when searcing
-set wildignore+=*/tmp/*,*.so,*.swp,*.zip 
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip
 let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
 
 if has('mouse')

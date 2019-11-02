@@ -16,7 +16,7 @@ export TERM="xterm-256color"
 # set platform name so that we can run scripts based on the OS
 unamestr=$(uname)
 if [[ "$unamestr" == 'Linux' ]]; then
-  platform='linux'  
+  platform='linux'
   if grep -q Microsoft /proc/version; then
     platform_wsl='true'
   else
