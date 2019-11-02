@@ -1,7 +1,13 @@
 {
+    "version": "0.1",
     "words": [
         "bashate",
         "beautysh",
-        "repos"
+        "editorconfig",
+        "markosamuli",
+        "pullr",
+        "repos",
+        "symlink",
+        "symlinks"
     ]
 }

@@ -1,10 +1,8 @@
-My dotfiles
-===========
+# My dotfiles
 
-Install
--------
+## Install
 
-```
+```bash
 curl -s https://raw.githubusercontent.com/markosamuli/dotfiles/master/install.sh | bash -
 ```
 
@@ -13,85 +11,58 @@ curl -s https://raw.githubusercontent.com/markosamuli/dotfiles/master/install.sh
 - Create symlinks in `~/.zshrc` and `~/.bashrc`
 - Create [EditorConfig](http://editorconfig.org/) symlink in `~/.editorconfig`
 
-Aliases
--------
+## Aliases
 
 Custom aliases and functions are in `.aliases`.
 
-Machine Setup
--------------
+## Machine Setup
 
-Download my machine setup Ansible playbooks:
+Read my [Machine Setup Guide](https://machine.msk.io/) that explains
+development environment set up using my playbooks.
 
-```
-wget https://github.com/markosamuli/machine/archive/master.zip
-unzip machine-master.zip
-cd machine-master
-```
+## Visual Studio Code
 
-Or using Git:
+Install [markosamuli.vscode-essentials] extension pack with common extensions I use daily.
 
-```
-git clone git@github.com:markosamuli/machine.git
-cd machine
+```bash
+code --install-extension markosamuli.vscode-essentials
 ```
 
-Modify `main.yml` file to your requirements and run the setup script.
+[markosamuli.vscode-essentials]: https://marketplace.visualstudio.com/items?itemName=markosamuli.vscode-essentials
 
-```
-./setup
-```
-
-EditorConfig
-------------
-
-Install extensions:
-
-- Visual Studio Code [EditorConfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
-
-The `.editorconfig` file should meet [Google Style Guides](https://github.com/google/styleguide).
-
-Kaleidoscope
-------------
+## Kaleidoscope
 
 I'm using [Kaleidoscope](http://www.kaleidoscopeapp.com/) as my default diff/merge tool on Mac.
 
-```
-brew install Caskroom/cask/kaleidoscope
+```bash
+brew cask install kaleidoscope
 ```
 
-Setup iTerm
------------
+## Setup iTerm
 
 I'm using [iTerm2](https://www.iterm2.com/) as my default terminal on Mac.
 
-```
-brew install Caskroom/cask/iterm2
+```bash
+brew cask install iterm2
 ```
 
-- Install powerline fonts from the `powerlinefonts` directory
-- Import [Solarized](https://github.com/altercation/solarized) themes from `iterm` directory
-- Change iTerm2 font to `Meslo LG M DZ Regular for Powerline`
+## tmux
 
-tmux
-----
-
-```
+```bash
 brew install reattach-to-user-namespace
 ```
 
-Git
----
+## Git
 
 Copy [.gitconfig.example](.gitconfig.example) file for my aliases and few defaults:
 
-```
+```bash
 cp ~/.dotfiles/.gitconfig.example ~/.gitconfig
 ```
 
 See [.gitconfig.govuskuolfi](.gitconfig.govuskuolfi) for my OS X specific tools configuration.
 
-```
+```bash
 ln ~/.dotfiles/.gitchangelog.rc ~/.gitchangelog.rc
 ```
 
@@ -105,7 +76,10 @@ My favourite aliases:
 - `git wd` - word diff changes
 - `git wds` - word diff staged changes
 
-License
--------
+## License
 
 See [License](LICENSE)
+
+## Author
+
+[@markosamuli](https://github.com/markosamuli)
