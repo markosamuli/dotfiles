@@ -22,5 +22,6 @@ repos:
       - id: bashate
         exclude: >-
           (?x)^(
-            zsh/colors\.zsh
+            zsh/colors\.zsh|
+            zsh/config\.zsh
           )
