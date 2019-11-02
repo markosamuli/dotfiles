@@ -146,7 +146,7 @@ function install_zsh {
 # Install zsh from Homebrew on macOS
 function install_zsh_darwin {
 
-    local zsh_bin=""
+    local zsh_bin
     zsh_bin=$(which zsh)
     if [ "$zsh_bin" == "/usr/local/bin/zsh" ]; then
         return 0
@@ -282,7 +282,7 @@ function setup_zsh {
         echo "zsh is not installed."
         exit 1
     }
-    local zsh_bin=""
+    local zsh_bin
     zsh_bin=$(which zsh)
     if [ "$zsh_bin" == "/usr/local/bin/zsh" ]; then
         grep -q $zsh_bin /etc/shells || {
@@ -294,7 +294,8 @@ function setup_zsh {
         ushell=$(getent passwd $LOGNAME | cut -d: -f7)
         [ "$ushell" == "$zsh_bin" ] && return 0
     else
-        [ "$SHELL" == "$zsh_bin" ] && return 0
+        ushell=$(dscl . -read ~/ UserShell | sed 's/UserShell: //')
+        [ "$ushell" == "$zsh_bin" ] && return 0
     fi
 
     echo "*** Updating user shell to $zsh_bin..."
