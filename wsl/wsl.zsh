@@ -3,10 +3,10 @@
 
 # WSL specific configuration
 if [[ "$platform_wsl" == "true" ]]; then
-  # precommit on Windows filesystem
-  if [ -z "$SKIP" ]; then
-    export SKIP="check-executables-have-shebangs"
-  else
-    export SKIP="check-executables-have-shebangs,$SKIP"
-  fi
+    # precommit on Windows filesystem
+    if [ -z "$SKIP" ]; then
+        export SKIP="check-executables-have-shebangs"
+    else
+        export SKIP="check-executables-have-shebangs,$SKIP"
+    fi
 fi

@@ -62,6 +62,6 @@ source <(antibody init)
 # Do not enable the following (incompatible) plugins: vi-mode, virtualenv.
 # https://github.com/sindresorhus/pure#oh-my-zsh
 if [[ "$ZSH_THEME" == "" ]]; then
-  antibody bundle mafredri/zsh-async
-  antibody bundle sindresorhus/pure
+    antibody bundle mafredri/zsh-async
+    antibody bundle sindresorhus/pure
 fi
