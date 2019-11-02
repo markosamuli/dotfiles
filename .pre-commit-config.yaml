@@ -26,3 +26,8 @@ repos:
             zsh/config\.zsh|
             zsh/completion\.zsh
           )
+
+  - repo: https://github.com/Calinou/pre-commit-luacheck
+    rev: v1.0.0
+    hooks:
+      - id: luacheck
