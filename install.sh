@@ -7,16 +7,25 @@ DOTFILES=$HOME/.dotfiles
 GITHUB_RAW=https://raw.githubusercontent.com
 HOMEBREW_INSTALL=${GITHUB_RAW}/Homebrew/install/master/install
 
-###
 # Print error into STDERR
-###
 function error {
     echo "$@" 1>&2
 }
 
-###
-# Get latest antibody version
-###
+# Install Vim using OS package manager
+function install_vim {
+    command -v vim 1>/dev/null 2>&1 && return 0
+    if [ "$(uname -s)" == "Darwin" ]; then
+        brew install vim
+    else
+        command -v zsh 1>/dev/null 2>&1 && return 0
+        echo "Unsupported OS or distribution: $(uname -s)"
+        echo "zsh is not installed."
+        exit 1
+    fi
+}
+
+# Get latest antibody version from GitHub
 function latest_antibody_version {
     local latest_release=""
     local errmsg="Failed to get latest antibody release"
@@ -25,9 +34,7 @@ function latest_antibody_version {
     echo "${latest_release/v/}"
 }
 
-###
 # Get installed antibody version
-###
 function installed_antibody_version {
     local version=""
     command -v antibody 1>/dev/null 2>&1 || return 1
@@ -35,9 +42,7 @@ function installed_antibody_version {
     echo ${version/v/}
 }
 
-###
 # Get latest release for a GitHub repository
-###
 function get_latest_release {
     local repository=$1
     local url="https://api.github.com/repos/${repository}/releases/latest"
@@ -49,19 +54,21 @@ function get_latest_release {
         sed -E 's/.*"([^"]+)".*/\1/'
 }
 
+# Download dotfiles if the local directory does not exist
 function download_dotfiles {
-    # Do we need to download the dotfiles?
     if [ ! -d "$DOTFILES" ]; then
         echo "*** Cloning dotfiles from GitHub..."
         git clone $DOTFILES_REPO $DOTFILES
     fi
 }
 
+# Install antibody with Homebrew on macOS
 function install_antibody_with_homebrew {
     echo "*** Installing antibody with Homebrew..."
     brew install getantibody/tap/antibody
 }
 
+# Install antibody using installer on other distributions
 function install_antibody_with_installer {
     echo "*** Installing antibody with the installer..."
     command -v curl 1>/dev/null 2>&1 || {
@@ -71,6 +78,7 @@ function install_antibody_with_installer {
     curl -sfL git.io/antibody | sudo sh -s - -b /usr/local/bin
 }
 
+# Install antibody if the binary is not found
 function install_antibody {
 
     command -v antibody 1>/dev/null 2>&1 && return 0
@@ -92,6 +100,7 @@ function install_antibody {
     fi
 }
 
+# Update antibody if we don't have the latest version
 function update_antibody {
 
     local latest_version
@@ -120,6 +129,7 @@ function update_antibody {
     fi
 }
 
+# Install zsh
 function install_zsh {
     if [ "$(uname -s)" == "Darwin" ]; then
         install_zsh_darwin
@@ -133,6 +143,7 @@ function install_zsh {
     fi
 }
 
+# Install zsh from Homebrew on macOS
 function install_zsh_darwin {
 
     local zsh_bin=""
@@ -159,6 +170,7 @@ function install_zsh_darwin {
     brew install zsh
 }
 
+# Get Linux distribution ID
 function linux_distrib {
     local id
     local distrib_id
@@ -171,6 +183,7 @@ function linux_distrib {
     fi
 }
 
+# Install zsh on Linux using OS package manager
 function install_zsh_linux {
     local distrib
     distrib=$(linux_distrib)
@@ -186,6 +199,7 @@ function install_zsh_linux {
     fi
 }
 
+# Install zsh using APT on Debian-based distributions
 function install_zsh_debian {
 
     command -v zsh 1>/dev/null 2>&1 && return 0
@@ -204,6 +218,7 @@ function install_zsh_debian {
     sudo apt-get install zsh
 }
 
+# Install Homebrew on macOS
 function install_homebrew {
 
     if [ "$(uname -s)" != "Darwin" ]; then
@@ -231,11 +246,13 @@ function install_homebrew {
 
 }
 
+# Get current antibody version
 function antibody_version {
     command -v antibody 1>/dev/null 2>&1 || return 1
     antibody --version | awk '{print $3}'
 }
 
+# Create or update antibody ~/.bundles.txt file
 function setup_antibody {
 
     command -v antibody 1>/dev/null 2>&1 || {
@@ -253,11 +270,12 @@ function setup_antibody {
     else
         echo "*** Create antibody ~/.bundles.txt..."
     fi
-    antibody bundle <"$DOTFILES/antibody/bundles.txt" >~/.bundles.txt
-    antibody bundle sindresorhus/pure >>~/.bundles.txt
-    antibody bundle <"$DOTFILES/antibody/last_bundles.txt" >>~/.bundles.txt
+    antibody bundle <"$DOTFILES/antibody/bundles.txt" > ~/.bundles.txt
+    antibody bundle sindresorhus/pure >> ~/.bundles.txt
+    antibody bundle <"$DOTFILES/antibody/last_bundles.txt" >> ~/.bundles.txt
 }
 
+# Setup zsh as the default shell
 function setup_zsh {
     local ushell
     command -v zsh 1>/dev/null 2>&1 || {
@@ -283,6 +301,7 @@ function setup_zsh {
     chsh -s $zsh_bin
 }
 
+# Setup a dotfile symlink
 function setup_dotfile {
     local dotfile=$1
     if [ -h "$HOME/$dotfile" ]; then
@@ -296,11 +315,13 @@ function setup_dotfile {
     ln -s $DOTFILES/$dotfile ~/$dotfile
 }
 
+# Setup .tmux.conf symlink if tmux is installed
 function setup_tmux {
     command -v tmux 1>/dev/null 2>&1 || return 0
     setup_dotfile .tmux.conf
 }
 
+# Fix file permissions
 function fix_permissions {
     if [ -d "$DOTFILES" ]; then
         echo "*** Fix permissions in $DOTFILES..."
@@ -323,6 +344,7 @@ download_dotfiles
 install_homebrew
 install_zsh
 install_antibody
+install_vim
 
 # Update requirements
 update_antibody
