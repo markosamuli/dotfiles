@@ -316,26 +316,54 @@ function setup_dotfile {
     ln -s $DOTFILES/$dotfile ~/$dotfile
 }
 
+# Backup dotfile before creating symlink
+function backup_dotfile {
+    local dotfile=$1
+    local timestamp
+    if [ -h "$HOME/$dotfile" ]; then
+        return 0
+    fi
+    if [ ! -e "$HOME/$dotfile" ]; then
+        return 0
+    fi
+    timestamp=$(date +"%Y%m%d%H%i%s")
+    echo "*** Moving ~/$dotfile -> ~/$dotfile.$timestamp"
+    mv ~/$dotfile ~/$dotfile.$timestamp
+}
+
 # Setup .tmux.conf symlink if tmux is installed
 function setup_tmux {
     command -v tmux 1>/dev/null 2>&1 || return 0
     setup_dotfile .tmux.conf
 }
 
-# Fix file permissions
+# Fix permissions
 function fix_permissions {
-    if [ -d "$DOTFILES" ]; then
-        echo "*** Fix permissions in $DOTFILES..."
-        chmod -R og-rwx $DOTFILES
-    fi
-    if [ -d "~/.cache" ]; then
-        echo "*** Fix permissions in ~/.cache..."
-        chmod -R og-rwx ~/.cache
-    fi
-    if [ -d "~/.ssh" ]; then
-        echo "*** Fix permissions in ~/.ssh..."
-        chmod -R og-rwx ~/.ssh
-    fi
+    user_only_directories=(
+        $DOTFILES
+        ~/.cache
+        ~/.ssh
+    )
+    for dir in "${user_only_directories[@]}"; do
+        if [ -d "$dir" ]; then
+            echo "*** Fix permissions in $dir..."
+            chmod -R og-rwx $dir
+        fi
+    done
+}
+
+function setup_dotfile_symlinks {
+    dotfile_symlinks=(
+        .aliases
+        .zshrc
+        .bashrc
+        .gitignore_global
+        .editorconfig
+    )
+    for file in "${dotfile_symlinks[@]}"; do
+        backup_dotfile $file
+        setup_dotfile $file
+    done
 }
 
 # Clone dotfiles
@@ -355,11 +383,7 @@ setup_zsh
 setup_antibody
 
 # Setup dotfile symlinks
-setup_dotfile .aliases
-setup_dotfile .zshrc
-setup_dotfile .bashrc
-setup_dotfile .gitignore_global
-setup_dotfile .editorconfig
+setup_dotfile_symlinks
 
 # Setup tmux config if installed
 setup_tmux
