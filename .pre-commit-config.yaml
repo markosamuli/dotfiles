@@ -23,5 +23,6 @@ repos:
         exclude: >-
           (?x)^(
             zsh/colors\.zsh|
-            zsh/config\.zsh
+            zsh/config\.zsh|
+            zsh/completion\.zsh
           )
