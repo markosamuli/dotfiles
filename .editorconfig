@@ -62,12 +62,11 @@ indent_size = 2
 # Shell configuration
 [{.bashrc,.zshrc,.zshrc.*}]
 indent_style = space
-indent_size = 2
-tab_width = 2
+indent_size = 4
+tab_width = 4
 
 # Shell scripts
-# https://google.github.io/styleguide/shell.xml
 [{*.sh,*.zsh,*.bash}]
 indent_style = space
-indent_size = 2
-tab_width = 2
+indent_size = 4
+tab_width = 4
