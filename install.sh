@@ -352,6 +352,7 @@ function fix_permissions {
     done
 }
 
+# Setup symlinks to dotfiles
 function setup_dotfile_symlinks {
     dotfile_symlinks=(
         .aliases
@@ -364,6 +365,20 @@ function setup_dotfile_symlinks {
         backup_dotfile $file
         setup_dotfile $file
     done
+}
+
+# Setup symlink to Hammerspoon configuration if installed
+function setup_hammerspoon {
+    if [ "$(uname -s)" != "Darwin" ]; then
+        return 0
+    fi
+    if [ ! -e "/Applications/Hammerspoon.app" ]; then
+        return 0
+    fi
+    if [ ! -d "~/.hammerspoon" ]; then
+        mkdir -p ~/.hammerspoon
+    fi
+    setup_dotfile .hammerspoon/init.lua
 }
 
 # Clone dotfiles
@@ -387,6 +402,9 @@ setup_dotfile_symlinks
 
 # Setup tmux config if installed
 setup_tmux
+
+# Setup Hammerspoon configuration
+setup_hammerspoon
 
 # Fix permissions
 fix_permissions
