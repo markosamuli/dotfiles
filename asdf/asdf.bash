@@ -3,5 +3,6 @@
 
 # Initialise asdf-vm
 if [ -e "$HOME/.asdf/asdf.sh" ]; then
-  source $HOME/.asdf/asdf.sh
+  export ASDF_DIR="$HOME/.asdf"
+  source $ASDF_DIR/asdf.sh
 fi
