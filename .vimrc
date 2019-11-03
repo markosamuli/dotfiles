@@ -31,7 +31,7 @@ let g:go_fmt_command = "goimports"
 
 let g:netrw_liststyle=3
 
-" Ignore files when searcing
+" Ignore files when searching
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip
 let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
 
@@ -48,7 +48,6 @@ endif
 if has('mouse_sgr')
   set ttymouse=sgr
 endif
-
 
 if has("gui_running")
     " running MacVim
