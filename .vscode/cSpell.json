@@ -1,13 +1,33 @@
 {
     "version": "0.1",
     "words": [
+        "autocmd",
         "bashate",
         "beautysh",
+        "colorscheme",
+        "ctrlp",
         "editorconfig",
+        "expandtab",
+        "fatih",
+        "gofmt",
+        "goimports",
+        "iterm",
+        "kien",
+        "liststyle",
         "markosamuli",
+        "netrw",
+        "nnoremap",
+        "nocompatible",
         "pullr",
         "repos",
+        "shiftwidth",
+        "splitbelow",
+        "splitright",
         "symlink",
-        "symlinks"
+        "symlinks",
+        "tpope",
+        "ttymouse",
+        "valloric",
+        "wildignore"
     ]
 }
