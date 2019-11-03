@@ -1,21 +1,20 @@
-# editorconfig.org
-[*]
-# change these to your liking
-indent_style = space
-indent_size = 2
+# EditorConfig: https://editorconfig.org
 
+[*]
 # it's recommend to keep these unchanged
 end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
 
-# Markdown files
+# Markdown
 # https://github.com/google/styleguide/blob/gh-pages/docguide/style.md
 [*.md]
 trim_trailing_whitespace = false
+indent_style = space
+indent_size = 2
 
-# 4 space indentation for Python
+# Python
 # https://google.github.io/styleguide/pyguide.html
 [*.py]
 indent_style = space
@@ -23,13 +22,14 @@ indent_size = 4
 
 # Vim
 # https://google.github.io/styleguide/vimscriptguide.xml
-[*.vim]
+[{.vimrc,*.vim}]
 indent_style = space
 indent_size = 4
 
 # Makefile
 [Makefile]
 indent_style = tab
+indent_size = 2
 
 # Java
 # https://google.github.io/styleguide/javaguide.html
@@ -39,13 +39,23 @@ indent_size = 2
 
 # HTML/CSS
 # https://google.github.io/styleguide/htmlcssguide.xml
-[{css,*.html}]
+[{*.css,*.html}]
 indent_style = space
 indent_size = 2
 
 # Javascript
 # https://google.github.io/styleguide/jsguide.html
-[{js,*.css,*.html}]
+[{*.js}]
+indent_style = space
+indent_size = 2
+
+# JSON
+[*.json]
+indent_style = space
+indent_size = 2
+
+# JSON files without extension
+[.markdownlintrc]
 indent_style = space
 indent_size = 2
 
@@ -54,8 +64,13 @@ indent_size = 2
 indent_style = space
 indent_size = 4
 
-# YAML files
+# YAML
 [{*.yml,*yaml}]
+indent_style = space
+indent_size = 2
+
+# YAML files without extension
+[{.ansible-lint,.yamllint}]
 indent_style = space
 indent_size = 2
 
@@ -63,10 +78,13 @@ indent_size = 2
 [{.bashrc,.zshrc,.zshrc.*}]
 indent_style = space
 indent_size = 4
-tab_width = 4
 
 # Shell scripts
 [{*.sh,*.zsh,*.bash}]
 indent_style = space
 indent_size = 4
-tab_width = 4
+
+# Dockerfile
+[{Dockerfile,Dockerfile.template}]
+indent_style = space
+indent_size = 2
