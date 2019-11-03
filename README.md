@@ -60,12 +60,6 @@ Copy [.gitconfig.example](.gitconfig.example) file for my aliases and few defaul
 cp ~/.dotfiles/.gitconfig.example ~/.gitconfig
 ```
 
-See [.gitconfig.govuskuolfi](.gitconfig.govuskuolfi) for my OS X specific tools configuration.
-
-```bash
-ln ~/.dotfiles/.gitchangelog.rc ~/.gitchangelog.rc
-```
-
 My favourite aliases:
 
 - `git co` - checkout
