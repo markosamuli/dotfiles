@@ -360,6 +360,7 @@ function setup_dotfile_symlinks {
         .bashrc
         .gitignore_global
         .editorconfig
+        .markdownlintrc
     )
     for file in "${dotfile_symlinks[@]}"; do
         backup_dotfile $file

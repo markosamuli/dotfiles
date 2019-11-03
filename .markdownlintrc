@@ -1,0 +1,17 @@
+{
+  "default": true,
+  "heading-style": {
+    "style": "atx"
+  },
+  "line-length": {
+    "line_length": 80,
+    "code_blocks": false,
+    "tables": false
+  },
+  "no-duplicate-heading": {
+    "siblings_only": true
+  },
+  "code-block-style": {
+    "style": "fenced"
+  }
+}
