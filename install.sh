@@ -326,7 +326,7 @@ function backup_dotfile {
     if [ ! -e "$HOME/$dotfile" ]; then
         return 0
     fi
-    timestamp=$(date +"%Y%m%d%H%i%s")
+    timestamp=$(date +"%Y%m%d%H%M%S")
     echo "*** Moving ~/$dotfile -> ~/$dotfile.$timestamp"
     mv ~/$dotfile ~/$dotfile.$timestamp
 }
