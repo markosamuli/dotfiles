@@ -31,3 +31,11 @@ repos:
     rev: v1.0.0
     hooks:
       - id: luacheck
+
+  - repo: local
+    hooks:
+      - id: shell-config
+        name: check .bashrc and .zshrc config files
+        files: '^\.(bash|zsh)rc$'
+        entry: ./bin/check-shell-config.sh
+        language: script
