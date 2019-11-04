@@ -1,0 +1,17 @@
+[alias]
+	co = checkout
+	ci = commit
+    pullr = pull --rebase
+	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+	wd = diff --word-diff="color"
+	wds = diff --word-diff="color" --staged
+	s = status --short --branch
+
+[url "git@github.com:"]
+	insteadOf = https://github.com/
+
+[color]
+	branch = auto
+	diff = auto
+	interactive = auto
+	status = auto

@@ -8,12 +8,12 @@ GITHUB_RAW=https://raw.githubusercontent.com
 HOMEBREW_INSTALL=${GITHUB_RAW}/Homebrew/install/master/install
 
 # Print error into STDERR
-function error {
+error() {
     echo "$@" 1>&2
 }
 
 # Install Vim using OS package manager
-function install_vim {
+install_vim() {
     command -v vim 1>/dev/null 2>&1 && return 0
     if [ "$(uname -s)" == "Darwin" ]; then
         brew install vim
@@ -26,7 +26,7 @@ function install_vim {
 }
 
 # Get latest antibody version from GitHub
-function latest_antibody_version {
+latest_antibody_version() {
     local latest_release=""
     local errmsg="Failed to get latest antibody release"
     latest_release=$(get_latest_release getantibody/antibody)
@@ -35,7 +35,7 @@ function latest_antibody_version {
 }
 
 # Get installed antibody version
-function installed_antibody_version {
+installed_antibody_version() {
     local version=""
     command -v antibody 1>/dev/null 2>&1 || return 1
     version=$(antibody -v 2>&1 | grep 'antibody version' | awk '{ print $3 }')
@@ -43,7 +43,7 @@ function installed_antibody_version {
 }
 
 # Get latest release for a GitHub repository
-function get_latest_release {
+get_latest_release() {
     local repository=$1
     local url="https://api.github.com/repos/${repository}/releases/latest"
     if [ ! -z "$GITHUB_OAUTH_TOKEN" ]; then
@@ -55,7 +55,7 @@ function get_latest_release {
 }
 
 # Download dotfiles if the local directory does not exist
-function download_dotfiles {
+download_dotfiles() {
     if [ ! -d "$DOTFILES" ]; then
         echo "*** Cloning dotfiles from GitHub..."
         git clone $DOTFILES_REPO $DOTFILES
@@ -63,13 +63,13 @@ function download_dotfiles {
 }
 
 # Install antibody with Homebrew on macOS
-function install_antibody_with_homebrew {
+install_antibody_with_homebrew() {
     echo "*** Installing antibody with Homebrew..."
     brew install getantibody/tap/antibody
 }
 
 # Install antibody using installer on other distributions
-function install_antibody_with_installer {
+install_antibody_with_installer() {
     echo "*** Installing antibody with the installer..."
     command -v curl 1>/dev/null 2>&1 || {
         echo "cURL not installed."
@@ -79,7 +79,7 @@ function install_antibody_with_installer {
 }
 
 # Install antibody if the binary is not found
-function install_antibody {
+install_antibody() {
 
     command -v antibody 1>/dev/null 2>&1 && return 0
 
@@ -101,7 +101,7 @@ function install_antibody {
 }
 
 # Update antibody if we don't have the latest version
-function update_antibody {
+update_antibody() {
 
     local latest_version
     latest_version=$(latest_antibody_version)
@@ -130,7 +130,7 @@ function update_antibody {
 }
 
 # Install zsh
-function install_zsh {
+install_zsh() {
     if [ "$(uname -s)" == "Darwin" ]; then
         install_zsh_darwin
     elif [ "$(uname -s)" == "Linux" ]; then
@@ -144,7 +144,7 @@ function install_zsh {
 }
 
 # Install zsh from Homebrew on macOS
-function install_zsh_darwin {
+install_zsh_darwin() {
 
     local zsh_bin
     zsh_bin=$(which zsh)
@@ -171,7 +171,7 @@ function install_zsh_darwin {
 }
 
 # Get Linux distribution ID
-function linux_distrib {
+linux_distrib() {
     local id
     local distrib_id
     if [ -e "/etc/lsb-release" ]; then
@@ -184,7 +184,7 @@ function linux_distrib {
 }
 
 # Install zsh on Linux using OS package manager
-function install_zsh_linux {
+install_zsh_linux() {
     local distrib
     distrib=$(linux_distrib)
     if [ "${distrib}" == "ubuntu" ]; then
@@ -200,7 +200,7 @@ function install_zsh_linux {
 }
 
 # Install zsh using APT on Debian-based distributions
-function install_zsh_debian {
+install_zsh_debian() {
 
     command -v zsh 1>/dev/null 2>&1 && return 0
 
@@ -219,7 +219,7 @@ function install_zsh_debian {
 }
 
 # Install Homebrew on macOS
-function install_homebrew {
+install_homebrew() {
 
     if [ "$(uname -s)" != "Darwin" ]; then
         return 0
@@ -247,13 +247,13 @@ function install_homebrew {
 }
 
 # Get current antibody version
-function antibody_version {
+antibody_version() {
     command -v antibody 1>/dev/null 2>&1 || return 1
     antibody --version | awk '{print $3}'
 }
 
 # Create or update antibody ~/.bundles.txt file
-function setup_antibody {
+setup_antibody() {
 
     command -v antibody 1>/dev/null 2>&1 || {
         echo "antibody is not installed."
@@ -276,7 +276,7 @@ function setup_antibody {
 }
 
 # Setup zsh as the default shell
-function setup_zsh {
+setup_zsh() {
     local ushell
     command -v zsh 1>/dev/null 2>&1 || {
         echo "zsh is not installed."
@@ -303,7 +303,7 @@ function setup_zsh {
 }
 
 # Setup a dotfile symlink
-function setup_dotfile {
+setup_dotfile() {
     local dotfile=$1
     if [ -h "$HOME/$dotfile" ]; then
         return 0
@@ -317,7 +317,7 @@ function setup_dotfile {
 }
 
 # Backup dotfile before creating symlink
-function backup_dotfile {
+backup_dotfile() {
     local dotfile=$1
     local timestamp
     if [ -h "$HOME/$dotfile" ]; then
@@ -332,13 +332,13 @@ function backup_dotfile {
 }
 
 # Setup .tmux.conf symlink if tmux is installed
-function setup_tmux {
+setup_tmux() {
     command -v tmux 1>/dev/null 2>&1 || return 0
     setup_dotfile .tmux.conf
 }
 
 # Fix permissions
-function fix_permissions {
+fix_permissions() {
     user_only_directories=(
         $DOTFILES
         ~/.cache
@@ -353,7 +353,7 @@ function fix_permissions {
 }
 
 # Setup symlinks to dotfiles
-function setup_dotfile_symlinks {
+setup_dotfile_symlinks() {
     dotfile_symlinks=(
         .aliases
         .zshrc
@@ -369,7 +369,7 @@ function setup_dotfile_symlinks {
 }
 
 # Setup symlink to Hammerspoon configuration if installed
-function setup_hammerspoon {
+setup_hammerspoon() {
     if [ "$(uname -s)" != "Darwin" ]; then
         return 0
     fi
@@ -380,6 +380,16 @@ function setup_hammerspoon {
         mkdir -p ~/.hammerspoon
     fi
     setup_dotfile .hammerspoon/init.lua
+}
+
+setup_gitconfig() {
+    local gitconfig="${DOTFILES}/.gitconfig"
+    local gitconfig_include
+    gitconfig_include=$(git config --global --get include.path)
+    if [ -z "${gitconfig_include}" ]; then
+        echo "*** Include ${DOTFILES}/.gitconfig in ~/.gitconfig"
+        git config --global --type path include.path "${gitconfig}"
+    fi
 }
 
 # Clone dotfiles
@@ -406,6 +416,9 @@ setup_tmux
 
 # Setup Hammerspoon configuration
 setup_hammerspoon
+
+# Setup Git to include .gitconfig from .dotfiles
+setup_gitconfig
 
 # Fix permissions
 fix_permissions
