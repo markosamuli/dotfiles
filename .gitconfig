@@ -15,3 +15,7 @@
 	diff = auto
 	interactive = auto
 	status = auto
+
+[merge]
+	# Include summaries of merged commits in newly created merge commit messages
+	log = true

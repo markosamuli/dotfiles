@@ -1,9 +1,3 @@
-[user]
-	name = MSK
-	email = hello@msk.io
-	username = markosamuli
-  signingkey = 60C32584
-
 [alias]
 	co = checkout
 	ci = commit
