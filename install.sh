@@ -412,6 +412,34 @@ setup_gitconfig() {
             git config --global --path include.path "${gitconfig}"
         fi
     fi
+
+    # Set ~/.gitignore_global excludes file
+    local gitignore_global="${HOME}/.gitignore_global"
+    local gitconfig_excludesfile
+    gitconfig_excludesfile=$(git config --global --get core.excludesfile)
+    if [ -z "${gitconfig_excludesfile}" ]; then
+         echo "[git] core.excludesfile=${gitignore_global}"
+        if compare_version "2.18.0" "$(git_version)"; then
+            git config --global --type=path core.excludesfile "${gitignore_global}"
+        else
+            git config --global --path core.excludesfile "${gitignore_global}"
+        fi
+    fi
+
+    # Set ~/.gitcookies file
+    local gitcookies="${HOME}/.gitcookies"
+    local gitconfig_cookiefile
+    gitconfig_cookiefile=$(git config --global --get http.cookiefile)
+    if [ -z "${gitconfig_cookiefile}" ]; then
+        if [ -e "${gitcookies}" ]; then
+            echo "[git] http.cookiefile=${gitcookies}"
+            if compare_version "2.18.0" "$(git_version)"; then
+                git config --global --type=path http.cookiefile "${gitcookies}"
+            else
+                git config --global --path http.cookiefile "${gitcookies}"
+            fi
+        fi
+    fi
 }
 
 setup_vim() {
