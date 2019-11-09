@@ -18,9 +18,8 @@ install_vim() {
     if [ "$(uname -s)" == "Darwin" ]; then
         brew install vim
     else
-        command -v zsh 1>/dev/null 2>&1 && return 0
         echo "Unsupported OS or distribution: $(uname -s)"
-        echo "zsh is not installed."
+        echo "vim is not installed."
         exit 1
     fi
 }
@@ -388,7 +387,33 @@ setup_gitconfig() {
     gitconfig_include=$(git config --global --get include.path)
     if [ -z "${gitconfig_include}" ]; then
         echo "*** Include ${DOTFILES}/.gitconfig in ~/.gitconfig"
-        git config --global --type path include.path "${gitconfig}"
+
+setup_vim() {
+    local vim_autoload="$HOME/.vim/autoload"
+    local vim_plugged="$HOME/.vim/plugged"
+    local vim_plug="https://raw.github.com/junegunn/vim-plug/master/plug.vim"
+    if [ ! -d "${vim_autoload}" ]; then
+        echo "*** Create ${vim_autoload} directory"
+        mkdir -p ${vim_autoload} || {
+            error "Failed to create ${vim_autoload} directory"
+            return 1
+        }
+    fi
+    if [ ! -d "${vim_plugged}" ]; then
+        echo "*** Create ${vim_plugged} plugin directory"
+        mkdir -p ${vim_plugged} || {
+            error "Failed to create ${vim_plugged} directory"
+            return 1
+        }
+    fi
+    if [ ! -e "${vim_autoload}/plug.vim" ]; then
+        echo "*** Install vim-plug"
+        curl -fLo "${vim_autoload}/plug.vim" "${vim_plug}" || {
+            error "Failed to download vim-plug"
+            return 1
+        }
+    fi
+}
     fi
 }
 
@@ -407,6 +432,9 @@ update_antibody
 # Configure zsh
 setup_zsh
 setup_antibody
+
+# Configure vim
+setup_vim
 
 # Setup dotfile symlinks
 setup_dotfile_symlinks

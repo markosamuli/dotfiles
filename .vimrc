@@ -1,17 +1,18 @@
 " let g:ycm_path_to_python_interpreter = '/usr/local/Cellar/python/2.7.13/Frameworks/Python.framework/Versions/2.7/bin'
 
-call plug#begin()
+call plug#begin('~/.vim/plugged')
 
 Plug 'tpope/vim-sensible'
 Plug 'altercation/vim-colors-solarized'
-Plug 'fatih/vim-go'
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 " Plug 'Valloric/YouCompleteMe'
 Plug 'kien/ctrlp.vim'
 Plug 'tpope/vim-fugitive'
+Plug 'scrooloose/nerdtree'
 
 call plug#end()
 
-" Behave like Vim instead of Vim
+" Behave like Vim instead of Vi
 set nocompatible
 
 syntax on
