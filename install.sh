@@ -55,6 +55,10 @@ get_latest_release() {
 
 # Download dotfiles if the local directory does not exist
 download_dotfiles() {
+    command -v git >/dev/null || {
+        echo "git is not installed."
+        exit 1
+    }
     if [ ! -d "$DOTFILES" ]; then
         echo "*** Cloning dotfiles from GitHub..."
         git clone $DOTFILES_REPO $DOTFILES
@@ -71,7 +75,7 @@ install_antibody_with_homebrew() {
 install_antibody_with_installer() {
     echo "*** Installing antibody with the installer..."
     command -v curl 1>/dev/null 2>&1 || {
-        echo "cURL not installed."
+        echo "cURL is not installed."
         exit 1
     }
     curl -sfL git.io/antibody | sudo sh -s - -b /usr/local/bin
@@ -381,12 +385,25 @@ setup_hammerspoon() {
     setup_dotfile .hammerspoon/init.lua
 }
 
+git_version() {
+    local version
+    version=$(git --version)
+    echo "${version/git version /}"
+}
+
 setup_gitconfig() {
     local gitconfig="${DOTFILES}/.gitconfig"
     local gitconfig_include
     gitconfig_include=$(git config --global --get include.path)
     if [ -z "${gitconfig_include}" ]; then
         echo "*** Include ${DOTFILES}/.gitconfig in ~/.gitconfig"
+        if compare_version "2.18.0" "$(git_version)"; then
+            git config --global --type=path include.path "${gitconfig}"
+        else
+            git config --global --path include.path "${gitconfig}"
+        fi
+    fi
+}
 
 setup_vim() {
     local vim_autoload="$HOME/.vim/autoload"
@@ -414,7 +431,25 @@ setup_vim() {
         }
     fi
 }
+
+# Compare the major and minor parts of two version strings
+# Usage: compare_version <required> <installed>
+# Example: compare_version "1.2.0" "1.3.0"
+compare_version() {
+    local IFS=.
+    # shellcheck disable=SC2206
+    local required=($1)
+    # shellcheck disable=SC2206
+    local installed=($2)
+    # shellcheck disable=SC2004
+    if (( ${installed[0]} < ${required[0]} )); then
+        return 1
     fi
+    # shellcheck disable=SC2004
+    if (( ${installed[1]} < ${required[1]} )); then
+        return 1
+    fi
+    return 0
 }
 
 # Clone dotfiles
