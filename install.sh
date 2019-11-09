@@ -18,8 +18,8 @@ install_vim() {
     if [ "$(uname -s)" == "Darwin" ]; then
         brew install vim
     else
-        echo "Unsupported OS or distribution: $(uname -s)"
-        echo "vim is not installed."
+        error "[vim] FAILED: vim is not installed."
+        error "[vim] Unsupported OS or distribution: $(uname -s)"
         exit 1
     fi
 }
@@ -27,7 +27,7 @@ install_vim() {
 # Get latest antibody version from GitHub
 latest_antibody_version() {
     local latest_release=""
-    local errmsg="Failed to get latest antibody release"
+    local errmsg="[antibody] ERROR: Couldn't get latest antibody release version."
     latest_release=$(get_latest_release getantibody/antibody)
     [ -z "${latest_release}" ] && { error "${errmsg}"; return 1; }
     echo "${latest_release/v/}"
@@ -56,26 +56,29 @@ get_latest_release() {
 # Download dotfiles if the local directory does not exist
 download_dotfiles() {
     command -v git >/dev/null || {
-        echo "git is not installed."
+        error "[dotfiles] FAILED: Git is not installed."
         exit 1
     }
     if [ ! -d "$DOTFILES" ]; then
-        echo "*** Cloning dotfiles from GitHub..."
-        git clone $DOTFILES_REPO $DOTFILES
+        echo "[dotfiles] Cloning dotfiles from GitHub..."
+        git clone $DOTFILES_REPO $DOTFILES || {
+            error "[dotfiles] FAILED: Something went wrong while cloding $DOTFILES_REPO repository."
+            exit 1
+        }
     fi
 }
 
 # Install antibody with Homebrew on macOS
 install_antibody_with_homebrew() {
-    echo "*** Installing antibody with Homebrew..."
+    echo "[antibody] Installing antibody with Homebrew..."
     brew install getantibody/tap/antibody
 }
 
 # Install antibody using installer on other distributions
 install_antibody_with_installer() {
-    echo "*** Installing antibody with the installer..."
+    echo "[antibody] Installing antibody with the installer..."
     command -v curl 1>/dev/null 2>&1 || {
-        echo "cURL is not installed."
+        error "[antibody] FAILED: cURL is not installed"
         exit 1
     }
     curl -sfL git.io/antibody | sudo sh -s - -b /usr/local/bin
@@ -86,12 +89,12 @@ install_antibody() {
 
     command -v antibody 1>/dev/null 2>&1 && return 0
 
-    echo "antibody is not installed."
+    echo "[antibody] antibody is not installed"
     read -r -p "Do you want to install it now? [y/N] " response
     case "$response" in
         [yY][eE][sS] | [yY]) ;;
         *)
-            echo "Skipping antibody setup."
+            echo "[antibody] Skipping antibody setup."
             return 0
             ;;
     esac
@@ -113,14 +116,14 @@ update_antibody() {
         return 0
     fi
 
-    echo "Latest antibody version: ${latest_version}"
-    echo "Installed antibody version: ${installed_version}"
+    echo "[antibody] Latest antibody version: ${latest_version}"
+    echo "[antibody] Installed antibody version: ${installed_version}"
     read -r -p "Do you want to upgrade? [y/N] " response
 
     case "$response" in
         [yY][eE][sS] | [yY]) ;;
         *)
-            echo "Skipping antibody upgrade."
+            echo "[antibody] Skipping antibody upgrade."
             return 0
             ;;
     esac
@@ -140,8 +143,8 @@ install_zsh() {
         install_zsh_linux
     else
         command -v zsh 1>/dev/null 2>&1 && return 0
-        echo "Unsupported OS or distribution: $(uname -s)"
-        echo "zsh is not installed."
+        error "[zsh] FAILED: zsh is not installed"
+        error "[zsh] Unsupported OS or distribution: $(uname -s)"
         exit 1
     fi
 }
@@ -155,21 +158,21 @@ install_zsh_darwin() {
         return 0
     fi
 
-    echo "Homebrew zsh is not installed."
+    echo "[zsh] zsh is not installed from Homebrew"
     read -r -p "Do you want to install it now? [y/N] " response
     case "$response" in
         [yY][eE][sS] | [yY]) ;;
         *)
-            echo "Skipping zsh setup."
+            echo "[zsh] skipping zsh setup"
             return 0
             ;;
     esac
 
     command -v brew 1>/dev/null 2>&1 || {
-        echo "Homebrew not installed."
+        error "[zsh] FAILED: Homebrew not installed."
         exit 1
     }
-    echo "*** Installing zsh with Homebrew..."
+    echo "[zsh] Installing zsh with Homebrew..."
     brew install zsh
 }
 
@@ -196,8 +199,8 @@ install_zsh_linux() {
         install_zsh_debian
     else
         command -v zsh 1>/dev/null 2>&1 && return 0
-        echo "Unsupported OS or distribution: $(uname -s)"
-        echo "zsh is not installed."
+        error "[zsh] FAILED: zsh is not installed"
+        error "[zsh] Unsupported Linux distribution: ${distrib}"
         exit 1
     fi
 }
@@ -207,17 +210,17 @@ install_zsh_debian() {
 
     command -v zsh 1>/dev/null 2>&1 && return 0
 
-    echo "zsh is not installed."
+    echo "[zsh] zsh is not installed"
     read -r -p "Do you want to install it now? [y/N] " response
     case "$response" in
         [yY][eE][sS] | [yY]) ;;
         *)
-            echo "Skipping zsh setup."
+            echo "[zsh] Skipping zsh setup."
             return 0
             ;;
     esac
 
-    echo "*** Installing zsh..."
+    echo "[zsh] Installing zsh..."
     sudo apt-get install zsh
 }
 
@@ -230,20 +233,20 @@ install_homebrew() {
 
     command -v brew 1>/dev/null 2>&1 && return 0
 
-    echo "Homebrew not installed."
+    echo "[homebrew] Homebrew not installed"
     read -r -p "Do you want to install it now? [y/N] " response
     case "$response" in
         [yY][eE][sS] | [yY]) ;;
         *)
-            echo "Skipping Homebrew setup."
+            echo "[homebrew] Skipping Homebrew setup."
             return 0
             ;;
     esac
 
-    echo "*** Installing Homebrew..."
+    echo "[homebrew] Installing Homebrew..."
     ruby -e "$(curl -fsSL ${HOMEBREW_INSTALL})" ||
     {
-        echo "Failed to install Homebrew"
+        error "[homebrew] FAILED: Something went wrong while installing Homebrew."
         exit 1
     }
 
@@ -259,19 +262,19 @@ antibody_version() {
 setup_antibody() {
 
     command -v antibody 1>/dev/null 2>&1 || {
-        echo "antibody is not installed."
+        error "[antibody] FAILED: antibody is not installed"
         exit 1
     }
 
     if [ ! -d $DOTFILES/antibody ]; then
-        echo "$DOTFILES/antibody does not exist"
+        error "[antibody] FAILED: $DOTFILES/antibody does not exist"
         return 1
     fi
 
     if [ -e "$HOME/.bundles.txt" ]; then
-        echo "*** Update antibody ~/.bundles.txt..."
+        echo "[antibody] Updating ~/.bundles.txt..."
     else
-        echo "*** Create antibody ~/.bundles.txt..."
+        echo "[antibody] Creating ~/.bundles.txt..."
     fi
     antibody bundle <"$DOTFILES/antibody/bundles.txt" > ~/.bundles.txt
     antibody bundle sindresorhus/pure >> ~/.bundles.txt
@@ -282,14 +285,14 @@ setup_antibody() {
 setup_zsh() {
     local ushell
     command -v zsh 1>/dev/null 2>&1 || {
-        echo "zsh is not installed."
+        echo "[zsh] FAILED: zsh is not installed"
         exit 1
     }
     local zsh_bin
     zsh_bin=$(which zsh)
     if [ "$zsh_bin" == "/usr/local/bin/zsh" ]; then
         grep -q $zsh_bin /etc/shells || {
-            echo "*** Adding $zsh_bin to /etc/shells..."
+            echo "[zsh] Adding $zsh_bin to /etc/shells..."
             sudo sh -c "echo $zsh_bin >> /etc/shells"
         }
     fi
@@ -301,7 +304,7 @@ setup_zsh() {
         [ "$ushell" == "$zsh_bin" ] && return 0
     fi
 
-    echo "*** Updating user shell to $zsh_bin..."
+    echo "[zsh] Updating user default shell to $zsh_bin..."
     chsh -s $zsh_bin
 }
 
@@ -312,10 +315,10 @@ setup_dotfile() {
         return 0
     fi
     if [ -e "$HOME/$dotfile" ]; then
-        echo "WARNING: ~/$dotfile already exists, skipping symlink setup."
+        echo "[dotfiles] WARNING: ~/$dotfile already exists, skipping symlink setup"
         return 1
     fi
-    echo "*** Creating symlink ~/$dotfile -> $DOTFILES/$dotfile"
+    echo "[dotfiles] Creating symlink ~/$dotfile -> $DOTFILES/$dotfile"
     ln -s $DOTFILES/$dotfile ~/$dotfile
 }
 
@@ -330,7 +333,7 @@ backup_dotfile() {
         return 0
     fi
     timestamp=$(date +"%Y%m%d%H%M%S")
-    echo "*** Moving ~/$dotfile -> ~/$dotfile.$timestamp"
+    echo "[dotfiles] Moving ~/$dotfile -> ~/$dotfile.$timestamp"
     mv ~/$dotfile ~/$dotfile.$timestamp
 }
 
@@ -344,12 +347,13 @@ setup_tmux() {
 fix_permissions() {
     user_only_directories=(
         $DOTFILES
-        ~/.cache
+        ~/.cache/antibody
+        ~/.cache/Homebrew
         ~/.ssh
     )
     for dir in "${user_only_directories[@]}"; do
         if [ -d "$dir" ]; then
-            echo "*** Fix permissions in $dir..."
+            echo "[permissions] Set permissions in user only directory $dir"
             chmod -R og-rwx $dir
         fi
     done
@@ -373,14 +377,18 @@ setup_dotfile_symlinks() {
 
 # Setup symlink to Hammerspoon configuration if installed
 setup_hammerspoon() {
+    local hammerspoon_dir="~/.hammerspoon"
     if [ "$(uname -s)" != "Darwin" ]; then
         return 0
     fi
     if [ ! -e "/Applications/Hammerspoon.app" ]; then
         return 0
     fi
-    if [ ! -d "~/.hammerspoon" ]; then
-        mkdir -p ~/.hammerspoon
+    echo "[hammerspoon] Hammerspoon installed, adding configuration..."
+    if [ ! -d "${hammerspoon_dir}" ]; then
+        mkdir -p ${hammerspoon_dir} || {
+            error "[hammerspoon] FAILED: Couldn't create ${hammerspoon_dir} directory."
+        }
     fi
     setup_dotfile .hammerspoon/init.lua
 }
@@ -392,11 +400,12 @@ git_version() {
 }
 
 setup_gitconfig() {
+    # Include ~/.dotfiles/.gitconfig
     local gitconfig="${DOTFILES}/.gitconfig"
     local gitconfig_include
     gitconfig_include=$(git config --global --get include.path)
     if [ -z "${gitconfig_include}" ]; then
-        echo "*** Include ${DOTFILES}/.gitconfig in ~/.gitconfig"
+        echo "[git] include.path=${gitconfig}"
         if compare_version "2.18.0" "$(git_version)"; then
             git config --global --type=path include.path "${gitconfig}"
         else
@@ -410,23 +419,23 @@ setup_vim() {
     local vim_plugged="$HOME/.vim/plugged"
     local vim_plug="https://raw.github.com/junegunn/vim-plug/master/plug.vim"
     if [ ! -d "${vim_autoload}" ]; then
-        echo "*** Create ${vim_autoload} directory"
+        echo "[vim] Create ${vim_autoload} directory"
         mkdir -p ${vim_autoload} || {
-            error "Failed to create ${vim_autoload} directory"
+            error "[vim] FAILED: couldn't create ${vim_autoload} directory"
             return 1
         }
     fi
     if [ ! -d "${vim_plugged}" ]; then
-        echo "*** Create ${vim_plugged} plugin directory"
+        echo "[vim] Create ${vim_plugged} plugin directory"
         mkdir -p ${vim_plugged} || {
-            error "Failed to create ${vim_plugged} directory"
+            error "[vim] FAILED: couldn't create ${vim_plugged} directory"
             return 1
         }
     fi
     if [ ! -e "${vim_autoload}/plug.vim" ]; then
-        echo "*** Install vim-plug"
+        echo "[vim] Install vim-plug"
         curl -fLo "${vim_autoload}/plug.vim" "${vim_plug}" || {
-            error "Failed to download vim-plug"
+            error "[vim] FAILED: couldn't download vim-plug"
             return 1
         }
     fi
