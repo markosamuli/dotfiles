@@ -22,9 +22,9 @@ set shiftwidth=4
 set expandtab
 
 " http://ethanschoonover.com/solarized/vim-colors-solarized
-" syntax enable
-" set background=dark
-colorscheme solarized
+syntax enable
+set background=dark
+" colorscheme solarized
 
 " format with goimports instead of gofmt
 let g:go_fmt_command = "goimports"
