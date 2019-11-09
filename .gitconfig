@@ -7,8 +7,8 @@
 	wds = diff --word-diff="color" --staged
 	s = status --short --branch
 
-[url "git@github.com:"]
-	insteadOf = https://github.com/
+[url "git@github.com:markosamuli"]
+	insteadOf = https://github.com/markosamuli
 
 [color]
 	branch = auto
