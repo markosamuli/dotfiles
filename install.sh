@@ -442,6 +442,68 @@ setup_gitconfig() {
     fi
 }
 
+setup_git_difftool() {
+    local difftool
+    local gitconfig_diff_guitool
+    gitconfig_diff_guitool=$(git config --global --get diff.guitool)
+    if command -v meld >/dev/null; then
+        difftool='meld'
+        echo '[git] Add meld as a git diff tool'
+        git config --global difftool.meld.cmd 'meld "$LOCAL" "$REMOTE"'
+        git config --global difftool.meld.trustexitcode 'true'
+        git config --global difftool.prompt 'false'
+    fi
+    if [ -z "${gitconfig_diff_guitool}" ]; then
+        echo "[git] Default diff.guitool is not configured."
+        if [ -n "${difftool}" ]; then
+            read -r -p "[git] Do you want to use '${difftool}' as diff.guitool? [y/N] " response
+            case "$response" in
+                [yY][eE][sS] | [yY]) ;;
+                *)
+                    echo "[git] Skipping diff.guitool setup."
+                    return 0
+                    ;;
+            esac
+            echo "[git] diff.guitool=${difftool}"
+            git config --global diff.guitool "${difftool}"
+        fi
+    fi
+}
+
+setup_git_mergetool() {
+    local mergetool
+    local gitconfig_merge_tool
+    gitconfig_merge_tool=$(git config --global --get merge.tool)
+    if command -v meld >/dev/null; then
+        mergetool='meld'
+        # Add meld as a mergetool
+        echo '[git] Add meld as a git merge tool'
+        git config --global mergetool.meld.cmd \
+            'meld --auto-merge "$LOCAL" "$MERGED" "$REMOTE" --output "$MERGED"'
+
+        # Don't ask if we want to skip merge
+        git config --global mergetool.prompt 'false'
+
+        # Don't create backup *.orig files
+        git config --global mergetool.keepBackup 'false'
+    fi
+    if [ -z "${gitconfig_merge_tool}" ]; then
+        echo "[git] Default merge.tool not configured."
+        if [ -n "${mergetool}" ]; then
+            read -r -p "[git] Do you want to use '${mergetool}' as merge.tool? [y/N] " response
+            case "$response" in
+                [yY][eE][sS] | [yY]) ;;
+                *)
+                    echo "[git] Skipping merge.tool setup."
+                    return 0
+                    ;;
+            esac
+            echo "[git] merge.tool=${mergetool}"
+            git config --global merge.tool "${mergetool}"
+        fi
+    fi
+}
+
 setup_vim() {
     local vim_autoload="$HOME/.vim/autoload"
     local vim_plugged="$HOME/.vim/plugged"
@@ -519,6 +581,8 @@ setup_hammerspoon
 
 # Setup Git to include .gitconfig from .dotfiles
 setup_gitconfig
+setup_git_difftool
+setup_git_mergetool
 
 # Fix permissions
 fix_permissions
