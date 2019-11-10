@@ -504,6 +504,25 @@ setup_git_mergetool() {
     fi
 }
 
+setup_git_editor() {
+    local editor
+    local gitconfig_editor
+    gitconfig_editor=$(git config --global --get core.editor)
+    if [ -z "${gitconfig_editor}" ]; then
+        if command -v vim >/dev/null; then
+            editor=$(command -v vim)
+        fi
+        if [ -n "${editor}" ]; then
+            echo "[git] core.editor=${editor}"
+            if compare_version "2.18.0" "$(git_version)"; then
+                git config --global --type=path core.editor "${editor}"
+            else
+                git config --global --path core.editor "${editor}"
+            fi
+        fi
+    fi
+}
+
 setup_vim() {
     local vim_autoload="$HOME/.vim/autoload"
     local vim_plugged="$HOME/.vim/plugged"
@@ -581,6 +600,7 @@ setup_hammerspoon
 
 # Setup Git to include .gitconfig from .dotfiles
 setup_gitconfig
+setup_git_editor
 setup_git_difftool
 setup_git_mergetool
 
