@@ -418,7 +418,7 @@ setup_gitconfig() {
     local gitconfig_excludesfile
     gitconfig_excludesfile=$(git config --global --get core.excludesfile)
     if [ -z "${gitconfig_excludesfile}" ]; then
-         echo "[git] core.excludesfile=${gitignore_global}"
+        echo "[git] core.excludesfile=${gitignore_global}"
         if compare_version "2.18.0" "$(git_version)"; then
             git config --global --type=path core.excludesfile "${gitignore_global}"
         else
@@ -443,65 +443,164 @@ setup_gitconfig() {
 }
 
 setup_git_difftool() {
-    local difftool
+    local difftools=()
+
+    if command -v ksdiff >/dev/null; then
+        difftools+=("ksdiff")
+
+        echo '[git] Add Kaleidoscope (ksdiff) as a git diff tool'
+        # shellcheck disable=SC2016
+        git config --global difftool.ksdiff.cmd \
+            'ksdiff --partial-changeset --relative-path "$MERGED" -- "$LOCAL" "$REMOTE"'
+
+        # Exit difftool if the invoked diff tool returns a non-zero exit status.
+        git config --global difftool.ksdiff.trustexitcode 'true'
+    fi
+
+    if command -v meld >/dev/null; then
+        difftools+=("meld")
+
+        echo '[git] Add meld as a git diff tool'
+        # shellcheck disable=SC2016
+        git config --global difftool.meld.cmd 'meld "$LOCAL" "$REMOTE"'
+
+        # Exit difftool if the invoked diff tool returns a non-zero exit status.
+        git config --global difftool.meld.trustexitcode 'true'
+    fi
+
+    local gitconfig_diff_tool
+    gitconfig_diff_tool=$(git config --global --get diff.tool)
+    if [ -z "${gitconfig_diff_tool}" ]; then
+        echo "[git] Default diff.tool is not configured."
+        setup_default_git_diff_tool "${difftools[@]}"
+    fi
+
     local gitconfig_diff_guitool
     gitconfig_diff_guitool=$(git config --global --get diff.guitool)
-    if command -v meld >/dev/null; then
-        difftool='meld'
-        echo '[git] Add meld as a git diff tool'
-        git config --global difftool.meld.cmd 'meld "$LOCAL" "$REMOTE"'
-        git config --global difftool.meld.trustexitcode 'true'
-        git config --global difftool.prompt 'false'
-    fi
     if [ -z "${gitconfig_diff_guitool}" ]; then
         echo "[git] Default diff.guitool is not configured."
-        if [ -n "${difftool}" ]; then
-            read -r -p "[git] Do you want to use '${difftool}' as diff.guitool? [y/N] " response
-            case "$response" in
-                [yY][eE][sS] | [yY]) ;;
-                *)
-                    echo "[git] Skipping diff.guitool setup."
-                    return 0
-                    ;;
-            esac
-            echo "[git] diff.guitool=${difftool}"
-            git config --global diff.guitool "${difftool}"
-        fi
+        setup_default_git_diff_guitool "${difftools[@]}"
     fi
+
+    # Do not prompt before each invocation of the diff tool.
+    git config --global difftool.prompt 'false'
+}
+
+setup_default_git_diff_tool() {
+    local difftools=("$@")
+    for difftool in "${difftools[@]}"; do
+        read -r -p "[git] Do you want to use '${difftool}' as diff.tool? [y/N] " response
+        case "$response" in
+            [yY][eE][sS] | [yY]) ;;
+            *)
+                continue
+                ;;
+        esac
+        echo "[git] diff.tool=${difftool}"
+        git config --global diff.tool "${difftool}"
+        return 0
+    done
+    return 1
+}
+
+setup_default_git_diff_guitool() {
+    local difftools=("$@")
+    for difftool in "${difftools[@]}"; do
+        read -r -p "[git] Do you want to use '${difftool}' as diff.guitool? [y/N] " response
+        case "$response" in
+            [yY][eE][sS] | [yY]) ;;
+            *)
+                continue
+                ;;
+        esac
+        echo "[git] diff.guitool=${difftool}"
+        git config --global diff.guitool "${difftool}"
+        return 0
+    done
+    return 1
 }
 
 setup_git_mergetool() {
-    local mergetool
-    local gitconfig_merge_tool
-    gitconfig_merge_tool=$(git config --global --get merge.tool)
+    local mergetools=()
+
+    if command -v ksdiff >/dev/null; then
+        mergetools+=("ksdiff")
+
+        echo '[git] Add Kaleidoscope (ksdiff) as a git merge tool'
+        # shellcheck disable=SC2016
+        git config --global mergetool.ksdiff.cmd \
+            'ksdiff --merge --output "$MERGED" --base "$BASE" -- "$LOCAL" --snapshot "$REMOTE" --snapshot'
+
+        # Exit mergetool if the invoked merge tool returns a non-zero exit status.
+        git config --global mergetool.ksdiff.trustExitCode 'true'
+    fi
+
     if command -v meld >/dev/null; then
-        mergetool='meld'
-        # Add meld as a mergetool
+        mergetools+=("meld")
+
         echo '[git] Add meld as a git merge tool'
+        # shellcheck disable=SC2016
         git config --global mergetool.meld.cmd \
             'meld --auto-merge "$LOCAL" "$MERGED" "$REMOTE" --output "$MERGED"'
 
-        # Don't ask if we want to skip merge
-        git config --global mergetool.prompt 'false'
-
-        # Don't create backup *.orig files
-        git config --global mergetool.keepBackup 'false'
+        # Exit mergetool if the invoked merge tool returns a non-zero exit status.
+        git config --global mergetool.meld.trustExitCode 'true'
     fi
+
+    local gitconfig_merge_tool
+    gitconfig_merge_tool=$(git config --global --get merge.tool)
     if [ -z "${gitconfig_merge_tool}" ]; then
         echo "[git] Default merge.tool not configured."
-        if [ -n "${mergetool}" ]; then
-            read -r -p "[git] Do you want to use '${mergetool}' as merge.tool? [y/N] " response
-            case "$response" in
-                [yY][eE][sS] | [yY]) ;;
-                *)
-                    echo "[git] Skipping merge.tool setup."
-                    return 0
-                    ;;
-            esac
-            echo "[git] merge.tool=${mergetool}"
-            git config --global merge.tool "${mergetool}"
-        fi
+        setup_default_git_merge_tool "${mergetools[@]}"
     fi
+
+    local gitconfig_merge_guitool
+    gitconfig_merge_guitool=$(git config --global --get merge.guitool)
+    if [ -z "${gitconfig_merge_guitool}" ]; then
+        echo "[git] Default merge.guitool not configured."
+        setup_default_git_merge_guitool "${mergetools[@]}"
+    fi
+
+    # Do not prompt before each invocation of the merge tool.
+    git config --global mergetool.prompt 'false'
+
+    # Automatically remove the backup as files are successfully merged.
+    git config --global mergetool.keepBackup 'false'
+}
+
+setup_default_git_merge_tool() {
+    local mergetools=("$@")
+    for mergetool in "${mergetools[@]}"; do
+        read -r -p "[git] Do you want to use '${mergetool}' as merge.tool? [y/N] " response
+        case "$response" in
+            [yY][eE][sS] | [yY]) ;;
+            *)
+                continue
+                ;;
+        esac
+        echo "[git] merge.tool=${mergetool}"
+        git config --global merge.tool "${mergetool}"
+        return 0
+    done
+    return 1
+}
+
+
+setup_default_git_merge_guitool() {
+    local mergetools=("$@")
+    for mergetool in "${mergetools[@]}"; do
+        read -r -p "[git] Do you want to use '${mergetool}' as merge.guitool? [y/N] " response
+        case "$response" in
+            [yY][eE][sS] | [yY]) ;;
+            *)
+                continue
+                ;;
+        esac
+        echo "[git] merge.guitool=${mergetool}"
+        git config --global merge.guitool "${mergetool}"
+        return 0
+    done
+    return 1
 }
 
 setup_git_editor() {
