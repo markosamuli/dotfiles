@@ -2,6 +2,7 @@
     "version": "0.1",
     "words": [
         "autocmd",
+        "autoenv",
         "bashate",
         "beautysh",
         "colorscheme",
@@ -28,6 +29,7 @@
         "tpope",
         "ttymouse",
         "valloric",
+        "venv",
         "wildignore"
     ]
 }

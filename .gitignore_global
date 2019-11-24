@@ -23,10 +23,6 @@
 *.tar
 *.zip
 
-# Keep current installed version in a local file
-#.npm_installed_version
-#.jspm_installed_version
-
 # OS generated files #
 ######################
 .DS_Store
@@ -34,8 +30,6 @@
 ._*
 .Spotlight-V100
 .Trashes
-Icon?
-ehthumbs.db
 Thumbs.db
 Desktop.ini
 
@@ -44,10 +38,20 @@ Desktop.ini
 .idea/*
 .idea
 
-# Ignore autoenv and pyenv scripts
+# autoenv and pyenv scripts #
+#############################
 .autoenv.zsh
 .autoenv_leave.zsh
 .python-version
 
-# Gem Bundle
+# Gem Bundle #
+##############
 .bundle
+
+# Local virtualenv #
+####################
+.venv/*
+
+# Local .env file #
+###################
+.env
