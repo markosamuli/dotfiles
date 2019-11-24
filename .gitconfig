@@ -1,4 +1,5 @@
 [alias]
+	# Common shortcuts I use
 	co = checkout
 	ci = commit
     pullr = pull --rebase
@@ -6,6 +7,11 @@
 	wd = diff --word-diff="color"
 	wds = diff --word-diff="color" --staged
 	s = status --short --branch
+
+	# Useful but less often used
+	authors = "!git log --pretty=format:%aN | sort | uniq -c | sort -rn"
+	today = log --stat --since=\"1 Day Ago\" --graph --pretty=oneline --abbrev-commit --date=relative
+	undo = reset --soft HEAD^
 
 [url "git@github.com:markosamuli"]
 	insteadOf = https://github.com/markosamuli
