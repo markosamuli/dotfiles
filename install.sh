@@ -12,6 +12,24 @@ error() {
     echo "$@" 1>&2
 }
 
+# Configure install script
+configure_install() {
+    if [ -n "${PS1}" ]; then
+        INTERACTIVE=true
+    elif tty -s; then
+        INTERACTIVE=true
+    fi
+    if [ -z "${INTERACTIVE}" ]; then
+        INSTALL_HOMEBREW=${INSTALL_HOMEBREW:-true}
+        INSTALL_ZSH=${INSTALL_ZSH:-true}
+        INSTALL_ANTIBODY=${INSTALL_ANTIBODY:-true}
+        UPGRADE_ANTIBODY=${UPGRADE_ANTIBODY:-true}
+        UPDATE_ZSH=false
+    else
+        UPDATE_ZSH=true
+    fi
+}
+
 # Install Vim using OS package manager
 install_vim() {
     command -v vim 1>/dev/null 2>&1 && return 0
@@ -90,14 +108,19 @@ install_antibody() {
     command -v antibody 1>/dev/null 2>&1 && return 0
 
     echo "[antibody] antibody is not installed"
-    read -r -p "Do you want to install it now? [y/N] " response
-    case "$response" in
-        [yY][eE][sS] | [yY]) ;;
-        *)
-            echo "[antibody] Skipping antibody setup."
-            return 0
-            ;;
-    esac
+    if [ -z "${INSTALL_ANTIBODY}" ]; then
+        read -r -p "Do you want to install it now? [y/N] " response
+        case "$response" in
+            [yY][eE][sS] | [yY]) ;;
+            *)
+                echo "[antibody] Skipping antibody setup."
+                return 0
+                ;;
+        esac
+    elif [ "${INSTALL_ANTIBODY}" != "true"]; then
+        echo "[antibody] Skipping antibody setup."
+        return 0
+    fi
 
     if [ "$(uname -s)" == "Darwin" ]; then
         install_antibody_with_homebrew
@@ -118,15 +141,20 @@ update_antibody() {
 
     echo "[antibody] Latest antibody version: ${latest_version}"
     echo "[antibody] Installed antibody version: ${installed_version}"
-    read -r -p "Do you want to upgrade? [y/N] " response
+    if [ -z "${UPGRADE_ANTIBODY}" ]; then
+        read -r -p "Do you want to upgrade? [y/N] " response
 
-    case "$response" in
-        [yY][eE][sS] | [yY]) ;;
-        *)
-            echo "[antibody] Skipping antibody upgrade."
-            return 0
-            ;;
-    esac
+        case "$response" in
+            [yY][eE][sS] | [yY]) ;;
+            *)
+                echo "[antibody] Skipping antibody upgrade."
+                return 0
+                ;;
+        esac
+    elif [ "${UPGRADE_ANTIBODY}" != "true"]; then
+        echo "[antibody] Skipping antibody upgrade."
+        return 0
+    fi
 
     if [ "$(uname -s)" == "Darwin" ]; then
         install_antibody_with_homebrew
@@ -159,19 +187,25 @@ install_zsh_darwin() {
     fi
 
     echo "[zsh] zsh is not installed from Homebrew"
-    read -r -p "Do you want to install it now? [y/N] " response
-    case "$response" in
-        [yY][eE][sS] | [yY]) ;;
-        *)
-            echo "[zsh] skipping zsh setup"
-            return 0
-            ;;
-    esac
+    if [ -z "${INSTALL_ZSH}" ]; then
+        read -r -p "Do you want to install it now? [y/N] " response
+        case "$response" in
+            [yY][eE][sS] | [yY]) ;;
+            *)
+                echo "[zsh] skipping zsh setup"
+                return 0
+                ;;
+        esac
+    elif [ "${INSTALL_ZSH}" != "true"]; then
+        echo "[zsh] skipping zsh setup"
+        return 0
+    fi
 
     command -v brew 1>/dev/null 2>&1 || {
         error "[zsh] FAILED: Homebrew not installed."
         exit 1
     }
+    
     echo "[zsh] Installing zsh with Homebrew..."
     brew install zsh
 }
@@ -211,14 +245,19 @@ install_zsh_debian() {
     command -v zsh 1>/dev/null 2>&1 && return 0
 
     echo "[zsh] zsh is not installed"
-    read -r -p "Do you want to install it now? [y/N] " response
-    case "$response" in
-        [yY][eE][sS] | [yY]) ;;
-        *)
-            echo "[zsh] Skipping zsh setup."
-            return 0
-            ;;
-    esac
+    if [ -z "${INSTALL_ZSH}" ]; then
+        read -r -p "Do you want to install it now? [y/N] " response
+        case "$response" in
+            [yY][eE][sS] | [yY]) ;;
+            *)
+                echo "[zsh] Skipping zsh setup."
+                return 0
+                ;;
+        esac
+    elif [ "${INSTALL_ZSH}" != "true"]; then
+        echo "[zsh] skipping zsh setup"
+        return 0
+    fi
 
     echo "[zsh] Installing zsh..."
     sudo apt-get install zsh
@@ -234,14 +273,19 @@ install_homebrew() {
     command -v brew 1>/dev/null 2>&1 && return 0
 
     echo "[homebrew] Homebrew not installed"
-    read -r -p "Do you want to install it now? [y/N] " response
-    case "$response" in
-        [yY][eE][sS] | [yY]) ;;
-        *)
-            echo "[homebrew] Skipping Homebrew setup."
-            return 0
-            ;;
-    esac
+    if [ -z "${INSTALL_HOMEBREW}" ]; then
+        read -r -p "Do you want to install it now? [y/N] " response
+        case "$response" in
+            [yY][eE][sS] | [yY]) ;;
+            *)
+                echo "[homebrew] Skipping Homebrew setup."
+                return 0
+                ;;
+        esac
+    elif [ "${INSTALL_HOMEBREW}" != "true"]; then
+        echo "[homebrew] Skipping Homebrew setup."
+        return 0
+    fi
 
     echo "[homebrew] Installing Homebrew..."
     ruby -e "$(curl -fsSL ${HOMEBREW_INSTALL})" ||
@@ -288,6 +332,7 @@ setup_zsh() {
         echo "[zsh] FAILED: zsh is not installed"
         exit 1
     }
+
     local zsh_bin
     zsh_bin=$(which zsh)
     if [ "$zsh_bin" == "/usr/local/bin/zsh" ]; then
@@ -304,8 +349,13 @@ setup_zsh() {
         [ "$ushell" == "$zsh_bin" ] && return 0
     fi
 
-    echo "[zsh] Updating user default shell to $zsh_bin..."
-    chsh -s $zsh_bin
+    if [ "${UPDATE_ZSH}" == "true" ]; then
+        echo "[zsh] Updating user default shell to $zsh_bin..."
+        chsh -s $zsh_bin
+    else    
+        echo "[zsh] User default shell not set to Zsh"
+        INTERACTIVE_INSTALL_REQUIRED=true
+    fi
 }
 
 # Setup a dotfile symlink
@@ -669,6 +719,23 @@ compare_version() {
     return 0
 }
 
+# Print instructions if interactive install is required
+require_interactive_install() {
+    if [ -n "${INTERACTIVE_INSTALL_REQUIRED}" ]; then
+        echo ""
+        echo "Interactive install required to complete setup."
+        echo ""
+        echo "Please run the following commands:"
+        echo ""
+        echo "  cd $DOTFILES"
+        echo "  make install"
+        echo ""
+    fi
+}
+
+# Configure install script
+configure_install
+
 # Clone dotfiles
 download_dotfiles
 
@@ -705,3 +772,6 @@ setup_git_mergetool
 
 # Fix permissions
 fix_permissions
+
+# Check if interactive install is required
+require_interactive_install
