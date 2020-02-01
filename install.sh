@@ -205,7 +205,7 @@ install_zsh_darwin() {
         error "[zsh] FAILED: Homebrew not installed."
         exit 1
     }
-    
+
     echo "[zsh] Installing zsh with Homebrew..."
     brew install zsh
 }
@@ -352,7 +352,7 @@ setup_zsh() {
     if [ "${UPDATE_ZSH}" == "true" ]; then
         echo "[zsh] Updating user default shell to $zsh_bin..."
         chsh -s $zsh_bin
-    else    
+    else
         echo "[zsh] User default shell not set to Zsh"
         INTERACTIVE_INSTALL_REQUIRED=true
     fi
