@@ -26,6 +26,8 @@ repos:
             zsh/config\.zsh|
             zsh/completion\.zsh
           )
+        args: ["-i", "E006"]
+        verbose: false
 
   - repo: https://github.com/Calinou/pre-commit-luacheck
     rev: v1.0.0
