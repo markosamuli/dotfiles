@@ -401,10 +401,19 @@ fix_permissions() {
         ~/.cache/Homebrew
         ~/.ssh
     )
+    shell_directories=(
+        /usr/local/share/zsh
+    )
     for dir in "${user_only_directories[@]}"; do
         if [ -d "$dir" ]; then
             echo "[permissions] Set permissions in user only directory $dir"
             chmod -R og-rwx $dir
+        fi
+    done
+    for dir in "${shell_directories[@]}"; do
+        if [ -d "$dir" ]; then
+            echo "[permissions] Set permissions in shell directory $dir"
+            chmod -R og-w $dir
         fi
     done
 }
