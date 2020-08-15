@@ -469,7 +469,7 @@ setup_dotfile_symlinks() {
 
 # Setup symlink to Hammerspoon configuration if installed
 setup_hammerspoon() {
-    local hammerspoon_dir="~/.hammerspoon"
+    local hammerspoon_dir="${HOME}/.hammerspoon"
     if [ "$(uname -s)" != "Darwin" ]; then
         return 0
     fi
@@ -478,7 +478,7 @@ setup_hammerspoon() {
     fi
     echo "[hammerspoon] Hammerspoon installed, adding configuration..."
     if [ ! -d "${hammerspoon_dir}" ]; then
-        mkdir -p ${hammerspoon_dir} || {
+        mkdir -p "${hammerspoon_dir}" || {
             error "[hammerspoon] FAILED: Couldn't create ${hammerspoon_dir} directory."
         }
     fi
