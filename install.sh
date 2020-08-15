@@ -135,7 +135,7 @@ install_antibody() {
                 return 0
                 ;;
         esac
-    elif [ "${INSTALL_ANTIBODY}" != "true"]; then
+    elif [ "${INSTALL_ANTIBODY}" != "true" ]; then
         echo "[antibody] Skipping antibody setup."
         return 0
     fi
@@ -145,6 +145,12 @@ install_antibody() {
     else
         install_antibody_with_installer
     fi
+}
+
+# Upgrade antibody with Homebrew on macOS
+upgrade_antibody_with_homebrew() {
+    echo "[antibody] Upgrading antibody with Homebrew..."
+    brew upgrade getantibody/tap/antibody
 }
 
 # Update antibody if we don't have the latest version
@@ -169,13 +175,13 @@ update_antibody() {
                 return 0
                 ;;
         esac
-    elif [ "${UPGRADE_ANTIBODY}" != "true"]; then
+    elif [ "${UPGRADE_ANTIBODY}" != "true" ]; then
         echo "[antibody] Skipping antibody upgrade."
         return 0
     fi
 
     if [ "$(uname -s)" == "Darwin" ]; then
-        install_antibody_with_homebrew
+        upgrade_antibody_with_homebrew
     else
         install_antibody_with_installer
     fi
