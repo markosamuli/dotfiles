@@ -17,13 +17,17 @@ export TERM="xterm-256color"
 unamestr=$(uname)
 if [[ "$unamestr" == 'Linux' ]]; then
   platform='linux'
-  if grep -q Microsoft /proc/version; then
+  if [[ -d "/run/WSL" ]]; then
+    platform_wsl='true'
+  elif grep -q Microsoft /proc/version; then
     platform_wsl='true'
   else
     platform_wsl='false'
   fi
 elif [[ "$unamestr" == 'Darwin' ]]; then
+  # shellcheck disable=SC2034
   platform='macos'
+  # shellcheck disable=SC2034
   platform_wsl='false'
 fi
 unset unamestr
