@@ -33,13 +33,31 @@ configure_install() {
 # Install Vim using OS package manager
 install_vim() {
     command -v vim 1>/dev/null 2>&1 && return 0
-    if [ "$(uname -s)" == "Darwin" ]; then
-        brew install vim
+    local os
+    os="$(uname -s)"
+    if [ "${os}" == "Darwin" ]; then
+        if ! brew install vim; then
+  	    error "[vim] FAILED: brew install vim"
+	    exit 1
+        fi
+	return 0
+    elif [ "${os}" == "Linux" ]; then
+	local distrib
+        distrib=$(linux_distrib)
+        if [ "${distrib}" == "ubuntu" ] || [ "${distrib}" == "debian" ]; then
+            if ! sudo apt-get install -y vim; then
+  	        error "[vim] FAILED: apt-get install vim"
+                exit 1
+            fi
+	    return 0
+	else
+            error "[vim] Unsupported distribution: ${distrib}"
+        fi
     else
-        error "[vim] FAILED: vim is not installed."
-        error "[vim] Unsupported OS or distribution: $(uname -s)"
-        exit 1
+        error "[vim] Unsupported OS: ${os}"
     fi
+    error "[vim] FAILED: vim is not installed."
+    exit 1
 }
 
 # Get latest antibody version from GitHub
@@ -218,7 +236,7 @@ linux_distrib() {
         distrib_id=$(cat /etc/lsb-release | grep DISTRIB_ID= | cut -d= -f2)
         echo "${distrib_id}" | awk '{print tolower($0)}'
     elif [ -e "/etc/os-release" ]; then
-        id=$(cat /etc/os-release | grep ID= | cut -d= -f2)
+        id=$(cat /etc/os-release | grep '^ID=' | cut -d= -f2)
         echo "${id}"
     fi
 }
@@ -260,7 +278,7 @@ install_zsh_debian() {
     fi
 
     echo "[zsh] Installing zsh..."
-    sudo apt-get install zsh
+    sudo apt-get install -y zsh
 }
 
 # Install Homebrew on macOS
