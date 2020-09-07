@@ -12,6 +12,7 @@ blacklist=(
     'source(.*)/.pyenv'
     'export PATH=(.*)\$GOPATH'
     'export PATH=(.*)/.rbenv'
+    'export PATH=(.*)/.tfenv'
     'rbenv init'
     'pyenv init'
 )
