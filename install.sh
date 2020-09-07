@@ -428,12 +428,21 @@ fix_permissions() {
             chmod -R og-rwx $dir
         fi
     done
-    for dir in "${shell_directories[@]}"; do
-        if [ -d "$dir" ]; then
-            echo "[permissions] Set permissions in shell directory $dir"
-            chmod -R og-w $dir
-        fi
-    done
+    if [ "$(uname -s)" == "Linux" ]; then
+        for dir in "${shell_directories[@]}"; do
+            if [ -d "$dir" ]; then
+                echo "[permissions] Set permissions in shell directory $dir"
+                sudo chmod -R og-w $dir
+            fi
+        done
+    else
+        for dir in "${shell_directories[@]}"; do
+            if [ -d "$dir" ]; then
+                echo "[permissions] Set permissions in shell directory $dir"
+                chmod -R og-w $dir
+            fi
+        done
+    fi
 }
 
 # Setup symlinks to dotfiles
