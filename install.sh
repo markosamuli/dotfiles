@@ -37,20 +37,20 @@ install_vim() {
     os="$(uname -s)"
     if [ "${os}" == "Darwin" ]; then
         if ! brew install vim; then
-  	    error "[vim] FAILED: brew install vim"
-	    exit 1
+            error "[vim] FAILED: brew install vim"
+            exit 1
         fi
-	return 0
+        return 0
     elif [ "${os}" == "Linux" ]; then
-	local distrib
+        local distrib
         distrib=$(linux_distrib)
         if [ "${distrib}" == "ubuntu" ] || [ "${distrib}" == "debian" ]; then
             if ! sudo apt-get install -y vim; then
-  	        error "[vim] FAILED: apt-get install vim"
+                error "[vim] FAILED: apt-get install vim"
                 exit 1
             fi
-	    return 0
-	else
+            return 0
+        else
             error "[vim] Unsupported distribution: ${distrib}"
         fi
     else
@@ -65,7 +65,10 @@ latest_antibody_version() {
     local latest_release=""
     local errmsg="[antibody] ERROR: Couldn't get latest antibody release version."
     latest_release=$(get_latest_release getantibody/antibody)
-    [ -z "${latest_release}" ] && { error "${errmsg}"; return 1; }
+    [ -z "${latest_release}" ] && {
+        error "${errmsg}"
+        return 1
+    }
     echo "${latest_release/v/}"
 }
 
@@ -74,18 +77,18 @@ installed_antibody_version() {
     local version=""
     command -v antibody 1>/dev/null 2>&1 || return 1
     version=$(antibody -v 2>&1 | grep 'antibody version' | awk '{ print $3 }')
-    echo ${version/v/}
+    echo "${version/v/}"
 }
 
 # Get latest release for a GitHub repository
 get_latest_release() {
     local repository=$1
     local url="https://api.github.com/repos/${repository}/releases/latest"
-    if [ ! -z "$GITHUB_OAUTH_TOKEN" ]; then
+    if [ -n "$GITHUB_OAUTH_TOKEN" ]; then
         url="${url}?access_token=${GITHUB_OAUTH_TOKEN}"
     fi
-    curl --silent "${url}" | \
-        grep '"tag_name":' | \
+    curl --silent "${url}" |
+        grep '"tag_name":' |
         sed -E 's/.*"([^"]+)".*/\1/'
 }
 
@@ -220,7 +223,7 @@ install_zsh_darwin() {
                 return 0
                 ;;
         esac
-    elif [ "${INSTALL_ZSH}" != "true"]; then
+    elif [ "${INSTALL_ZSH}" != "true" ]; then
         echo "[zsh] skipping zsh setup"
         return 0
     fi
@@ -239,10 +242,10 @@ linux_distrib() {
     local id
     local distrib_id
     if [ -e "/etc/lsb-release" ]; then
-        distrib_id=$(cat /etc/lsb-release | grep DISTRIB_ID= | cut -d= -f2)
+        distrib_id=$(grep DISTRIB_ID= /etc/lsb-release | cut -d= -f2)
         echo "${distrib_id}" | awk '{print tolower($0)}'
     elif [ -e "/etc/os-release" ]; then
-        id=$(cat /etc/os-release | grep '^ID=' | cut -d= -f2)
+        id=$(grep '^ID=' /etc/os-release | cut -d= -f2)
         echo "${id}"
     fi
 }
@@ -278,7 +281,7 @@ install_zsh_debian() {
                 return 0
                 ;;
         esac
-    elif [ "${INSTALL_ZSH}" != "true"]; then
+    elif [ "${INSTALL_ZSH}" != "true" ]; then
         echo "[zsh] skipping zsh setup"
         return 0
     fi
@@ -306,17 +309,17 @@ install_homebrew() {
                 return 0
                 ;;
         esac
-    elif [ "${INSTALL_HOMEBREW}" != "true"]; then
+    elif [ "${INSTALL_HOMEBREW}" != "true" ]; then
         echo "[homebrew] Skipping Homebrew setup."
         return 0
     fi
 
     echo "[homebrew] Installing Homebrew..."
     ruby -e "$(curl -fsSL ${HOMEBREW_INSTALL})" ||
-    {
-        error "[homebrew] FAILED: Something went wrong while installing Homebrew."
-        exit 1
-    }
+        {
+            error "[homebrew] FAILED: Something went wrong while installing Homebrew."
+            exit 1
+        }
 
 }
 
@@ -334,19 +337,19 @@ setup_antibody() {
         exit 1
     }
 
-    if [ ! -d $DOTFILES/antibody ]; then
+    if [ ! -d "${DOTFILES}/antibody" ]; then
         error "[antibody] FAILED: $DOTFILES/antibody does not exist"
         return 1
     fi
 
-    if [ -e "$HOME/.bundles.txt" ]; then
+    if [ -e "${HOME}/.bundles.txt" ]; then
         echo "[antibody] Updating ~/.bundles.txt..."
     else
         echo "[antibody] Creating ~/.bundles.txt..."
     fi
-    antibody bundle <"$DOTFILES/antibody/bundles.txt" > ~/.bundles.txt
-    antibody bundle sindresorhus/pure >> ~/.bundles.txt
-    antibody bundle <"$DOTFILES/antibody/last_bundles.txt" >> ~/.bundles.txt
+    antibody bundle <"${DOTFILES}/antibody/bundles.txt" >~/.bundles.txt
+    antibody bundle sindresorhus/pure >>~/.bundles.txt
+    antibody bundle <"${DOTFILES}/antibody/last_bundles.txt" >>~/.bundles.txt
 }
 
 # Setup zsh as the default shell
@@ -359,23 +362,23 @@ setup_zsh() {
 
     local zsh_bin
     zsh_bin=$(which zsh)
-    if [ "$zsh_bin" == "/usr/local/bin/zsh" ]; then
-        grep -q $zsh_bin /etc/shells || {
-            echo "[zsh] Adding $zsh_bin to /etc/shells..."
-            sudo sh -c "echo $zsh_bin >> /etc/shells"
+    if [ "${zsh_bin}" == "/usr/local/bin/zsh" ]; then
+        grep -q "${zsh_bin}" /etc/shells || {
+            echo "[zsh] Adding ${zsh_bin} to /etc/shells..."
+            sudo sh -c "echo ${zsh_bin} >> /etc/shells"
         }
     fi
     if [ "$(uname -s)" == "Linux" ]; then
-        ushell=$(getent passwd $LOGNAME | cut -d: -f7)
-        [ "$ushell" == "$zsh_bin" ] && return 0
+        ushell=$(getent passwd "${LOGNAME}" | cut -d: -f7)
+        [ "${ushell}" == "${zsh_bin}" ] && return 0
     else
         ushell=$(dscl . -read ~/ UserShell | sed 's/UserShell: //')
-        [ "$ushell" == "$zsh_bin" ] && return 0
+        [ "${ushell}" == "${zsh_bin}" ] && return 0
     fi
 
     if [ "${UPDATE_ZSH}" == "true" ]; then
-        echo "[zsh] Updating user default shell to $zsh_bin..."
-        chsh -s $zsh_bin
+        echo "[zsh] Updating user default shell to ${zsh_bin}..."
+        chsh -s "${zsh_bin}"
     else
         echo "[zsh] User default shell not set to Zsh"
         INTERACTIVE_INSTALL_REQUIRED=true
@@ -385,30 +388,30 @@ setup_zsh() {
 # Setup a dotfile symlink
 setup_dotfile() {
     local dotfile=$1
-    if [ -h "$HOME/$dotfile" ]; then
+    if [ -h "${HOME}/${dotfile}" ]; then
         return 0
     fi
-    if [ -e "$HOME/$dotfile" ]; then
-        echo "[dotfiles] WARNING: ~/$dotfile already exists, skipping symlink setup"
+    if [ -e "${HOME}/${dotfile}" ]; then
+        echo "[dotfiles] WARNING: ~/${dotfile} already exists, skipping symlink setup"
         return 1
     fi
-    echo "[dotfiles] Creating symlink ~/$dotfile -> $DOTFILES/$dotfile"
-    ln -s $DOTFILES/$dotfile ~/$dotfile
+    echo "[dotfiles] Creating symlink ~/${dotfile} -> ${DOTFILES}/${dotfile}"
+    ln -s "${DOTFILES}/${dotfile}" "${HOME}/${dotfile}"
 }
 
 # Backup dotfile before creating symlink
 backup_dotfile() {
     local dotfile=$1
     local timestamp
-    if [ -h "$HOME/$dotfile" ]; then
+    if [ -h "${HOME}/${dotfile}" ]; then
         return 0
     fi
-    if [ ! -e "$HOME/$dotfile" ]; then
+    if [ ! -e "${HOME}/${dotfile}" ]; then
         return 0
     fi
     timestamp=$(date +"%Y%m%d%H%M%S")
-    echo "[dotfiles] Moving ~/$dotfile -> ~/$dotfile.$timestamp"
-    mv ~/$dotfile ~/$dotfile.$timestamp
+    echo "[dotfiles] Moving ~/${dotfile} -> ~/${dotfile}.$timestamp"
+    mv "${HOME}/${dotfile}" "${HOME}/${dotfile}.$timestamp"
 }
 
 # Setup .tmux.conf symlink if tmux is installed
@@ -420,7 +423,7 @@ setup_tmux() {
 # Fix permissions
 fix_permissions() {
     user_only_directories=(
-        $DOTFILES
+        "${DOTFILES}"
         ~/.cache/antibody
         ~/.cache/Homebrew
         ~/.ssh
@@ -429,23 +432,23 @@ fix_permissions() {
         /usr/local/share/zsh
     )
     for dir in "${user_only_directories[@]}"; do
-        if [ -d "$dir" ]; then
-            echo "[permissions] Set permissions in user only directory $dir"
-            chmod -R og-rwx $dir
+        if [ -d "${dir}" ]; then
+            echo "[permissions] Set permissions in user only directory ${dir}"
+            chmod -R og-rwx "${dir}"
         fi
     done
     if [ "$(uname -s)" == "Linux" ]; then
         for dir in "${shell_directories[@]}"; do
-            if [ -d "$dir" ]; then
-                echo "[permissions] Set permissions in shell directory $dir"
-                sudo chmod -R og-w $dir
+            if [ -d "${dir}" ]; then
+                echo "[permissions] Set permissions in shell directory ${dir}"
+                sudo chmod -R og-w "${dir}"
             fi
         done
     else
         for dir in "${shell_directories[@]}"; do
             if [ -d "$dir" ]; then
                 echo "[permissions] Set permissions in shell directory $dir"
-                chmod -R og-w $dir
+                chmod -R og-w "$dir"
             fi
         done
     fi
@@ -462,8 +465,8 @@ setup_dotfile_symlinks() {
         .markdownlintrc
     )
     for file in "${dotfile_symlinks[@]}"; do
-        backup_dotfile $file
-        setup_dotfile $file
+        backup_dotfile "${file}"
+        setup_dotfile "${file}"
     done
 }
 
@@ -677,7 +680,6 @@ setup_default_git_merge_tool() {
     return 1
 }
 
-
 setup_default_git_merge_guitool() {
     local mergetools=("$@")
     for mergetool in "${mergetools[@]}"; do
@@ -720,14 +722,14 @@ setup_vim() {
     local vim_plug="https://raw.github.com/junegunn/vim-plug/master/plug.vim"
     if [ ! -d "${vim_autoload}" ]; then
         echo "[vim] Create ${vim_autoload} directory"
-        mkdir -p ${vim_autoload} || {
+        mkdir -p "${vim_autoload}" || {
             error "[vim] FAILED: couldn't create ${vim_autoload} directory"
             return 1
         }
     fi
     if [ ! -d "${vim_plugged}" ]; then
         echo "[vim] Create ${vim_plugged} plugin directory"
-        mkdir -p ${vim_plugged} || {
+        mkdir -p "${vim_plugged}" || {
             error "[vim] FAILED: couldn't create ${vim_plugged} directory"
             return 1
         }
@@ -751,11 +753,11 @@ compare_version() {
     # shellcheck disable=SC2206
     local installed=($2)
     # shellcheck disable=SC2004
-    if (( ${installed[0]} < ${required[0]} )); then
+    if ((${installed[0]} < ${required[0]})); then
         return 1
     fi
     # shellcheck disable=SC2004
-    if (( ${installed[1]} < ${required[1]} )); then
+    if ((${installed[1]} < ${required[1]})); then
         return 1
     fi
     return 0
