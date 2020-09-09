@@ -29,3 +29,6 @@
 [pull]
 	# Rebase by default
 	rebase = true
+
+[push]
+	default = simple
