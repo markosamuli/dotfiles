@@ -40,10 +40,22 @@ repos:
             functions/
           )
 
-  - repo: https://github.com/bemeurer/beautysh.git
-    rev: '4.1'
+  # Shell script formatting and coding style.
+  - repo: https://github.com/syntaqx/git-hooks
+    rev: v0.0.16
     hooks:
-      - id: beautysh
+      - id: shellcheck
+        exclude: >-
+          (?x)^(
+            .*\.zsh
+          )
+      - id: shfmt
+        args: ["-l", "-w"]
+        verbose: false
+        exclude: >-
+          (?x)^(
+            .*\.zsh
+          )
 
   - repo: https://github.com/openstack-dev/bashate.git
     rev: '0.6.0'
