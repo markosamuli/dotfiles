@@ -9,7 +9,7 @@ if [ -d "$HOME/.nvm" ]; then
 fi
 
 # call 'nvm use' automatically in a directory with a .nvmrc file
-if command -v nvm >/dev/null ; then
+if command -v nvm >/dev/null; then
 
     autoload -U add-zsh-hook
     load-nvmrc() {

@@ -3,5 +3,6 @@
 
 # Initialise Linuxbrew
 if [ -d "/home/linuxbrew/.linuxbrew" ]; then
+    # shellcheck disable=SC2046
     eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
 fi

@@ -2,11 +2,15 @@
 # vim :set ts=2 sw=2 sts=2 et :
 
 # enable color support of ls and also add handy aliases
-if [[ "$platform" == "linux" ]]; then
-
+# shellcheck disable=SC2154
+if [[ "${platform}" == "linux" ]]; then
     # enable color support of ls and also add handy aliases
     if [ -x /usr/bin/dircolors ]; then
-        test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+        if test -r ~/.dircolors; then
+            eval "$(dircolors -b ~/.dircolors)"
+        else
+            eval "$(dircolors -b)"
+        fi
         alias ls='ls --color=auto'
         alias grep='grep --color=auto'
         alias fgrep='fgrep --color=auto'
