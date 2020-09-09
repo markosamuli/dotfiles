@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # vim :set ts=2 sw=2 sts=2 et :
 
+# shellcheck disable=SC2016
 blacklist=(
     'export GOPATH='
     'export NVM_DIR='
@@ -10,7 +11,7 @@ blacklist=(
     'source(.*)/nvm.sh'
     'source(.*)/asdf.sh'
     'source(.*)/.pyenv'
-    'export PATH=(.*)\$GOPATH'
+    'export PATH=(.*)$GOPATH'
     'export PATH=(.*)/.rbenv'
     'export PATH=(.*)/.tfenv'
     'rbenv init'
