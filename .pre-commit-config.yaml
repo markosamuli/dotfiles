@@ -6,10 +6,39 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.4.0
     hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
+      # Check for files that contain merge conflict strings.
+      - id: check-merge-conflict
+
+      # Attempts to load all JSON files to verify syntax.
+      - id: check-json
+
+      # Attempts to load all YAML files to verify syntax.
       - id: check-yaml
+
+      # Remove trailing whitespace from all files.
+      - id: trailing-whitespace
+        # Preserve Markdown hard line breaks.
+        args: ["--markdown-linebreak-ext=md"]
+
+      # Makes sure files end in a newline and only a newline.
+      - id: end-of-file-fixer
+
+      # Prevent giant files from being committed. Default is 500kB.
       - id: check-added-large-files
+
+      # Forbid files which have a UTF-8 byte-order marker.
+      - id: check-byte-order-marker
+
+      # Check for files with names that would conflict on a case-insensitive
+      # filesystem like MacOS HFS+ or Windows FAT.
+      - id: check-case-conflict
+
+      # Check that all executables start with a shebang line.
+      - id: check-executables-have-shebangs
+        exclude: >-
+          (?x)^(
+            functions/
+          )
 
   - repo: https://github.com/bemeurer/beautysh.git
     rev: '4.1'
