@@ -94,17 +94,18 @@ get_latest_release() {
 
 # Download dotfiles if the local directory does not exist
 download_dotfiles() {
+    if [ -d "$DOTFILES" ]; then
+        return 0
+    fi
     command -v git >/dev/null || {
         error "[dotfiles] FAILED: Git is not installed."
         exit 1
     }
-    if [ ! -d "$DOTFILES" ]; then
-        echo "[dotfiles] Cloning dotfiles from GitHub..."
-        git clone $DOTFILES_REPO $DOTFILES || {
-            error "[dotfiles] FAILED: Something went wrong while cloding $DOTFILES_REPO repository."
-            exit 1
-        }
-    fi
+    echo "[dotfiles] Cloning dotfiles from GitHub..."
+    git clone "${DOTFILES_REPO}" "${DOTFILES}" || {
+        error "[dotfiles] FAILED: Something went wrong while cloning ${DOTFILES_REPO} repository."
+        exit 1
+    }
 }
 
 # Install antibody with Homebrew on macOS
