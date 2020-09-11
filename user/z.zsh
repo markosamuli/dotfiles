@@ -1,3 +1,5 @@
 #!/bin/zsh
 
-. "${DOTFILES}/z/z.sh"
+if [ -f "${DOTFILES}/z/z.sh" ]; then
+    . "${DOTFILES}/z/z.sh"
+fi
