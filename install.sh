@@ -546,6 +546,11 @@ setup_gitconfig() {
 }
 
 setup_git_difftool() {
+    if [[ -n "$CI" ]]; then
+        echo '[git] Skip difftool setup on CI'
+        return 0
+    fi
+
     local difftools=()
 
     if command -v ksdiff >/dev/null; then
@@ -624,6 +629,11 @@ setup_default_git_diff_guitool() {
 }
 
 setup_git_mergetool() {
+    if [[ -n "$CI" ]]; then
+        echo '[git] Skip mergetool setup on CI'
+        return 0
+    fi
+
     local mergetools=()
 
     if command -v ksdiff >/dev/null; then
