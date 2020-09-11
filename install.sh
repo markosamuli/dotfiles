@@ -786,7 +786,14 @@ require_interactive_install() {
 }
 
 install_man_pages() {
-    local man_dir="/usr/local/man/man1"
+    local man_dir
+    if [ -d "/usr/local/share/man" ]; then
+        man_dir="/usr/local/share/man/man1"
+    fi
+    if [ -z "${man_dir}" ]; then
+        error "[man] FAILED: couldn't find a directory for man pages"
+        return 1
+    fi
     if [ ! -d "${man_dir}" ]; then
         echo "[man] create ${man_dir}"
         sudo mkdir -p "${man_dir}" || {
@@ -803,7 +810,7 @@ install_man_pages() {
     for file in "${man_files[@]}"; do
         filename=$(basename "${file}")
         man_file="${man_dir}/${filename}"
-        if [ ! -f "${man_file}" ]; then
+        if [[ ! -f "${man_file}" ]]; then
             echo "[man] install ${man_file}"
             sudo cp "${DOTFILES}/${file}" "${man_file}" || {
                 error "[man] FAILED: couldn't create file ${man_file}"
@@ -813,9 +820,11 @@ install_man_pages() {
             update_mandb=1
         fi
     done
-    if [ "${update_mandb}" == "1" ]; then
-        echo "[man] update mandb"
-        sudo mandb -q
+    if [[ "${update_mandb}" == "1" ]]; then
+        if command -v mandb >/dev/null; then
+            echo "[man] update mandb"
+            sudo mandb -q
+        fi
     fi
 }
 
