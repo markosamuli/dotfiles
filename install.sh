@@ -101,11 +101,18 @@ download_dotfiles() {
         error "[dotfiles] FAILED: Git is not installed."
         exit 1
     }
-    echo "[dotfiles] Cloning dotfiles from GitHub..."
-    git clone "${DOTFILES_REPO}" "${DOTFILES}" || {
-        error "[dotfiles] FAILED: Something went wrong while cloning ${DOTFILES_REPO} repository."
-        exit 1
-    }
+    if [ ! -d "${DOTFILES}" ]; then
+        echo "[dotfiles] Cloning dotfiles from GitHub..."
+        git clone --recurse-submodules "${DOTFILES_REPO}" "${DOTFILES}" || {
+            error "[dotfiles] FAILED: Something went wrong while cloning ${DOTFILES_REPO} repository."
+            exit 1
+        }
+    fi
+}
+
+init_submodules() {
+    git -C "${DOTFILES}" submodule init
+    git -C "${DOTFILES}" submodule update
 }
 
 # Install antibody with Homebrew on macOS
@@ -778,17 +785,57 @@ require_interactive_install() {
     fi
 }
 
+install_man_pages() {
+    local man_dir="/usr/local/man/man1"
+    if [ ! -d "${man_dir}" ]; then
+        echo "[man] create ${man_dir}"
+        sudo mkdir -p "${man_dir}" || {
+            error "[man] FAILED: couldn't create directory ${man_dir}"
+            exit 1
+        }
+    fi
+    man_files=(
+        z/z.1
+    )
+    local update_mandb=0
+    local filename
+    local man_file
+    for file in "${man_files[@]}"; do
+        filename=$(basename "${file}")
+        man_file="${man_dir}/${filename}"
+        if [ ! -f "${man_file}" ]; then
+            echo "[man] install ${man_file}"
+            sudo cp "${DOTFILES}/${file}" "${man_file}" || {
+                error "[man] FAILED: couldn't create file ${man_file}"
+                exit 1
+            }
+            sudo chmod 644 "${man_file}"
+            update_mandb=1
+        fi
+    done
+    if [ "${update_mandb}" == "1" ]; then
+        echo "[man] update mandb"
+        sudo mandb -q
+    fi
+}
+
 # Configure install script
 configure_install
 
 # Clone dotfiles
 download_dotfiles
 
+# Initialise Git submodules
+init_submodules
+
 # Install requirements
 install_homebrew
 install_zsh
 install_antibody
 install_vim
+
+# Install man pages
+install_man_pages
 
 # Update requirements
 update_antibody
