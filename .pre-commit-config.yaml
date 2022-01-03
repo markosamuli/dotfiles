@@ -4,7 +4,7 @@
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.4.0
+    rev: v4.1.0
     hooks:
       # Check for files that contain merge conflict strings.
       - id: check-merge-conflict
@@ -42,7 +42,7 @@ repos:
 
   # Shell script formatting and coding style.
   - repo: https://github.com/syntaqx/git-hooks
-    rev: v0.0.16
+    rev: v0.0.17
     hooks:
       - id: shellcheck
         exclude: >-
@@ -58,7 +58,7 @@ repos:
           )
 
   - repo: https://github.com/openstack-dev/bashate.git
-    rev: '0.6.0'
+    rev: '2.1.0'
     hooks:
       - id: bashate
         exclude: >-
