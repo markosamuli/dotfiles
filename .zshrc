@@ -35,18 +35,25 @@ elif [[ "$unamestr" == 'Darwin' ]]; then
   platform='macos'
   # shellcheck disable=SC2034
   platform_wsl='false'
+  if [[ `uname -m` == 'arm64' ]]; then
+    platform_apple_silicon='true'
+  fi
 fi
 unset unamestr
 
-if [ -d "$HOME/.oh-my-zsh" ]; then
+if [ -d "$HOME/.sheldon" ]; then
+  export ZSH_PLUGIN_MANAGER="sheldon"
+elif [ -d "$HOME/.oh-my-zsh" ]; then
   # Path to your oh-my-zsh installation.
   export ZSH="$HOME/.oh-my-zsh"
+  export ZSH_PLUGIN_MANAGER="oh-my-zsh"
 
   # initialise and load oh-my-zsh
   source $DOTFILES/oh-my-zsh/oh-my-zsh.zsh
 else
   # shortcut to this dotfiles path is $ZSH
   export ZSH="$DOTFILES"
+  export ZSH_PLUGIN_MANAGER="antibody"
 
   # path for loading antibody bundles
   if [ -e "$HOME/.bundles.txt" ]; then
@@ -63,7 +70,7 @@ fi
 typeset -U config_files
 config_files=($DOTFILES/*/*.zsh)
 
-# remove antibody and oh-my-zsh configuration
+# remove oh-my-zsh configuration
 config_files=(${config_files:#*/oh-my-zsh/*.zsh})
 
 # load the path files
@@ -71,9 +78,12 @@ for file in ${(M)config_files:#*/path.zsh}; do
   source "$file"
 done
 
-# load antibody plugins
-if [ -n "$antibody_bundles" ]; then
-  source "$antibody_bundles"
+if [[ "${ZSH_PLUGIN_MANAGER}" == "sheldon" ]]; then
+  eval "$(sheldon source)"
+elif [[ "${ZSH_PLUGIN_MANAGER}" == "antibody" ]]; then
+  if [[ -n "$antibody_bundles" ]]; then
+    source "$antibody_bundles"
+  fi
 fi
 
 # load everything but the path and completion files
