@@ -428,6 +428,7 @@ setup_sheldon() {
 
     if [ ! -e "${HOME}/.sheldon/plugins.toml" ]; then
         echo "[sheldon] Creating ~/.sheldon/plugins.toml symlink"
+        mkdir -p "${HOME}/.sheldon"
         setup_dotfile ".sheldon/plugins.toml"
     fi
 }
