@@ -23,4 +23,7 @@ aws_vault_prompt_precmd() {
     fi
 }
 
-add-zsh-hook precmd aws_vault_prompt_precmd
+if command -v aws-vault >/dev/null; then
+    autoload -U add-zsh-hook
+    add-zsh-hook precmd aws_vault_prompt_precmd
+fi
