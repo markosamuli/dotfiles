@@ -430,8 +430,6 @@ setup_sheldon() {
         echo "[sheldon] Creating ~/.sheldon/plugins.toml symlink"
         setup_dotfile ".sheldon/plugins.toml"
     fi
-
-    sheldon lock
 }
 
 # Setup zsh as the default shell
