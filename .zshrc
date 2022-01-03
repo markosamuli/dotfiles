@@ -41,24 +41,17 @@ elif [[ "$unamestr" == 'Darwin' ]]; then
 fi
 unset unamestr
 
-if [ -d "$HOME/.sheldon" ]; then
+if [ -e "$HOME/.sheldon/plugins.toml" ]; then
   export ZSH_PLUGIN_MANAGER="sheldon"
 elif [ -d "$HOME/.oh-my-zsh" ]; then
-  # Path to your oh-my-zsh installation.
   export ZSH="$HOME/.oh-my-zsh"
   export ZSH_PLUGIN_MANAGER="oh-my-zsh"
-
-  # initialise and load oh-my-zsh
-  source $DOTFILES/oh-my-zsh/oh-my-zsh.zsh
-else
-  # shortcut to this dotfiles path is $ZSH
-  export ZSH="$DOTFILES"
+elif [ -e "$HOME/.bundles.txt" ]; then
   export ZSH_PLUGIN_MANAGER="antibody"
+fi
 
-  # path for loading antibody bundles
-  if [ -e "$HOME/.bundles.txt" ]; then
-    antibody_bundles="$HOME/.bundles.txt"
-  fi
+if [[ "${ZSH_PLUGIN_MANAGER}" == "oh-my-zsh" ]]; then
+  source $DOTFILES/oh-my-zsh/oh-my-zsh.zsh
 fi
 
 ###
@@ -81,8 +74,8 @@ done
 if [[ "${ZSH_PLUGIN_MANAGER}" == "sheldon" ]]; then
   eval "$(sheldon source)"
 elif [[ "${ZSH_PLUGIN_MANAGER}" == "antibody" ]]; then
-  if [[ -n "$antibody_bundles" ]]; then
-    source "$antibody_bundles"
+  if [ -e "$HOME/.bundles.txt" ]; then
+    source "$HOME/.bundles.txt"
   fi
 fi
 
@@ -106,7 +99,7 @@ for file in ${(M)config_files:#*/completion.zsh}; do
   source "$file"
 done
 
-unset config_files updated_at platform platform_wsl antibody_bundles
+unset config_files updated_at platform platform_wsl
 
 # use .localrc for SUPER SECRET CRAP that you don't
 # want in your public, versioned repo.
