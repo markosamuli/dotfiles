@@ -88,7 +88,7 @@ endif
 .PHONY: setup-shfmt
 setup-shfmt: setup-golang
 ifeq ($(SHFMT_BIN),)
-	GO111MODULE=on go get mvdan.cc/sh/v3/cmd/shfmt
+	go install mvdan.cc/sh/v3/cmd/shfmt@latest
 endif
 
 ###
