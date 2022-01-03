@@ -1,4 +1,4 @@
-
+# shellcheck shell=bash
 # vim :set ts=2 sw=2 sts=2 et :
 # ~/.bashrc: executed by bash(1) for non-login shells.
 
@@ -34,8 +34,8 @@ unset unamestr
 
 # If not running interactively, don't do anything
 case $- in
-    *i*) ;;
-      *) return;;
+  *i*) ;;
+  *) return ;;
 esac
 
 # check the window size after each command and, if necessary,
@@ -57,37 +57,44 @@ fi
 
 # all of our bash files
 declare -a config_files path_files completion_files
+
+# shellcheck disable=SC2206
 config_files=($DOTFILES/*/*.bash)
 
 # empty the list if we have no matches
+# shellcheck disable=SC2128
 if [ "$config_files" = "$DOTFILES/*/*.bash" ]; then
   config_files=()
   path_files=()
   completion_files=()
 else
   # path files
+  # shellcheck disable=SC2206
   path_files=($DOTFILES/*/path.bash)
+  # shellcheck disable=SC2128
   if [ "$path_files" = "$DOTFILES/*/path.bash" ]; then
     path_files=()
   fi
   # remove path_files from config_files
   for file in "${path_files[@]}"; do
-    config_files=("${config_files[@]/$file}")
+    config_files=("${config_files[@]/$file/}")
   done
   # completion files
+  # shellcheck disable=SC2206
   completion_files=($DOTFILES/*/completion.bash)
+  # shellcheck disable=SC2128
   if [ "$completion_files" = "$DOTFILES/*/completion.bash" ]; then
     completion_files=()
   fi
   # remove completion_files from config_files
   for file in "${completion_files[@]}"; do
-    config_files=("${config_files[@]/$file}")
+    config_files=("${config_files[@]/$file/}")
   done
   # remove empty items in config_files
   declare -a clean_config_files
   for i in "${!config_files[@]}"; do
     if [ "${config_files[i]}" != "" ]; then
-      clean_config_files+=( "${config_files[i]}" )
+      clean_config_files+=("${config_files[i]}")
     fi
   done
   config_files=("${clean_config_files[@]}")
@@ -96,11 +103,13 @@ fi
 
 # load the path files and remove from config_files
 for file in "${path_files[@]}"; do
+  # shellcheck disable=SC1090
   source "$file"
 done
 
 # load everything but the path and completion files
 for file in "${config_files[@]}"; do
+  # shellcheck disable=SC1090
   source "$file"
 done
 
@@ -120,10 +129,12 @@ fi
 
 # load every completion after autocomplete loads
 for file in "${completion_files[@]}"; do
+  # shellcheck disable=SC1090
   source "$file"
 done
 
 unset config_files platform platform_wsl completion_files path_files
 
 # use .localrc for secret
+# shellcheck disable=SC1090
 [ -f ~/.localrc ] && . ~/.localrc
