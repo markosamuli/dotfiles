@@ -53,7 +53,7 @@ setup-dev-requirements:
 	pip install -q -r requirements.dev.txt
 
 .PHONY: setup-lint
-setup-lint: setup-pre-commit setup-shfmt setup-shellcheck setup-luacheck
+setup-lint: setup-pre-commit setup-shfmt setup-shellcheck
 
 .PHONY: setup-curl
 setup-curl:
@@ -73,11 +73,11 @@ ifeq ($(GO_BIN),)
 	$(error "go not found")
 endif
 
-.PHONY: setup-luacheck
-setup-luacheck:
-ifeq ($(LUACHECK_BIN),)
-	$(error "luacheck not found")
-endif
+# .PHONY: setup-luacheck
+# setup-luacheck:
+# ifeq ($(LUACHECK_BIN),)
+# 	$(error "luacheck not found")
+# endif
 
 .PHONY: setup-shellcheck
 setup-shellcheck:
