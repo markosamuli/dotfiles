@@ -546,6 +546,7 @@ setup_dotfile_symlinks() {
     dotfile_symlinks=(
         .aliases
         .zshrc
+        .zprofile
         .bashrc
         .gitignore_global
         .editorconfig
