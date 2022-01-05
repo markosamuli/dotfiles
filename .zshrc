@@ -101,6 +101,9 @@ done
 
 unset config_files updated_at platform platform_wsl
 
+# Prevent NMV install.sh script from altering my profile script as it's already loaded in the config files.
+# /nvm.sh $NVM_DIR/bash_completion
+
 # use .localrc for SUPER SECRET CRAP that you don't
 # want in your public, versioned repo.
 # shellcheck disable=SC1090
