@@ -3,17 +3,31 @@
 # Use the full path so it will work even while switching between Python versions
 _full_python3_path() {
     local python3_path
-    if command -v pyenv >/dev/null; then
-        python3_path=$(pyenv which python3)
+    local python3_version
+    if ! command -v pyenv >/dev/null; then
+        echo "WARNING: pyenv not found" >&2
+        return 1
     fi
+    python3_version=$(pyenv whence python3.7 | tail -1)
+    if [ -z "${python3_version}" ]; then
+        echo "WARNING: python 3.7 version not found, try installing it with pyenv" >&2
+        return 1
+    fi
+    python3_path=$(PYENV_VERSION=${python3_version} pyenv which python3.7)
     if [ -z "${python3_path}" ]; then
-        python3_path="python3"
+        echo "WARNING: python3.7 binary not found" >&2
+        return 1
     fi
     echo "${python3_path}"
 }
 
-# Use python3 over python2
-if command -v python3 >/dev/null; then
-    CLOUDSDK_PYTHON=$(_full_python3_path)
-    export CLOUDSDK_PYTHON
-fi
+# Initialise CLOUDSDK_PYTHON
+_init_cloudsdk_python() {
+    local cloudsdk_python
+    cloudsdk_python=$(_full_python3_path)
+    if [ -n "${cloudsdk_python}" ]; then
+        export CLOUDSDK_PYTHON="${cloudsdk_python}"
+    fi
+}
+
+_init_cloudsdk_python
