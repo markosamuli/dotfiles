@@ -4,6 +4,8 @@
 # load Ansible managed .pyenvrc config
 if [ -e "$HOME/.pyenv/.pyenvrc" ]; then
     source $HOME/.pyenv/.pyenvrc
+elif [ -d "$HOME/.pyenv" ]; then
+    eval "$(pyenv init -)"
 fi
 
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1

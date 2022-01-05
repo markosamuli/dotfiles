@@ -7,21 +7,29 @@ DOTFILES=$HOME/.dotfiles
 GITHUB_RAW=https://raw.githubusercontent.com
 HOMEBREW_INSTALL=${GITHUB_RAW}/Homebrew/install/master/install
 
-# Print error into STDERR
 error() {
     echo "$@" 1>&2
 }
 
-# Configure install script
 configure_install() {
     if [ -n "${PS1}" ]; then
         INTERACTIVE=true
     elif tty -s; then
         INTERACTIVE=true
     fi
+    if [ -z "${ZSH_PLUGIN_MANAGER}" ]; then
+        if command -v sheldon 1>/dev/null 2>&1; then
+            ZSH_PLUGIN_MANAGER="sheldon"
+        elif command -v antibody 1>/dev/null 2>&1; then
+            ZSH_PLUGIN_MANAGER="antibody"
+        else
+            ZSH_PLUGIN_MANAGER="sheldon"
+        fi
+    fi
     if [ -z "${INTERACTIVE}" ]; then
         INSTALL_HOMEBREW=${INSTALL_HOMEBREW:-true}
         INSTALL_ZSH=${INSTALL_ZSH:-true}
+        INSTALL_SHELDON=${INSTALL_SHELDON:-true}
         INSTALL_ANTIBODY=${INSTALL_ANTIBODY:-true}
         UPGRADE_ANTIBODY=${UPGRADE_ANTIBODY:-true}
         UPDATE_ZSH=false
@@ -115,13 +123,48 @@ init_submodules() {
     git -C "${DOTFILES}" submodule update
 }
 
-# Install antibody with Homebrew on macOS
+install_sheldon() {
+
+    if [[ "${ZSH_PLUGIN_MANAGER}" != "sheldon" ]]; then
+        echo "[sheldon] Skipping setup as sheldon is not set as the active plugin manager."
+        return 0
+    fi
+
+    command -v sheldon 1>/dev/null 2>&1 && return 0
+
+    echo "[sheldon] sheldon is not installed"
+    if [ -z "${INSTALL_SHELDON}" ]; then
+        read -r -p "Do you want to install it now? [y/N] " response
+        case "$response" in
+            [yY][eE][sS] | [yY]) ;;
+            *)
+                echo "[sheldon] Skipping sheldon setup."
+                return 0
+                ;;
+        esac
+    elif [ "${INSTALL_SHELDON}" != "true" ]; then
+        echo "[sheldon] Skipping sheldon setup."
+        return 0
+    fi
+
+    if [ "$(uname -s)" == "Darwin" ]; then
+        install_sheldon_with_homebrew
+    else
+        echo '[sheldon] Install not supported.'
+        return 1
+    fi
+}
+
+install_sheldon_with_homebrew() {
+    echo "[sheldon] Installing sheldon with Homebrew..."
+    brew install sheldon
+}
+
 install_antibody_with_homebrew() {
     echo "[antibody] Installing antibody with Homebrew..."
     brew install getantibody/tap/antibody
 }
 
-# Install antibody using installer on other distributions
 install_antibody_with_installer() {
     echo "[antibody] Installing antibody with the installer..."
     command -v curl 1>/dev/null 2>&1 || {
@@ -131,8 +174,14 @@ install_antibody_with_installer() {
     curl -sfL git.io/antibody | sudo sh -s - -b /usr/local/bin
 }
 
-# Install antibody if the binary is not found
 install_antibody() {
+
+    [[ "${ZSH_PLUGIN_MANAGER}" != "antibody" ]] && return 1
+
+    if [[ $(uname -s) == 'Darwin' ]] && [[ $(uname -m) == 'arm64' ]]; then
+        echo "[antibody] WARNING: Skipping antibody setup on Apple Silicon."
+        return 1
+    fi
 
     command -v antibody 1>/dev/null 2>&1 && return 0
 
@@ -158,14 +207,17 @@ install_antibody() {
     fi
 }
 
-# Upgrade antibody with Homebrew on macOS
 upgrade_antibody_with_homebrew() {
     echo "[antibody] Upgrading antibody with Homebrew..."
     brew upgrade getantibody/tap/antibody
 }
 
-# Update antibody if we don't have the latest version
 update_antibody() {
+
+    if [[ $(uname -s) == 'Darwin' ]] && [[ $(uname -m) == 'arm64' ]]; then
+        echo "[antibody] WARNING: Skipping antibody setup on Apple Silicon."
+        return 1
+    fi
 
     local latest_version
     latest_version=$(latest_antibody_version)
@@ -200,9 +252,9 @@ update_antibody() {
 
 # Install zsh
 install_zsh() {
-    if [ "$(uname -s)" == "Darwin" ]; then
+    if [[ $(uname -s) == 'Darwin' ]]; then
         install_zsh_darwin
-    elif [ "$(uname -s)" == "Linux" ]; then
+    elif [[ $(uname -s) == 'Linux' ]]; then
         install_zsh_linux
     else
         command -v zsh 1>/dev/null 2>&1 && return 0
@@ -217,7 +269,9 @@ install_zsh_darwin() {
 
     local zsh_bin
     zsh_bin=$(which zsh)
-    if [ "$zsh_bin" == "/usr/local/bin/zsh" ]; then
+    if [[ -n "${HOMEBREW_PREFIX}" ]] && [[ "$zsh_bin" == "${HOMEBREW_PREFIX}/bin/zsh" ]]; then
+        return 0
+    elif [ "$zsh_bin" == "/usr/local/bin/zsh" ]; then
         return 0
     fi
 
@@ -340,6 +394,11 @@ antibody_version() {
 # Create or update antibody ~/.bundles.txt file
 setup_antibody() {
 
+    if [[ $(uname -s) == 'Darwin' ]] && [[ $(uname -m) == 'arm64' ]]; then
+        echo "[antibody] WARNING: Skipping antibody setup on Apple Silicon."
+        return 1
+    fi
+
     command -v antibody 1>/dev/null 2>&1 || {
         error "[antibody] FAILED: antibody is not installed"
         exit 1
@@ -360,6 +419,20 @@ setup_antibody() {
     antibody bundle <"${DOTFILES}/antibody/last_bundles.txt" >>~/.bundles.txt
 }
 
+setup_sheldon() {
+
+    command -v sheldon 1>/dev/null 2>&1 || {
+        error "[sheldon] FAILED: sheldon is not installed"
+        exit 1
+    }
+
+    if [ ! -e "${HOME}/.sheldon/plugins.toml" ]; then
+        echo "[sheldon] Creating ~/.sheldon/plugins.toml symlink"
+        mkdir -p "${HOME}/.sheldon"
+        setup_dotfile ".sheldon/plugins.toml"
+    fi
+}
+
 # Setup zsh as the default shell
 setup_zsh() {
     local ushell
@@ -370,12 +443,18 @@ setup_zsh() {
 
     local zsh_bin
     zsh_bin=$(which zsh)
-    if [ "${zsh_bin}" == "/usr/local/bin/zsh" ]; then
+    if [[ -n "${HOMEBREW_PREFIX}" ]] && [[ "$zsh_bin" == "${HOMEBREW_PREFIX}/bin/zsh" ]]; then
+        grep -q "${zsh_bin}" /etc/shells || {
+            echo "[zsh] Adding ${zsh_bin} to /etc/shells..."
+            sudo sh -c "echo ${zsh_bin} >> /etc/shells"
+        }
+    elif [ "${zsh_bin}" == "/usr/local/bin/zsh" ]; then
         grep -q "${zsh_bin}" /etc/shells || {
             echo "[zsh] Adding ${zsh_bin} to /etc/shells..."
             sudo sh -c "echo ${zsh_bin} >> /etc/shells"
         }
     fi
+
     if [ "$(uname -s)" == "Linux" ]; then
         ushell=$(getent passwd "${LOGNAME}" | cut -d: -f7)
         [ "${ushell}" == "${zsh_bin}" ] && return 0
@@ -797,7 +876,10 @@ require_interactive_install() {
 
 install_man_pages() {
     local man_dir
-    if [ -d "/usr/local/share/man" ]; then
+
+    if [[ -n "${HOMEBREW_PREFIX}" ]] && [[ -d "${HOMEBREW_PREFIX}/share/man" ]]; then
+        man_dir="${HOMEBREW_PREFIX}/share/man/man1"
+    elif [ -d "/usr/local/share/man" ]; then
         man_dir="/usr/local/share/man/man1"
     fi
     if [ -z "${man_dir}" ]; then
@@ -838,6 +920,28 @@ install_man_pages() {
     fi
 }
 
+install_requirements() {
+    install_homebrew
+    install_zsh
+    if [[ "$ZSH_PLUGIN_MANAGER" == "sheldon" ]]; then
+        install_sheldon
+    elif [[ "$ZSH_PLUGIN_MANAGER" == "antibody" ]]; then
+        install_antibody
+        update_antibody
+    fi
+    install_vim
+    install_man_pages
+}
+
+configure_zsh() {
+    setup_zsh
+    if [[ "$ZSH_PLUGIN_MANAGER" == "sheldon" ]]; then
+        setup_sheldon
+    elif [[ "$ZSH_PLUGIN_MANAGER" == "antibody" ]]; then
+        setup_antibody
+    fi
+}
+
 # Configure install script
 configure_install
 
@@ -848,20 +952,10 @@ download_dotfiles
 init_submodules
 
 # Install requirements
-install_homebrew
-install_zsh
-install_antibody
-install_vim
-
-# Install man pages
-install_man_pages
-
-# Update requirements
-update_antibody
+install_requirements
 
 # Configure zsh
-setup_zsh
-setup_antibody
+configure_zsh
 
 # Configure vim
 setup_vim

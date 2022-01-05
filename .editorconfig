@@ -14,24 +14,30 @@ indent_style = space
 [*.md]
 trim_trailing_whitespace = false
 
-# Vim
 # https://google.github.io/styleguide/vimscriptguide.xml
 [{.vimrc,*.vim}]
 indent_size = 4
 
-# Makefile
 [Makefile]
 tab_width = 2
 indent_style = tab
 
-# zsh scripts
-[{.zshrc,.zshrc.*,*.zsh}]
+[.zshrc]
+indent_size = 2
+shell_variant      = zsh
+switch_case_indent = true
+
+[{.zshrc.*,*.zsh}]
 indent_size = 4
 shell_variant      = zsh
 switch_case_indent = true
 
-# bash scripts
-[{.bashrc,*.sh,*.bash}]
+[.bashrc]
+indent_size = 2
+shell_variant      = bash
+switch_case_indent = true
+
+[{*.sh,*.bash}]
 indent_size = 4
 shell_variant      = bash
 switch_case_indent = true
