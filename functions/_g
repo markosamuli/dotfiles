@@ -1,0 +1,10 @@
+#compdef g
+if [ -z "$GOPATH" ]; then
+  echo "GOPATH not defined" >&1
+  exit 1
+fi
+if [ -n "${GITHUB_ORG}" ]; then
+  _files -W "$GOPATH/src/github.com/${GITHUB_ORG}/" -/
+else
+  _files -W "$GOPATH/src/github.com/" -/
+fi

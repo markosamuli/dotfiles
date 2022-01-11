@@ -1,0 +1,16 @@
+#!/bin/sh
+# shellcheck disable=SC2164
+if [ -z "${GOPATH}" ]; then
+  echo "GOPATH not defined" >&1
+  exit 1
+fi
+if [ -n "${GITHUB_ORG}" ]; then
+  if [ ! -d "${GOPATH}/src/github.com/${GITHUB_ORG}/$1" ]; then
+    echo "${GITHUB_ORG}/$1 not found, cloning it now..."
+    git clone "git@github.com:${GITHUB_ORG}/$1.git" "${GOPATH}/src/github.com/${GITHUB_ORG}/$1"
+  fi
+  cd "${GOPATH}/src/github.com/${GITHUB_ORG}/$1"
+else
+  cd "${GOPATH}/src/github.com/$1"
+fi
+
