@@ -1,10 +1,73 @@
 #compdef g
+# shellcheck disable=all
+
 if [ -z "$GOPATH" ]; then
   echo "GOPATH not defined" >&1
   exit 1
 fi
-if [ -n "${GITHUB_ORG}" ]; then
-  _files -W "$GOPATH/src/github.com/${GITHUB_ORG}/" -/
-else
-  _files -W "$GOPATH/src/github.com/" -/
-fi
+
+__go_files() {
+  if [ -n "${GITHUB_ORG}" ]; then
+    _files -W "$GOPATH/src/github.com/${GITHUB_ORG}/" -/
+  else
+    _files -W "$GOPATH/src/github.com/" -/
+  fi
+}
+
+__gh_repo_list_go() {
+  local owner="$1"
+  if ! command -v gh >/dev/null; then
+    echo "GitHub CLI not found" >&2
+    return 1
+  fi
+  if ! command -v jq >/dev/null; then
+    echo "jq not found" >&2
+    return 1
+  fi
+  if [ -z "${owner}" ]; then
+    echo "GitHub owner or organisation not defined" >&2
+    return 1
+  fi
+
+  local datafile="$HOME/.cache/gh-${owner}-go-repos.json"
+
+  if [ -e "${datafile}" ] && find "${datafile}" -mmin +60 >/dev/null; then
+    rm "${datafile}"
+  fi
+
+  if [ ! -e "${datafile}" ]; then
+    gh repo list "${owner}" \
+      --limit 250 \
+      --no-archived \
+      --language Go \
+      --json name,description > "${datafile}"
+  fi
+
+  jq '.[]
+      | select(.description | length > 0)
+      | .description |= sub("\n"; " ")
+      | .name + ":" + .description' "${datafile}"
+}
+
+__get_gh_repos() {
+  if [ -z "${GITHUB_ORG}" ]; then
+    echo "GitHub owner or organisation not defined" >&2
+    return 1
+  fi
+  local -a _gh_repos
+  if _cache_invalid G_gh_repos || ! _retrieve_cache G_gh_repos; then
+    _gh_repos=($(__gh_repo_list_go "${GITHUB_ORG}"))
+    _store_cache G_gh_repos _gh_repos
+  fi
+  typeset -g gh_repos=($_gh_repos)
+}
+
+_g() {
+  # local -i nmatches=$compstate[nmatches]
+  # _alternative "files:filename:__go_files"
+  # (( compstate[nmatches] > nmatches )) && return 0
+  __get_gh_repos
+  _alternative "args:repositories:(($gh_repos))"
+}
+
+_g
