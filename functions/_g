@@ -36,6 +36,7 @@ __gh_repo_list_go() {
   fi
 
   if [ ! -e "${datafile}" ]; then
+    mkdir -p "$HOME/.cache"
     gh repo list "${owner}" \
       --limit 250 \
       --no-archived \
