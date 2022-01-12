@@ -45,7 +45,7 @@ __gh_repo_list_go() {
 
   jq '.[]
       | select(.description | length > 0)
-      | .description |= sub("\n"; " ")
+      | .description |= gsub("[\\n\\t]"; " ")
       | .name + ":" + .description' "${datafile}"
 }
 
@@ -63,11 +63,13 @@ __get_gh_repos() {
 }
 
 _g() {
-  # local -i nmatches=$compstate[nmatches]
-  # _alternative "files:filename:__go_files"
-  # (( compstate[nmatches] > nmatches )) && return 0
+  local -i nmatches=$compstate[nmatches]
+  if [ -n "${PREFIX}" ]; then
+    _arguments "1::filename:__go_files"
+    (( compstate[nmatches] > nmatches )) && return 0
+  fi
   __get_gh_repos
-  _alternative "args:repositories:(($gh_repos))"
+  _arguments "1::repositories:(($gh_repos))"
 }
 
-_g
+# _g
