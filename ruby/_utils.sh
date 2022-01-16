@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/usr/bin/env bash
+# Common functions for configuring Ruby.
 
 _dotfiles_ruby() {
     # Use rbenv
@@ -27,7 +28,6 @@ _dotfiles_add_ruby_from_homebrew_to_path() {
     if ! command -v brew >/dev/null; then
         return 0
     fi
-    # shellcheck disable=SC3043
     local ruby_prefix
     ruby_prefix=$(brew --prefix ruby)
     if [ -n "${ruby_prefix}" ] && [ -d "${ruby_prefix}" ]; then
