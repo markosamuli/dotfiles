@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # Use the full path so it will work even while switching between Python versions
 _dotfiles_python3_path() {
