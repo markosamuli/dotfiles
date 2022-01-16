@@ -87,8 +87,24 @@ download_dotfiles() {
     fi
 }
 
-# Install sheldon: https://github.com/rossmacarthur/sheldon
+init_local_bin_path() {
+    if [ ! -d "${HOME}/.local/bin" ]; then
+        return 0
+    fi
+    if [[ "${PATH}" =~ "${HOME}/.local/bin" ]]; then
+        return 0
+    fi
+    PATH="${HOME}/.local/bin:${PATH}"
+}
+
 install_sheldon() {
+
+    if [[ "${ZSH_PLUGIN_MANAGER}" != "sheldon" ]]; then
+        echo "[sheldon] Skipping setup as sheldon is not set as the active plugin manager."
+        return 0
+    fi
+
+    init_local_bin_path
 
     command -v sheldon 1>/dev/null 2>&1 && return 0
 
@@ -112,12 +128,13 @@ install_sheldon_with_homebrew() {
 }
 
 install_sheldon_with_installer() {
-    echo "[sheldon] Installing sheldon with installer..."
+    echo "[sheldon] Installing sheldon with the installer..."
     command -v curl 1>/dev/null 2>&1 || {
         error "[sheldon] FAILED: cURL is not installed"
         exit 1
     }
-    curl --proto '=https' -fLsS https://rossmacarthur.github.io/install/crate.sh | bash -s -- --repo rossmacarthur/sheldon --to ~/.local/bin
+    curl --proto '=https' -fLsS https://rossmacarthur.github.io/install/crate.sh \
+        | bash -s -- --repo rossmacarthur/sheldon --to ~/.local/bin
 }
 
 # Install zsh
@@ -136,7 +153,6 @@ install_zsh() {
 
 # Install zsh from Homebrew on macOS
 install_zsh_darwin() {
-
     local zsh_bin
     zsh_bin=$(which zsh)
     if [[ -n "${HOMEBREW_PREFIX}" ]] && [[ "$zsh_bin" == "${HOMEBREW_PREFIX}/bin/zsh" ]]; then
@@ -288,20 +304,31 @@ install_github_cli_apt() {
 
 setup_sheldon() {
 
+    init_local_bin_path
+
     command -v sheldon 1>/dev/null 2>&1 || {
         error "[sheldon] FAILED: sheldon is not installed"
         exit 1
     }
 
-    if [ -d "${HOME}/.sheldon" ]; then
-        echo "[sheldon] Delete old ~/.sheldon directory"
-        rm -rf "${HOME}/.sheldon"
+    local xdg_config_user
+    xdg_config_user="${XDG_CONFIG_HOME:-$HOME/.config}"
+
+    local sheldon_config
+    if [ -d "${xdg_config_user}" ]; then
+        sheldon_config="${xdg_config_user}/sheldon"
+    else
+        sheldon_config="${HOME}/.sheldon"
+    fi
+    if [ ! -d "${sheldon_config}" ]; then
+        mkdir -p "${sheldon_config}"
     fi
 
-    if [ ! -e "${HOME}/.config/sheldon/plugins.toml" ]; then
-        echo "[sheldon] Creating ~/.config/sheldon/plugins.toml symlink"
-        mkdir -p "${HOME}/.config/sheldon"
-        setup_dotfile ".config/sheldon/plugins.toml"
+    local sheldon_plugins
+    sheldon_plugins="${sheldon_config}/plugins.toml"
+    if [ ! -e "${sheldon_plugins}" ]; then
+        echo "[sheldon] Creating ${sheldon_plugins/$HOME/~} symlink"
+        ln -s "${DOTFILES}/.sheldon/plugins.toml" "${sheldon_plugins}"
     fi
 }
 
