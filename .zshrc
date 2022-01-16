@@ -6,11 +6,10 @@
 export PROJECTS="$HOME/projects"
 
 # path to the local dotfiles repository
-if [ -d "$HOME/.dotfiles" ]; then
-  export DOTFILES="$HOME/.dotfiles"
-else
-  echo "could not find ~/.dotfiles directory"
-  return
+if [ -z "${DOTFILES}" ]; then
+  if [ -d "${HOME}/.dotfiles" ]; then
+    export DOTFILES="${HOME}/.dotfiles"
+  fi
 fi
 
 # enable colour support
@@ -18,6 +17,12 @@ export TERM="xterm-256color"
 
 # enable timestamps in history
 export HIST_STAMPS="yyyy-mm-dd"
+
+# we need local ~/.dotfiles directory for this script to work
+if [ -z "${DOTFILES}" ]; then
+    echo "WARNING: could not find ~/.dotfiles directory" >&2
+    return
+fi
 
 # set platform name so that we can run scripts based on the OS
 unamestr=$(uname)
