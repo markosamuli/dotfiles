@@ -35,8 +35,8 @@ Desktop.ini
 
 # Editors #
 ###########
-.idea/*
-.idea
+# .idea/*
+# .idea
 
 # autoenv and pyenv scripts #
 #############################
