@@ -18,3 +18,8 @@ alias l='ls -CF'
 
 # Visual Studio Code
 alias cdiff='code --diff'
+
+# CLI for Tailscale macOS app
+if [ -e "/Applications/Tailscale.app" ]; then
+  alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
+fi
