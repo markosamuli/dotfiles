@@ -27,6 +27,7 @@ _init_cloudsdk_python() {
     cloudsdk_python=$(_full_python3_path)
     if [ -n "${cloudsdk_python}" ]; then
         export CLOUDSDK_PYTHON="${cloudsdk_python}"
+        export CLOUDSDK_PYTHON_SITEPACKAGES=1
     fi
 }
 
