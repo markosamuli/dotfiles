@@ -4,8 +4,7 @@
 DOTFILES_REPO=https://github.com/markosamuli/dotfiles.git
 DOTFILES=$HOME/.dotfiles
 
-GITHUB_RAW=https://raw.githubusercontent.com
-HOMEBREW_INSTALL=${GITHUB_RAW}/Homebrew/install/master/install
+HOMEBREW_INSTALL=https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
 
 error() {
     echo "$@" 1>&2
@@ -361,6 +360,10 @@ install_homebrew() {
 
     command -v brew 1>/dev/null 2>&1 && return 0
 
+    if [[ $(uname -m) == 'arm64' ]] && [[ -d "/opt/homebrew" ]]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)" && return 0
+    fi
+
     echo "[homebrew] Homebrew not installed"
     if [ -z "${INSTALL_HOMEBREW}" ]; then
         read -r -p "Do you want to install it now? [y/N] " response
@@ -377,7 +380,7 @@ install_homebrew() {
     fi
 
     echo "[homebrew] Installing Homebrew..."
-    ruby -e "$(curl -fsSL ${HOMEBREW_INSTALL})" ||
+    /bin/bash -c "$(curl -fsSL ${HOMEBREW_INSTALL})" ||
         {
             error "[homebrew] FAILED: Something went wrong while installing Homebrew."
             exit 1
