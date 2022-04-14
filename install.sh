@@ -561,24 +561,6 @@ setup_dotfile_symlinks() {
     done
 }
 
-# Setup symlink to Hammerspoon configuration if installed
-setup_hammerspoon() {
-    local hammerspoon_dir="${HOME}/.hammerspoon"
-    if [ "$(uname -s)" != "Darwin" ]; then
-        return 0
-    fi
-    if [ ! -e "/Applications/Hammerspoon.app" ]; then
-        return 0
-    fi
-    echo "[hammerspoon] Hammerspoon installed, adding configuration..."
-    if [ ! -d "${hammerspoon_dir}" ]; then
-        mkdir -p "${hammerspoon_dir}" || {
-            error "[hammerspoon] FAILED: Couldn't create ${hammerspoon_dir} directory."
-        }
-    fi
-    setup_dotfile .hammerspoon/init.lua
-}
-
 git_version() {
     local version
     version=$(git --version)
@@ -969,9 +951,6 @@ setup_dotfile_symlinks
 
 # Setup tmux config if installed
 setup_tmux
-
-# Setup Hammerspoon configuration
-setup_hammerspoon
 
 # Setup Git to include .gitconfig from .dotfiles
 setup_gitconfig

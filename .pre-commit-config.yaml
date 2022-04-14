@@ -1,5 +1,4 @@
 ---
-
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
@@ -56,11 +55,6 @@ repos:
           (?x)^(
             .*\.zsh
           )
-
-  # - repo: https://github.com/Calinou/pre-commit-luacheck
-  #   rev: v1.0.0
-  #   hooks:
-  #     - id: luacheck
 
   - repo: local
     hooks:

@@ -19,7 +19,6 @@ endif
 CURL_BIN       = $(shell command -v curl 2>/dev/null)
 GIT_BIN        = $(shell command -v git 2>/dev/null)
 GO_BIN         = $(shell command -v go 2>/dev/null)
-LUACHECK_BIN   = $(shell command -v luacheck 2>/dev/null)
 PRE_COMMIT_BIN = $(shell pre-commit --version 2>&1 | head -1 | grep -q 'pre-commit [12]\.' && command -v pre-commit)
 SHELLCHECK_BIN = $(shell command -v shellcheck 2>/dev/null)
 SHFMT_BIN      = $(shell command -v shfmt 2>/dev/null)
@@ -72,12 +71,6 @@ setup-golang:
 ifeq ($(GO_BIN),)
 	$(error "go not found")
 endif
-
-# .PHONY: setup-luacheck
-# setup-luacheck:
-# ifeq ($(LUACHECK_BIN),)
-# 	$(error "luacheck not found")
-# endif
 
 .PHONY: setup-shellcheck
 setup-shellcheck:
