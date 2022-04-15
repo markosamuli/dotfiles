@@ -1,4 +1,4 @@
-#compdef g
+#compdef x
 # shellcheck disable=all
 
 if [ -z "$GOPATH" ]; then
@@ -63,14 +63,12 @@ __get_gh_repos() {
   typeset -g gh_repos=($_gh_repos)
 }
 
-_g() {
+_x() {
   local -i nmatches=$compstate[nmatches]
   if [ -n "${PREFIX}" ]; then
     _arguments "1::filename:__go_files"
     (( compstate[nmatches] > nmatches )) && return 0
   fi
-  __get_gh_repos
+  __get_gh_repos || return 1
   _arguments "1::repositories:(($gh_repos))"
 }
-
-# _g

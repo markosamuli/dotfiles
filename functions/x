@@ -1,0 +1,36 @@
+#!/bin/zsh
+
+# shellcheck disable=SC2164
+if [ -z "${GOPATH}" ]; then
+  echo "GOPATH not defined" >&1
+  return 1
+fi
+
+if [ -z "${GITHUB_ORG}" ]; then
+  echo "GITHUB_ORG not defined" >&2
+  return 1
+fi
+
+__go_github_clone() {
+  local owner="$1"
+  local repository="$2"
+  local src="git@github.com:${owner}/${repository}.git"
+  local dir="${GOPATH}/src/github.com/${owner}/${repository}"
+  if [ -d "${dir}" ]; then
+    echo "${dir} already exists" >&2
+    return 1
+  fi
+  git clone "${src}" "${dir}"
+}
+
+__go_cd() {
+  local owner="$1"
+  local repository="$2"
+  local dir="${GOPATH}/src/github.com/${owner}/${repository}"
+  if [ ! -d "${dir}" ]; then
+    __go_github_clone "${owner}" "${repository}"
+  fi
+  cd "${dir}"
+}
+
+__go_cd "${GITHUB_ORG}" "$1"
