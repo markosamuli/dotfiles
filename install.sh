@@ -30,6 +30,7 @@ configure_install() {
         INSTALL_ZSH=${INSTALL_ZSH:-true}
         INSTALL_SHELDON=${INSTALL_SHELDON:-true}
         INSTALL_ANTIBODY=${INSTALL_ANTIBODY:-true}
+        INSTALL_GITHUB_CLI=${INSTALL_GITHUB_CLI:-true}
         UPGRADE_ANTIBODY=${UPGRADE_ANTIBODY:-true}
         UPDATE_ZSH=false
     else
@@ -132,19 +133,8 @@ install_sheldon() {
     command -v sheldon 1>/dev/null 2>&1 && return 0
 
     echo "[sheldon] sheldon is not installed"
-    if [ -z "${INSTALL_SHELDON}" ]; then
-        read -r -p "Do you want to install it now? [y/N] " response
-        case "$response" in
-            [yY][eE][sS] | [yY]) ;;
-            *)
-                echo "[sheldon] Skipping sheldon setup."
-                return 0
-                ;;
-        esac
-    elif [ "${INSTALL_SHELDON}" != "true" ]; then
-        echo "[sheldon] Skipping sheldon setup."
-        return 0
-    fi
+
+    install_prompt "sheldon" "${INSTALL_SHELDON}" "sheldon" || return 0
 
     if [ "$(uname -s)" == "Darwin" ]; then
         install_sheldon_with_homebrew
@@ -184,20 +174,7 @@ install_antibody() {
 
     command -v antibody 1>/dev/null 2>&1 && return 0
 
-    echo "[antibody] antibody is not installed"
-    if [ -z "${INSTALL_ANTIBODY}" ]; then
-        read -r -p "Do you want to install it now? [y/N] " response
-        case "$response" in
-            [yY][eE][sS] | [yY]) ;;
-            *)
-                echo "[antibody] Skipping antibody setup."
-                return 0
-                ;;
-        esac
-    elif [ "${INSTALL_ANTIBODY}" != "true" ]; then
-        echo "[antibody] Skipping antibody setup."
-        return 0
-    fi
+    install_prompt "antibody" "${INSTALL_ANTIBODY}" "antibody" || return 0
 
     if [ "$(uname -s)" == "Darwin" ]; then
         install_antibody_with_homebrew
@@ -274,20 +251,7 @@ install_zsh_darwin() {
         return 0
     fi
 
-    echo "[zsh] zsh is not installed from Homebrew"
-    if [ -z "${INSTALL_ZSH}" ]; then
-        read -r -p "Do you want to install it now? [y/N] " response
-        case "$response" in
-            [yY][eE][sS] | [yY]) ;;
-            *)
-                echo "[zsh] skipping zsh setup"
-                return 0
-                ;;
-        esac
-    elif [ "${INSTALL_ZSH}" != "true" ]; then
-        echo "[zsh] skipping zsh setup"
-        return 0
-    fi
+    install_prompt "zsh" "${INSTALL_ZSH}" "zsh from Homebrew" || return 0
 
     command -v brew 1>/dev/null 2>&1 || {
         error "[zsh] FAILED: Homebrew not installed."
@@ -332,20 +296,7 @@ install_zsh_debian() {
 
     command -v zsh 1>/dev/null 2>&1 && return 0
 
-    echo "[zsh] zsh is not installed"
-    if [ -z "${INSTALL_ZSH}" ]; then
-        read -r -p "Do you want to install it now? [y/N] " response
-        case "$response" in
-            [yY][eE][sS] | [yY]) ;;
-            *)
-                echo "[zsh] Skipping zsh setup."
-                return 0
-                ;;
-        esac
-    elif [ "${INSTALL_ZSH}" != "true" ]; then
-        echo "[zsh] skipping zsh setup"
-        return 0
-    fi
+    install_prompt "zsh" "${INSTALL_ZSH}" "zsh" || return 0
 
     echo "[zsh] Installing zsh..."
     sudo apt-get install -y zsh
@@ -364,20 +315,7 @@ install_homebrew() {
         eval "$(/opt/homebrew/bin/brew shellenv)" && return 0
     fi
 
-    echo "[homebrew] Homebrew not installed"
-    if [ -z "${INSTALL_HOMEBREW}" ]; then
-        read -r -p "Do you want to install it now? [y/N] " response
-        case "$response" in
-            [yY][eE][sS] | [yY]) ;;
-            *)
-                echo "[homebrew] Skipping Homebrew setup."
-                return 0
-                ;;
-        esac
-    elif [ "${INSTALL_HOMEBREW}" != "true" ]; then
-        echo "[homebrew] Skipping Homebrew setup."
-        return 0
-    fi
+    install_prompt "homebrew" "${INSTALL_HOMEBREW}" "Homebrew" || return 0
 
     echo "[homebrew] Installing Homebrew..."
     /bin/bash -c "$(curl -fsSL ${HOMEBREW_INSTALL})" ||
@@ -386,6 +324,41 @@ install_homebrew() {
             exit 1
         }
 
+}
+
+install_prompt() {
+    local prefix=$1
+    local enabled=$2
+    local name=$3
+    if [ -z "${enabled}" ]; then
+        read -r -p "[${prefix}] ${name} is not installed. Do you want to install it now? [y/N] " response
+        case "$response" in
+            [yY][eE][sS] | [yY]) ;;
+            *)
+                echo "[${prefix}] Skip ${name} installation"
+                return 1
+                ;;
+        esac
+    elif [ "${enabled}" != "true" ]; then
+        echo "[${prefix}] Skip ${name} installation"
+        return 1
+    fi
+}
+
+install_github_cli() {
+
+    command -v gh 1>/dev/null 2>&1 && return 0
+
+    install_prompt "gh" "${INSTALL_GITHUB_CLI}" "GitHub CLI" || return 0
+
+    if [[ $(uname -s) == 'Darwin' ]]; then
+        command -v brew 1>/dev/null 2>&1 || {
+            error "[gh] FAILED: Homebrew not installed."
+            exit 1
+        }
+        echo "[gh] Installing GitHub CLI with Homebrew..."
+        brew install gh
+    fi
 }
 
 # Get current antibody version
@@ -917,6 +890,7 @@ install_requirements() {
     fi
     install_vim
     install_man_pages
+    install_github_cli
 }
 
 configure_zsh() {
@@ -926,6 +900,10 @@ configure_zsh() {
     elif [[ "$ZSH_PLUGIN_MANAGER" == "antibody" ]]; then
         setup_antibody
     fi
+}
+
+setup_github() {
+    return 0
 }
 
 # Configure install script
@@ -957,6 +935,9 @@ setup_gitconfig
 setup_git_editor
 setup_git_difftool
 setup_git_mergetool
+
+# Setup GitHub configuration
+setup_github
 
 # Fix permissions
 fix_permissions
