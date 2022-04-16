@@ -5,6 +5,12 @@
 if [ -e "${HOME}/.pyenv/.pyenvrc" ]; then
     # shellcheck disable=SC1090
     source "${HOME}/.pyenv/.pyenvrc"
+elif [ -d "$HOME/.pyenv" ]; then
+    # initialise manual installs
+    if ! command -v pyenv >/dev/null; then
+        echo "WARNING: pyenv not found on PATH" >&2
+    fi
+    eval "$(pyenv init -)"
 fi
 
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1

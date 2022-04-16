@@ -135,8 +135,10 @@ done
 
 unset config_files platform platform_wsl completion_files path_files
 
-# Prevent NMV install.sh script from altering my profile script as it's already loaded in the config files.
+# Prevent install scripts and my Ansible roles from altering my profile script
+# as these are already loaded in the config files.
 # /nvm.sh $NVM_DIR/bash_completion
+# eval "$(pyenv init -)"
 
 # use .localrc for secret
 # shellcheck disable=SC1090
