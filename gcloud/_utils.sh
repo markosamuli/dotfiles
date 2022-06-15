@@ -38,3 +38,9 @@ _dotfiles_cloudsdk_python() {
         export CLOUDSDK_PYTHON_SITEPACKAGES=1
     fi
 }
+
+_dotfiles_gke_gcloud_auth_plugin() {
+    if command -v gke-gcloud-auth-plugin >/dev/null; then
+        export USE_GKE_GCLOUD_AUTH_PLUGIN=True
+    fi
+}
