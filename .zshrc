@@ -45,6 +45,8 @@ if [ -e "$HOME/.config/sheldon/plugins.toml" ]; then
   export ZSH_PLUGIN_MANAGER="sheldon"
 elif [ -e "$HOME/.sheldon/plugins.toml" ]; then
   export ZSH_PLUGIN_MANAGER="sheldon"
+elif [ -e "$HOME/.config/sheldon/plugins.toml" ]; then
+  export ZSH_PLUGIN_MANAGER="sheldon"
 elif [ -d "$HOME/.oh-my-zsh" ]; then
   export ZSH="$HOME/.oh-my-zsh"
   export ZSH_PLUGIN_MANAGER="oh-my-zsh"
@@ -113,3 +115,5 @@ unset config_files updated_at platform platform_wsl
 # want in your public, versioned repo.
 # shellcheck disable=SC1090
 [ -f ~/.localrc ] && . ~/.localrc
+
+
