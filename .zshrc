@@ -104,6 +104,7 @@ unset config_files updated_at platform platform_wsl
 # Prevent install scripts and my Ansible roles from altering my profile script
 # as these are already loaded in the config files.
 # /nvm.sh $NVM_DIR/bash_completion
+# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
 # eval "$(pyenv init -)"
 
 # use .localrc for SUPER SECRET CRAP that you don't
