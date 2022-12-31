@@ -402,10 +402,15 @@ setup_sheldon() {
         exit 1
     }
 
-    if [ ! -e "${HOME}/.sheldon/plugins.toml" ]; then
-        echo "[sheldon] Creating ~/.sheldon/plugins.toml symlink"
-        mkdir -p "${HOME}/.sheldon"
-        setup_dotfile ".sheldon/plugins.toml"
+    if [ -d "${HOME}/.sheldon" ]; then
+        echo "[sheldon] Delete old ~/.sheldon directory"
+        rm -rf "${HOME}/.sheldon"
+    fi
+
+    if [ ! -e "${HOME}/.config/sheldon/plugins.toml" ]; then
+        echo "[sheldon] Creating ~/.config/sheldon/plugins.toml symlink"
+        mkdir -p "${HOME}/.config/sheldon"
+        setup_dotfile ".config/sheldon/plugins.toml"
     fi
 }
 

@@ -41,7 +41,9 @@ elif [[ "$unamestr" == 'Darwin' ]]; then
 fi
 unset unamestr
 
-if [ -e "$HOME/.sheldon/plugins.toml" ]; then
+if [ -e "$HOME/.config/sheldon/plugins.toml" ]; then
+  export ZSH_PLUGIN_MANAGER="sheldon"
+elif [ -e "$HOME/.sheldon/plugins.toml" ]; then
   export ZSH_PLUGIN_MANAGER="sheldon"
 elif [ -d "$HOME/.oh-my-zsh" ]; then
   export ZSH="$HOME/.oh-my-zsh"
