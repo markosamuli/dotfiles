@@ -23,3 +23,7 @@ alias cdiff='code --diff'
 if [ -e "/Applications/Tailscale.app" ]; then
   alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 fi
+
+# simple terminal UI for git commands
+# https://github.com/jesseduffield/lazygit
+alias lg='lazygit'
