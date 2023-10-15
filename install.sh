@@ -532,6 +532,7 @@ setup_dotfile_symlinks() {
         .gitignore_global
         .editorconfig
         .markdownlintrc
+        .vimrc
     )
     for file in "${dotfile_symlinks[@]}"; do
         backup_dotfile "${file}"

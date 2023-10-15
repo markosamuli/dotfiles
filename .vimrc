@@ -1,26 +1,40 @@
-" let g:ycm_path_to_python_interpreter = '/usr/local/Cellar/python/2.7.13/Frameworks/Python.framework/Versions/2.7/bin'
+call plug#begin()
 
-call plug#begin('~/.vim/plugged')
+" https://github.com/junegunn/vim-easy-align
+Plug 'junegunn/vim-easy-align'
 
 Plug 'tpope/vim-sensible'
-" Plug 'altercation/vim-colors-solarized'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-" Plug 'Valloric/YouCompleteMe'
 Plug 'kien/ctrlp.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'scrooloose/nerdtree'
 
+" fzf installed with Homebrew
+Plug '/opt/homebrew/opt/fzf'
+" Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+
 " Colors
 Plug 'dracula/vim', {'as': 'dracula'}
+
+" EditorConfig
+Plug 'editorconfig/editorconfig-vim'
+
 
 call plug#end()
 
 " Behave like Vim instead of Vi
 set nocompatible
+" Fix backspace
+set backspace=indent,eol,start
 
 syntax on
 
 filetype plugin indent on
+set autoindent
+set smartindent
+set smarttab
+set softtabstop=4
 set tabstop=4
 set shiftwidth=4
 set expandtab
@@ -69,3 +83,11 @@ nnoremap <C-H> <C-W><C-H>
 " Open new split panes to right and bottom
 set splitbelow
 set splitright
+            
+" Show row and column ruler information
+set ruler	
+set colorcolumn=80
+autocmd FileType gitcommit setlocal tw=72 
+autocmd FileType gitcommit set colorcolumn=72
+autocmd FileType go set colorcolumn=80
+highlight ColorColumn ctermbg=240 guibg=lightgrey
