@@ -144,3 +144,4 @@ unset config_files platform platform_wsl completion_files path_files
 # use .localrc for secret
 # shellcheck disable=SC1090
 [ -f ~/.localrc ] && . ~/.localrc
+

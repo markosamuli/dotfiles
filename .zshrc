@@ -116,4 +116,3 @@ unset config_files updated_at platform platform_wsl
 # shellcheck disable=SC1090
 [ -f ~/.localrc ] && . ~/.localrc
 
-
