@@ -55,3 +55,7 @@ Desktop.ini
 # Local .env file #
 ###################
 .env
+
+# Dataform CLI
+# https://docs.dataform.co/dataform-cli
+.df-credentials.json

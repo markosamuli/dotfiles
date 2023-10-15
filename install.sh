@@ -619,12 +619,12 @@ setup_git_difftool() {
         git config --global difftool.meld.trustexitcode 'true'
     fi
 
-    local gitconfig_diff_tool
-    gitconfig_diff_tool=$(git config --global --get diff.tool)
-    if [ -z "${gitconfig_diff_tool}" ]; then
-        echo "[git] Default diff.tool is not configured."
-        setup_default_git_diff_tool "${difftools[@]}"
-    fi
+    # local gitconfig_diff_tool
+    # gitconfig_diff_tool=$(git config --global --get diff.tool)
+    # if [ -z "${gitconfig_diff_tool}" ]; then
+    #     echo "[git] Default diff.tool is not configured."
+    #     setup_default_git_diff_tool "${difftools[@]}"
+    # fi
 
     local gitconfig_diff_guitool
     gitconfig_diff_guitool=$(git config --global --get diff.guitool)
@@ -703,12 +703,12 @@ setup_git_mergetool() {
         git config --global mergetool.meld.trustExitCode 'true'
     fi
 
-    local gitconfig_merge_tool
-    gitconfig_merge_tool=$(git config --global --get merge.tool)
-    if [ -z "${gitconfig_merge_tool}" ]; then
-        echo "[git] Default merge.tool not configured."
-        setup_default_git_merge_tool "${mergetools[@]}"
-    fi
+    # local gitconfig_merge_tool
+    # gitconfig_merge_tool=$(git config --global --get merge.tool)
+    # if [ -z "${gitconfig_merge_tool}" ]; then
+    #     echo "[git] Default merge.tool not configured."
+    #     setup_default_git_merge_tool "${mergetools[@]}"
+    # fi
 
     local gitconfig_merge_guitool
     gitconfig_merge_guitool=$(git config --global --get merge.guitool)

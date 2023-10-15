@@ -2,7 +2,7 @@
 	# Common shortcuts I use
 	co = checkout
 	ci = commit
-    pullr = pull --rebase
+  pullr = pull --rebase
 	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
 	wd = diff --word-diff="color"
 	wds = diff --word-diff="color" --staged
@@ -13,12 +13,6 @@
 	today = log --stat --since=\"1 Day Ago\" --graph --pretty=oneline --abbrev-commit --date=relative
 	undo = reset --soft HEAD^
 
-[url "git@github.com:markosamuli"]
-	insteadOf = https://github.com/markosamuli
-
-[url "git@github.com:echo-health"]
-	insteadOf = https://github.com/echo-health
-
 [color]
 	branch = auto
 	diff = auto
@@ -26,12 +20,52 @@
 	status = auto
 
 [merge]
-	# Include summaries of merged commits in newly created merge commit messages
+	# Include summaries of merged commits in newly created merge commit messages.
 	log = true
 
 [pull]
-	# Rebase by default
+	# Rebase by default.
 	rebase = true
 
 [push]
+  # Pushes the current branch with the same name on the remote.
 	default = simple
+  # Automatically set up default remote tracking on push.
+	autoSetupRemote = true
+
+[init]
+	defaultBranch = main
+
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+
+[diff "sopsdiffer"]
+	textconv = sops -d
+
+[difftool]
+  # Prompt before each invocation of the diff tool.
+	prompt = false
+  # The --gui argument must be provided for diff.guitool to be used.
+  guiDefault = false
+
+[merge "npm-merge-driver"]
+	name = automatically merge npm lockfiles
+	driver = npx npm-merge-driver merge %A %O %B %P
+
+[mergetool]
+  # Prompt before each invocation of the merge tool.
+	prompt = false
+  # After performing a merge, the original file with conflict markers can be saved as a file with a .orig extension.
+	keepBackup = false
+  # The --gui argument must be provided for merge.guitool to be used.
+  guiDefault = false
+
+[url "git@github.com:markosamuli"]
+	insteadOf = https://github.com/markosamuli
+
+[url "git@github.com:echo-health"]
+	insteadOf = https://github.com/echo-health
+
