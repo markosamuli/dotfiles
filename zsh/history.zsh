@@ -6,8 +6,11 @@ if [ -z "$HISTFILE" ]; then
     HISTFILE=$HOME/.zsh_history
 fi
 
-HISTSIZE=10000
-SAVEHIST=10000
+# Max number of entries to keep in history file.
+SAVEHIST=100000
+
+# Max number of history entries to keep in memory.
+HISTSIZE=$(( 1.2 * SAVEHIST ))  # Zsh recommended value
 
 # Show history
 case $HIST_STAMPS in
@@ -16,6 +19,9 @@ case $HIST_STAMPS in
     "yyyy-mm-dd") alias history='fc -il 1' ;;
     *) alias history='fc -l 1' ;;
 esac
+
+# Use modern file-locking mechanisms, for better safety & performance.
+setopt HIST_FCNTL_LOCK
 
 # don't record dupes in history
 setopt HIST_IGNORE_ALL_DUPS

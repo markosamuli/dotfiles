@@ -55,7 +55,7 @@ elif [ -e "$HOME/.bundles.txt" ]; then
 fi
 
 if [[ "${ZSH_PLUGIN_MANAGER}" == "oh-my-zsh" ]]; then
-  source $DOTFILES/oh-my-zsh/oh-my-zsh.zsh
+  source "${DOTFILES}/oh-my-zsh/oh-my-zsh.zsh"
 fi
 
 ###
@@ -95,6 +95,7 @@ if [ $(date +'%j') != $updated_at ]; then
 else
   compinit -C
 fi
+unset updated_at
 
 autoload -U +X bashcompinit && bashcompinit
 
@@ -103,7 +104,7 @@ for file in ${(M)config_files:#*/completion.zsh}; do
   source "$file"
 done
 
-unset config_files updated_at platform platform_wsl
+unset config_files platform platform_wsl
 
 # Prevent install scripts and my Ansible roles from altering my profile script
 # as these are already loaded in the config files.
