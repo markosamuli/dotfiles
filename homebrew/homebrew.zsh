@@ -6,6 +6,6 @@
 
 # To fix brew doctor's warning
 # https://github.com/pyenv/pyenv#homebrew-in-macos
-if command -v pyenv >/dev/null; then
-    alias brew='env PATH="${PATH//$(pyenv root)\/shims:/}" brew'
-fi
+# if command -v pyenv >/dev/null; then
+#     alias brew='env PATH="${PATH//$(pyenv root)\/shims:/}" brew'
+# fi
