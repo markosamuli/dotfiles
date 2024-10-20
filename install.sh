@@ -858,31 +858,6 @@ install_man_pages() {
             exit 1
         }
     fi
-    man_files=(
-        z/z.1
-    )
-    local update_mandb=0
-    local filename
-    local man_file
-    for file in "${man_files[@]}"; do
-        filename=$(basename "${file}")
-        man_file="${man_dir}/${filename}"
-        if [[ ! -f "${man_file}" ]]; then
-            echo "[man] install ${man_file}"
-            sudo cp "${DOTFILES}/${file}" "${man_file}" || {
-                error "[man] FAILED: couldn't create file ${man_file}"
-                exit 1
-            }
-            sudo chmod 644 "${man_file}"
-            update_mandb=1
-        fi
-    done
-    if [[ "${update_mandb}" == "1" ]]; then
-        if command -v mandb >/dev/null; then
-            echo "[man] update mandb"
-            sudo mandb -q
-        fi
-    fi
 }
 
 install_requirements() {
@@ -919,7 +894,7 @@ configure_install
 download_dotfiles
 
 # Initialise Git submodules
-init_submodules
+# init_submodules
 
 # Install requirements
 install_requirements
