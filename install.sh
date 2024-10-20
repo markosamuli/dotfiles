@@ -16,22 +16,11 @@ configure_install() {
     elif tty -s; then
         INTERACTIVE=true
     fi
-    if [ -z "${ZSH_PLUGIN_MANAGER}" ]; then
-        if command -v sheldon 1>/dev/null 2>&1; then
-            ZSH_PLUGIN_MANAGER="sheldon"
-        elif command -v antibody 1>/dev/null 2>&1; then
-            ZSH_PLUGIN_MANAGER="antibody"
-        else
-            ZSH_PLUGIN_MANAGER="sheldon"
-        fi
-    fi
     if [ -z "${INTERACTIVE}" ]; then
         INSTALL_HOMEBREW=${INSTALL_HOMEBREW:-true}
         INSTALL_ZSH=${INSTALL_ZSH:-true}
         INSTALL_SHELDON=${INSTALL_SHELDON:-true}
-        INSTALL_ANTIBODY=${INSTALL_ANTIBODY:-true}
         INSTALL_GITHUB_CLI=${INSTALL_GITHUB_CLI:-true}
-        UPGRADE_ANTIBODY=${UPGRADE_ANTIBODY:-true}
         UPDATE_ZSH=false
     else
         UPDATE_ZSH=true
@@ -68,26 +57,6 @@ install_vim() {
     exit 1
 }
 
-# Get latest antibody version from GitHub
-latest_antibody_version() {
-    local latest_release=""
-    local errmsg="[antibody] ERROR: Couldn't get latest antibody release version."
-    latest_release=$(get_latest_release getantibody/antibody)
-    [ -z "${latest_release}" ] && {
-        error "${errmsg}"
-        return 1
-    }
-    echo "${latest_release/v/}"
-}
-
-# Get installed antibody version
-installed_antibody_version() {
-    local version=""
-    command -v antibody 1>/dev/null 2>&1 || return 1
-    version=$(antibody -v 2>&1 | grep 'antibody version' | awk '{ print $3 }')
-    echo "${version/v/}"
-}
-
 # Get latest release for a GitHub repository
 get_latest_release() {
     local repository=$1
@@ -118,17 +87,8 @@ download_dotfiles() {
     fi
 }
 
-init_submodules() {
-    git -C "${DOTFILES}" submodule init
-    git -C "${DOTFILES}" submodule update
-}
-
+# Install sheldon: https://github.com/rossmacarthur/sheldon
 install_sheldon() {
-
-    if [[ "${ZSH_PLUGIN_MANAGER}" != "sheldon" ]]; then
-        echo "[sheldon] Skipping setup as sheldon is not set as the active plugin manager."
-        return 0
-    fi
 
     command -v sheldon 1>/dev/null 2>&1 && return 0
 
@@ -138,8 +98,10 @@ install_sheldon() {
 
     if [ "$(uname -s)" == "Darwin" ]; then
         install_sheldon_with_homebrew
+    elif [[ $(uname -s) == 'Linux' ]]; then
+        install_sheldon_with_installer
     else
-        echo '[sheldon] Install not supported.'
+        error "[sheldon] Unsupported OS or distribution: $(uname -s)"
         return 1
     fi
 }
@@ -149,81 +111,13 @@ install_sheldon_with_homebrew() {
     brew install sheldon
 }
 
-install_antibody_with_homebrew() {
-    echo "[antibody] Installing antibody with Homebrew..."
-    brew install getantibody/tap/antibody
-}
-
-install_antibody_with_installer() {
-    echo "[antibody] Installing antibody with the installer..."
+install_sheldon_with_installer() {
+    echo "[sheldon] Installing sheldon with installer..."
     command -v curl 1>/dev/null 2>&1 || {
-        error "[antibody] FAILED: cURL is not installed"
+        error "[sheldon] FAILED: cURL is not installed"
         exit 1
     }
-    curl -sfL git.io/antibody | sudo sh -s - -b /usr/local/bin
-}
-
-install_antibody() {
-
-    [[ "${ZSH_PLUGIN_MANAGER}" != "antibody" ]] && return 1
-
-    if [[ $(uname -s) == 'Darwin' ]] && [[ $(uname -m) == 'arm64' ]]; then
-        echo "[antibody] WARNING: Skipping antibody setup on Apple Silicon."
-        return 1
-    fi
-
-    command -v antibody 1>/dev/null 2>&1 && return 0
-
-    install_prompt "antibody" "${INSTALL_ANTIBODY}" "antibody" || return 0
-
-    if [ "$(uname -s)" == "Darwin" ]; then
-        install_antibody_with_homebrew
-    else
-        install_antibody_with_installer
-    fi
-}
-
-upgrade_antibody_with_homebrew() {
-    echo "[antibody] Upgrading antibody with Homebrew..."
-    brew upgrade getantibody/tap/antibody
-}
-
-update_antibody() {
-
-    if [[ $(uname -s) == 'Darwin' ]] && [[ $(uname -m) == 'arm64' ]]; then
-        echo "[antibody] WARNING: Skipping antibody setup on Apple Silicon."
-        return 1
-    fi
-
-    local latest_version
-    latest_version=$(latest_antibody_version)
-    installed_version=$(installed_antibody_version)
-    if [ "${latest_version}" == "${installed_version}" ]; then
-        return 0
-    fi
-
-    echo "[antibody] Latest antibody version: ${latest_version}"
-    echo "[antibody] Installed antibody version: ${installed_version}"
-    if [ -z "${UPGRADE_ANTIBODY}" ]; then
-        read -r -p "Do you want to upgrade? [y/N] " response
-
-        case "$response" in
-            [yY][eE][sS] | [yY]) ;;
-            *)
-                echo "[antibody] Skipping antibody upgrade."
-                return 0
-                ;;
-        esac
-    elif [ "${UPGRADE_ANTIBODY}" != "true" ]; then
-        echo "[antibody] Skipping antibody upgrade."
-        return 0
-    fi
-
-    if [ "$(uname -s)" == "Darwin" ]; then
-        upgrade_antibody_with_homebrew
-    else
-        install_antibody_with_installer
-    fi
+    curl --proto '=https' -fLsS https://rossmacarthur.github.io/install/crate.sh | bash -s -- --repo rossmacarthur/sheldon --to ~/.local/bin
 }
 
 # Install zsh
@@ -361,40 +255,6 @@ install_github_cli() {
     fi
 }
 
-# Get current antibody version
-antibody_version() {
-    command -v antibody 1>/dev/null 2>&1 || return 1
-    antibody --version | awk '{print $3}'
-}
-
-# Create or update antibody ~/.bundles.txt file
-setup_antibody() {
-
-    if [[ $(uname -s) == 'Darwin' ]] && [[ $(uname -m) == 'arm64' ]]; then
-        echo "[antibody] WARNING: Skipping antibody setup on Apple Silicon."
-        return 1
-    fi
-
-    command -v antibody 1>/dev/null 2>&1 || {
-        error "[antibody] FAILED: antibody is not installed"
-        exit 1
-    }
-
-    if [ ! -d "${DOTFILES}/antibody" ]; then
-        error "[antibody] FAILED: $DOTFILES/antibody does not exist"
-        return 1
-    fi
-
-    if [ -e "${HOME}/.bundles.txt" ]; then
-        echo "[antibody] Updating ~/.bundles.txt..."
-    else
-        echo "[antibody] Creating ~/.bundles.txt..."
-    fi
-    antibody bundle <"${DOTFILES}/antibody/bundles.txt" >~/.bundles.txt
-    antibody bundle sindresorhus/pure >>~/.bundles.txt
-    antibody bundle <"${DOTFILES}/antibody/last_bundles.txt" >>~/.bundles.txt
-}
-
 setup_sheldon() {
 
     command -v sheldon 1>/dev/null 2>&1 || {
@@ -491,8 +351,7 @@ setup_tmux() {
 # Fix permissions
 fix_permissions() {
     user_only_directories=(
-        "${DOTFILES}"
-        ~/.cache/antibody
+        "${DOTFILES}"s
         ~/.cache/Homebrew
         ~/.ssh
     )
@@ -863,12 +722,7 @@ install_man_pages() {
 install_requirements() {
     install_homebrew
     install_zsh
-    if [[ "$ZSH_PLUGIN_MANAGER" == "sheldon" ]]; then
-        install_sheldon
-    elif [[ "$ZSH_PLUGIN_MANAGER" == "antibody" ]]; then
-        install_antibody
-        update_antibody
-    fi
+    install_sheldon
     install_vim
     install_man_pages
     install_github_cli
@@ -876,11 +730,7 @@ install_requirements() {
 
 configure_zsh() {
     setup_zsh
-    if [[ "$ZSH_PLUGIN_MANAGER" == "sheldon" ]]; then
-        setup_sheldon
-    elif [[ "$ZSH_PLUGIN_MANAGER" == "antibody" ]]; then
-        setup_antibody
-    fi
+    setup_sheldon
 }
 
 setup_github() {
@@ -892,9 +742,6 @@ configure_install
 
 # Clone dotfiles
 download_dotfiles
-
-# Initialise Git submodules
-# init_submodules
 
 # Install requirements
 install_requirements
