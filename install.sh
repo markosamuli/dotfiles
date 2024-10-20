@@ -246,13 +246,44 @@ install_github_cli() {
     install_prompt "gh" "${INSTALL_GITHUB_CLI}" "GitHub CLI" || return 0
 
     if [[ $(uname -s) == 'Darwin' ]]; then
-        command -v brew 1>/dev/null 2>&1 || {
-            error "[gh] FAILED: Homebrew not installed."
-            exit 1
-        }
-        echo "[gh] Installing GitHub CLI with Homebrew..."
-        brew install gh
+        install_github_cli_macos
+    elif [[ $(uname -s) == 'Linux' ]]; then
+        install_github_cli_linux
+    else
+        error "[gh] Unsupported OS or distribution: $(uname -s)"
+        exit 1
     fi
+}
+
+
+install_github_cli_macos() {
+    command -v brew 1>/dev/null 2>&1 || {
+        error "[gh] FAILED: Homebrew not installed."
+        exit 1
+    }
+    echo "[gh] Installing GitHub CLI with Homebrew..."
+    brew install gh
+}
+
+install_github_cli_linux() {
+    local distrib
+    distrib=$(linux_distrib)
+    if [ "${distrib}" == "ubuntu" ] || [ "${distrib}" == "debian" ]; then
+        install_github_cli_apt
+    else
+        error "[zsh] Unsupported OS or distribution: $(uname -s)"
+        exit 1
+    fi
+}
+
+install_github_cli_apt() {
+    (type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y)) \
+    && sudo mkdir -p -m 755 /etc/apt/keyrings \
+    && wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+    && sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+    && sudo apt update \
+    && sudo apt install gh -y
 }
 
 setup_sheldon() {
