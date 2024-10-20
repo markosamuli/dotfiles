@@ -1,6 +1,6 @@
 The MIT License
 
-Copyright 2017-2019 Marko Samuli Kirves
+Copyright 2017-2024 Marko Samuli Kirves
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the "Software"),
@@ -22,7 +22,7 @@ DEALINGS IN THE SOFTWARE.
 
 --------------------------------------------------------------------------
 
-Antigen and .zshrc setup are based on work by Carlos Becker, licensed
+The .zshrc setup are based on work by Carlos Becker, licensed
 under the MIT license:
 https://github.com/caarlos0/dotfiles
 
