@@ -99,11 +99,6 @@ init_local_bin_path() {
 
 install_sheldon() {
 
-    if [[ "${ZSH_PLUGIN_MANAGER}" != "sheldon" ]]; then
-        echo "[sheldon] Skipping setup as sheldon is not set as the active plugin manager."
-        return 0
-    fi
-
     init_local_bin_path
 
     command -v sheldon 1>/dev/null 2>&1 && return 0
