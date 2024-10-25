@@ -16,14 +16,14 @@ _dotfiles_python3_pyenv_path() {
         echo "WARNING: pyenv not found" >&2
         return 1
     fi
-    python3_version=$(pyenv whence python3.7 | tail -1)
+    python3_version=$(pyenv whence python3.12 | tail -1)
     if [ -z "${python3_version}" ]; then
-        echo "WARNING: python 3.7 version not found, try installing it with pyenv" >&2
+        echo "WARNING: python 3.12 version not found, try installing it with pyenv" >&2
         return 1
     fi
-    python3_path=$(PYENV_VERSION=${python3_version} pyenv which python3.7)
+    python3_path=$(PYENV_VERSION=${python3_version} pyenv which python3.12)
     if [ -z "${python3_path}" ]; then
-        echo "WARNING: python3.7 binary not found" >&2
+        echo "WARNING: python3.12 binary not found" >&2
         return 1
     fi
     echo "${python3_path}"
