@@ -315,6 +315,9 @@ setup_sheldon() {
     else
         sheldon_config="${HOME}/.sheldon"
     fi
+
+    echo "Using ${sheldon_config}"
+
     if [ ! -d "${sheldon_config}" ]; then
         mkdir -p "${sheldon_config}"
     fi
@@ -323,7 +326,7 @@ setup_sheldon() {
     sheldon_plugins="${sheldon_config}/plugins.toml"
     if [ ! -e "${sheldon_plugins}" ]; then
         echo "[sheldon] Creating ${sheldon_plugins/$HOME/~} symlink"
-        ln -s "${DOTFILES}/.sheldon/plugins.toml" "${sheldon_plugins}"
+        ln -s "${DOTFILES}/.config/sheldon/plugins.toml" "${sheldon_plugins}"
     fi
 }
 
