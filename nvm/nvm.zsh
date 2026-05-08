@@ -3,14 +3,12 @@
 
 # load nvm if installed
 if [ -d "$HOME/.nvm" ]; then
-
     export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh" # This loads nvm
+    [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
 fi
 
 # call 'nvm use' automatically in a directory with a .nvmrc file
 if command -v nvm >/dev/null; then
-
     autoload -U add-zsh-hook
     load-nvmrc() {
         local node_version
@@ -33,5 +31,4 @@ if command -v nvm >/dev/null; then
     }
     add-zsh-hook chpwd load-nvmrc
     load-nvmrc
-
 fi
