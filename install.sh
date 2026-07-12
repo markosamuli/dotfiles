@@ -309,12 +309,12 @@ setup_sheldon() {
     local xdg_config_user
     xdg_config_user="${XDG_CONFIG_HOME:-$HOME/.config}"
 
-    local sheldon_config
-    if [ -d "${xdg_config_user}" ]; then
-        sheldon_config="${xdg_config_user}/sheldon"
-    else
-        sheldon_config="${HOME}/.sheldon"
+    if [ ! -d "${xdg_config_user}" ]; then
+        mkdir -p "${xdg_config_user}"
     fi
+    
+    local sheldon_config
+    sheldon_config="${xdg_config_user}/sheldon"
 
     echo "Using ${sheldon_config}"
 
