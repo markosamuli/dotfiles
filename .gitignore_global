@@ -60,4 +60,5 @@ Desktop.ini
 # https://docs.dataform.co/dataform-cli
 .df-credentials.json
 
+# Claude local settings
 **/.claude/settings.local.json
