@@ -3,8 +3,8 @@
 ## Commands
 
 - Set up development tools and Git hooks: `make setup-dev`. This installs the
-  pinned `pre-commit` 2.x dependency, requires `shellcheck`, and installs
-  `shfmt` with Go when absent.
+  compatible pre-commit 4.x release with `uv tool`, requires `shellcheck`, and
+  installs `shfmt` with Go when absent.
 - Run all configured checks: `make lint` (equivalent to `pre-commit run -a`).
 - Run checks for changed files: `pre-commit run --files path/to/file`.
   Run one hook for a file with `pre-commit run <hook-id> --files path/to/file`;
