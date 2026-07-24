@@ -4,9 +4,9 @@
 # Only one Node.js version manager should be active in a shell at a time,
 # otherwise their chpwd/PATH hooks fight each other. Prefer nvm when it's
 # installed and fall back to fnm otherwise.
-if [ -d "$HOME/.nvm" ]; then
+if [ -s "$HOME/.nvm/nvm.sh" ]; then
     export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+    source "$NVM_DIR/nvm.sh"
 
     if command -v nvm >/dev/null; then
         autoload -U add-zsh-hook
