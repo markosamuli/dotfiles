@@ -19,9 +19,10 @@ endif
 CURL_BIN       = $(shell command -v curl 2>/dev/null)
 GIT_BIN        = $(shell command -v git 2>/dev/null)
 GO_BIN         = $(shell command -v go 2>/dev/null)
-PRE_COMMIT_BIN = $(shell pre-commit --version 2>&1 | head -1 | grep -q 'pre-commit [12]\.' && command -v pre-commit)
+PRE_COMMIT_BIN = $(shell pre-commit --version 2>&1 | head -1 | grep -q 'pre-commit 4\.' && command -v pre-commit)
 SHELLCHECK_BIN = $(shell command -v shellcheck 2>/dev/null)
 SHFMT_BIN      = $(shell command -v shfmt 2>/dev/null)
+UV_BIN         = $(shell command -v uv 2>/dev/null)
 
 ###
 # Define local variables after environment variables
@@ -48,8 +49,8 @@ setup-dev: setup-lint setup-git-hooks  ## setup development requirements
 ###
 
 .PHONY: setup-dev-requirements
-setup-dev-requirements:
-	pip install -q -r requirements.dev.txt
+setup-dev-requirements: setup-uv
+	uv tool install --reinstall --with-requirements requirements.dev.txt pre-commit
 
 .PHONY: setup-lint
 setup-lint: setup-pre-commit setup-shfmt setup-shellcheck
@@ -70,6 +71,12 @@ endif
 setup-golang:
 ifeq ($(GO_BIN),)
 	$(error "go not found")
+endif
+
+.PHONY: setup-uv
+setup-uv:
+ifeq ($(UV_BIN),)
+	$(error "uv not found")
 endif
 
 .PHONY: setup-shellcheck

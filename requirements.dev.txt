@@ -1,1 +1,1 @@
-pre-commit<3,>=2.7.0
+pre-commit<5,>=4.6.1
