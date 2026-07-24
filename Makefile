@@ -19,6 +19,7 @@ endif
 CURL_BIN       = $(shell command -v curl 2>/dev/null)
 GIT_BIN        = $(shell command -v git 2>/dev/null)
 GO_BIN         = $(shell command -v go 2>/dev/null)
+PRE_COMMIT_BIN = $(shell pre-commit --version 2>&1 | head -1 | grep -q 'pre-commit 4\.' && command -v pre-commit)
 SHELLCHECK_BIN = $(shell command -v shellcheck 2>/dev/null)
 SHFMT_BIN      = $(shell command -v shfmt 2>/dev/null)
 UV_BIN         = $(shell command -v uv 2>/dev/null)
@@ -95,7 +96,10 @@ endif
 ###
 
 .PHONY: setup-pre-commit
-setup-pre-commit: setup-dev-requirements
+setup-pre-commit:
+ifeq ($(PRE_COMMIT_BIN),)
+	$(MAKE) setup-dev-requirements
+endif
 
 .PHONY: setup-git-hooks
 setup-git-hooks: $(git_hooks)
