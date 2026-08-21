@@ -2,3 +2,16 @@
 !.vscode/cSpell.json
 /.idea/
 /.worktrees/
+
+# Machine-local Claude Code settings. Deliberately not a blanket `.claude/`
+# rule: `.claude/settings.json` is meant to be shared, so hiding the whole
+# directory would conceal the shared file and say nothing about the local one.
+.claude/settings.local.json
+
+# Environment files. A bare `.env` matches only that exact name; the second
+# line is what catches `.env.local` and `.env.production`, which are usually
+# the ones holding live values. `.env.example` is re-included on purpose, to
+# document which keys are required.
+.env
+.env.*
+!.env.example
