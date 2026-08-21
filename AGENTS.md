@@ -104,20 +104,41 @@ file to another should say what the old placement failed to cover.
 ## Disclosure and commit messages
 
 **AI assistance is disclosed, and that is deliberate.** An agent-assisted commit
-carries a co-authorship trailer:
+carries a co-authorship trailer naming the tool:
 
 ```text
-Co-Authored-By: Claude <noreply@anthropic.com>
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
 ```
+
+The harness emits the **active model name**, so the exact string varies between
+sessions and may carry a context-window suffix such as
+`Claude Opus 5 (1M context)`. There is no setting to shorten it. **Do not
+hand-edit the trailer to match a canonical form** — the emitted string is the
+accurate one, and a rewritten trailer records a session that did not happen.
+
+Naming the tool is what every published disclosure norm asks for. The
+`Assisted-by:` trailer that the Linux kernel and LLVM prefer is the
+better-argued form, but this harness cannot emit it, and a trailer that depends
+on being remembered by hand every time will drift — there is no commit-msg hook
+here to catch it.
+
+GitHub sets `Co-authored-by: Copilot <…>` server-side on Copilot-assisted
+commits. That is expected and stays. The lower-case spelling is GitHub's; Git
+matches trailer names case-insensitively, so it is not worth normalising.
 
 **Do not add session-transcript URLs.** No publication norm asks for one, only
 its author can open it, and public git history is effectively permanent while a
 provider's access policy is not.
 
+**Do not add a "Generated with" footer.** It appears nowhere in this
+repository's history, and where it turns up elsewhere it reads as an unmodified
+default rather than a decision.
+
 **Read what a commit message discloses before writing it.** This repository is
-public, so absolute machine paths, hostnames, employer or client names, and the
-names of private repositories do not belong in one. Describe the change instead
-of pasting the environment it happened in.
+public, so absolute machine paths, hostnames, employer or client names, the
+names of private repositories, and the contents of `~/.localrc` or any other
+unversioned local file do not belong in one. Describe the change instead of
+pasting the environment it happened in.
 
 ## Landing changes
 
