@@ -23,7 +23,10 @@ find_blacklisted_patterns() {
     local match
     local errors=0
     for pattern in "${blacklist[@]}"; do
-        match=$(grep -E -H -n "${pattern}" "${file}")
+        # Ignore commented-out lines: a pattern inside a comment is a note
+        # about what deliberately is not done here, not an active setting.
+        match=$(grep -E -H -n "${pattern}" "${file}" |
+            grep -vE '^[^:]+:[0-9]+:[[:space:]]*#')
         if [ -n "${match}" ]; then
             echo "${match}"
             errors=$((errors + 1))
