@@ -23,6 +23,7 @@ tab_width = 2
 indent_style = tab
 
 [.zshrc]
+indent_size = 4
 shell_variant = zsh
 switch_case_indent = true
 
@@ -32,6 +33,7 @@ shell_variant = zsh
 switch_case_indent = true
 
 [.bashrc]
+indent_size = 4
 shell_variant = bash
 switch_case_indent = true
 
