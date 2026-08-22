@@ -408,7 +408,7 @@ setup_tmux() {
 # Fix permissions
 fix_permissions() {
     user_only_directories=(
-        "${DOTFILES}"s
+        "${DOTFILES}"
         ~/.cache/Homebrew
         ~/.ssh
     )
