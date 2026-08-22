@@ -147,12 +147,11 @@ one with `gh pr create` and let Marko merge it.
 
 Two facts about review state here, because the obvious queries mislead:
 
-- `reviewDecision` is **empty on every pull request in this repository**, and
-  that is not a signal. GitHub forbids approving your own pull request, and
-  Marko authors them, so an approval can never register there.
-- An approval therefore arrives as a **review body**, not an issue comment.
-  `gh pr view <n> --json comments` returns `[]` on a reviewed pull request;
-  read `reviews` as well.
+- For a pull request authored by the current user, `reviewDecision` is not a
+  substitute for inspecting reviews: self-approval is forbidden, but another
+  reviewer can still set the decision.
+- An approval appears in a **review's state**, not necessarily its body;
+  `gh pr view <n> --json comments,reviews` lets you inspect both.
 
 There is no CI in this repository — no `.github/workflows/` — so pre-commit is
 the only gate. Run `make lint` before opening a pull request; nothing else will.
