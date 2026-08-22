@@ -70,6 +70,12 @@ My favourite aliases:
 - `git wd` - word diff changes
 - `git wds` - word diff staged changes
 
+## AI Usage
+
+Parts of this repository are written with AI assistance. Everything here is
+reviewed, tested on my own machines, and mine to maintain. Agent-assisted
+commits are marked in the git history; see [AGENTS.md](AGENTS.md).
+
 ## License
 
 See [License](LICENSE)
