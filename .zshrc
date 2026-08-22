@@ -121,4 +121,3 @@ unset config_files platform platform_wsl
 # want in your public, versioned repo.
 # shellcheck disable=SC1090
 [ -f ~/.localrc ] && . ~/.localrc
-
