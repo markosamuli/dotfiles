@@ -4,8 +4,7 @@
 _dotfiles_init_pyenv() {
     if [ -e "$HOME/.pyenv/.pyenvrc" ]; then
         # load Ansible managed .pyenvrc config
-        # shellcheck disable=SC2086
-        source $HOME/.pyenv/.pyenvrc
+        source "$HOME/.pyenv/.pyenvrc"
     elif [ -d "$HOME/.pyenv" ]; then
         # initialise manual installs
         if ! command -v pyenv >/dev/null; then # this should be done in .zprofile
