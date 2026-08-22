@@ -91,6 +91,8 @@ init_local_bin_path() {
     if [ ! -d "${HOME}/.local/bin" ]; then
         return 0
     fi
+    # Quoted deliberately: this is a literal substring test, not a regex.
+    # shellcheck disable=SC2076
     if [[ "${PATH}" =~ "${HOME}/.local/bin" ]]; then
         return 0
     fi
@@ -128,8 +130,8 @@ install_sheldon_with_installer() {
         error "[sheldon] FAILED: cURL is not installed"
         exit 1
     }
-    curl --proto '=https' -fLsS https://rossmacarthur.github.io/install/crate.sh \
-        | bash -s -- --repo rossmacarthur/sheldon --to ~/.local/bin
+    curl --proto '=https' -fLsS https://rossmacarthur.github.io/install/crate.sh |
+        bash -s -- --repo rossmacarthur/sheldon --to ~/.local/bin
 }
 
 # Install zsh
@@ -266,7 +268,6 @@ install_github_cli() {
     fi
 }
 
-
 install_github_cli_macos() {
     command -v brew 1>/dev/null 2>&1 || {
         error "[gh] FAILED: Homebrew not installed."
@@ -288,13 +289,13 @@ install_github_cli_linux() {
 }
 
 install_github_cli_apt() {
-    (type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y)) \
-    && sudo mkdir -p -m 755 /etc/apt/keyrings \
-    && wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
-    && sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
-    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-    && sudo apt update \
-    && sudo apt install gh -y
+    (type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y)) &&
+        sudo mkdir -p -m 755 /etc/apt/keyrings &&
+        wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg >/dev/null &&
+        sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg &&
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null &&
+        sudo apt update &&
+        sudo apt install gh -y
 }
 
 setup_sheldon() {
@@ -312,7 +313,7 @@ setup_sheldon() {
     if [ ! -d "${xdg_config_user}" ]; then
         mkdir -p "${xdg_config_user}"
     fi
-    
+
     local sheldon_config
     sheldon_config="${xdg_config_user}/sheldon"
 

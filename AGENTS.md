@@ -157,24 +157,6 @@ Two facts about review state here, because the obvious queries mislead:
 There is no CI in this repository — no `.github/workflows/` — so pre-commit is
 the only gate. Run `make lint` before opening a pull request; nothing else will.
 
-**`make lint` currently fails on `master`, and has for some time.** The
-`shell-config` hook flags one commented-out line in each entry point:
-
-```text
-.bashrc:147:# eval "$(pyenv init -)"
-.zshrc:118:# eval "$(pyenv init -)"
-```
-
-Both date to `6b7963c` (April 2022). The hook matches the pattern without
-noticing that the line is commented out, so nothing is actually initialising
-pyenv there. **Do not take this as a failure you introduced**, and do not
-"fix" it by deleting the comments without deciding whether the hook or the
-comment is wrong. Check that your own files are clean instead:
-
-```sh
-pre-commit run --files <the files you changed>
-```
-
 ## Where work gets tracked
 
 **GitHub issues on this repository.** Filing is Marko's decision, not a side

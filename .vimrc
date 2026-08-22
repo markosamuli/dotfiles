@@ -83,11 +83,11 @@ nnoremap <C-H> <C-W><C-H>
 " Open new split panes to right and bottom
 set splitbelow
 set splitright
-            
+
 " Show row and column ruler information
-set ruler	
+set ruler
 set colorcolumn=80
-autocmd FileType gitcommit setlocal tw=72 
+autocmd FileType gitcommit setlocal tw=72
 autocmd FileType gitcommit set colorcolumn=72
 autocmd FileType go set colorcolumn=80
 highlight ColorColumn ctermbg=240 guibg=lightgrey
