@@ -74,8 +74,9 @@ that looks like it worked.
 - **`.gitignore`** governs *this repository's own checkout*. It travels with
   every clone and fork.
 - **`.gitignore_global`** is a dotfile this repository *ships*. `install.sh`
-  symlinks it to `~/.gitignore_global`, where it governs every other repository
-  on a machine that has run the installer.
+  symlinks it to `~/.gitignore_global` and, when no other
+  `core.excludesfile` is configured, makes Git use it for repositories on that
+  machine.
 
 **A rule protecting this repository belongs in `.gitignore`, even when the
 global file already covers it.** A global ignore protects one machine after
