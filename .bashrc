@@ -140,6 +140,9 @@ done
 
 unset config_files platform platform_wsl completion_files path_files
 
+# Load local environment variables if available.
+[ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
+
 # Prevent install scripts and my Ansible roles from altering my profile script
 # as these are already loaded in the config files.
 # /nvm.sh $NVM_DIR/bash_completion
