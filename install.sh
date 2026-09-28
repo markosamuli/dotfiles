@@ -442,12 +442,14 @@ fix_permissions() {
 setup_dotfile_symlinks() {
     dotfile_symlinks=(
         .aliases
+        .zshenv
         .zshrc
         .zprofile
         .bashrc
         .gitignore_global
         .editorconfig
         .markdownlintrc
+        .profile
         .vimrc
     )
     for file in "${dotfile_symlinks[@]}"; do
