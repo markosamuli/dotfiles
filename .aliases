@@ -1,6 +1,1 @@
 alias h='history'
-
-# CLI for Tailscale macOS app
-if [ -e "/Applications/Tailscale.app" ]; then
-  alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
-fi
