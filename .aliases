@@ -1,23 +1,4 @@
-# Sublime
-# alias subl='sublime'
-
-# Visual Studio Code
-# alias vscode='code'
-
-# history
 alias h='history'
-
-# Git
-# alias gc='git commit'
-# alias gco='git checkout'
-
-# ls aliases
-# alias ll='ls -alF'
-# alias la='ls -A'
-# alias l='ls -CF'
-
-# Visual Studio Code
-# alias cdiff='code --diff'
 
 # CLI for Tailscale macOS app
 if [ -e "/Applications/Tailscale.app" ]; then
