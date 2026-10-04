@@ -73,8 +73,8 @@ shell-specific module, so each runs in the right startup phase.
 The login files run before those and are not covered by the module model:
 
 - `.zshenv` (every zsh) loads Cargo's env file.
-- `.zprofile` (zsh login) runs Homebrew's `shellenv`, initialises pyenv when
-  present, and puts MacPorts ahead of Homebrew on `PATH`.
+- `.zprofile` (zsh login) runs Homebrew's `shellenv` and puts MacPorts ahead
+  of Homebrew on `PATH`.
 - `.profile` (POSIX login shells) loads the env files for `~/.local/bin` and
   Cargo.
 
