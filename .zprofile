@@ -19,4 +19,3 @@ fi
 if [ -d "/opt/local" ]; then
   export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 fi
-
