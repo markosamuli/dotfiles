@@ -19,9 +19,12 @@ including commit messages. That constrains more than it first appears — see
   relevant IDs include `shellcheck`, `shfmt`, and `shell-config`.
 - Check that every shell still starts cleanly: `make check-startup`. It runs
   `zsh -il`, `bash -i` and `sh .profile` from this checkout against a
-  throwaway `HOME` with a cleared environment, and fails if startup exits
-  non-zero or writes anything to stderr beyond the shell's own no-terminal
-  messages. It runs once with only the system `PATH` and once with
+  throwaway `HOME` with a cleared environment. It fails if an entry point
+  (`.bashrc`, `.zshrc`, `.zshenv`, `.zprofile`, `.profile`) is missing or
+  empty, if startup exits non-zero or writes anything to stderr beyond the
+  shell's own no-terminal messages, or if bash or zsh finish without the
+  `dotfiles` alias that the `dotfiles/` module defines — proof the modules
+  were loaded, not just that nothing complained. It runs once with only the system `PATH` and once with
   Homebrew's `bin` added. **Run it after any change to an entry point or a
   module.**
 - What `check-startup` cannot see: most modules guard on a tool or a file

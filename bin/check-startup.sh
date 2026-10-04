@@ -31,6 +31,22 @@ done
 
 failed=0
 
+# A shell started with a missing startup file says nothing: bash ignores a
+# missing --rcfile and zsh skips a dangling link. Check that each one exists
+# and is not empty before trusting a clean start.
+for file in .bashrc .zshrc .zshenv .zprofile .profile; do
+    if [ ! -s "${dotfiles}/${file}" ]; then
+        echo "FAIL  ${file} is missing or empty"
+        failed=1
+    fi
+done
+
+# Run after startup to prove the entry point loaded the modules, not just
+# that it exited cleanly. The dotfiles/ module defines this alias for both
+# shells.
+# shellcheck disable=SC2016
+loaded='alias dotfiles >/dev/null 2>&1 || { echo "modules not loaded: no dotfiles alias" >&2; exit 1; }'
+
 # run_check <name> <command...>
 run_check() {
     local name=$1
@@ -70,12 +86,12 @@ bash_bin="$(command -v bash)"
 for check_path in "${check_paths[@]}"; do
     if [ -n "${zsh_bin}" ]; then
         # Login and interactive: .zshenv, .zprofile and .zshrc, linked into HOME.
-        run_check "zsh -il" "${zsh_bin}" -i -l -c 'exit 0'
+        run_check "zsh -il" "${zsh_bin}" -i -l -c "${loaded}"
     else
         echo "FAIL  zsh not found"
         failed=1
     fi
-    run_check "bash -i" "${bash_bin}" --rcfile "${dotfiles}/.bashrc" -i -c 'exit 0'
+    run_check "bash -i" "${bash_bin}" --rcfile "${dotfiles}/.bashrc" -i -c "${loaded}"
     # shellcheck disable=SC2016
     run_check "sh .profile" /bin/sh -c '. "$1"' sh "${dotfiles}/.profile"
 done
