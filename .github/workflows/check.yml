@@ -29,6 +29,15 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y shellcheck shfmt zsh
 
+      # The runner image ships group-writable zsh function directories, so
+      # compinit refuses to load them ("insecure directories") and aborts.
+      # That is a property of the image, not of these dotfiles.
+      - name: Secure zsh completion directories (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          zsh -c 'autoload -Uz compaudit; compaudit' | tee /dev/stderr \
+            | xargs -r sudo chmod g-w,o-w
+
       - uses: astral-sh/setup-uv@v10.2.0
 
       - name: Run pre-commit hooks
