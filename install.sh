@@ -666,33 +666,6 @@ setup_git_editor() {
     fi
 }
 
-setup_vim() {
-    local vim_autoload="$HOME/.vim/autoload"
-    local vim_plugged="$HOME/.vim/plugged"
-    local vim_plug="https://raw.github.com/junegunn/vim-plug/master/plug.vim"
-    if [ ! -d "${vim_autoload}" ]; then
-        echo "[vim] Create ${vim_autoload} directory"
-        mkdir -p "${vim_autoload}" || {
-            error "[vim] FAILED: couldn't create ${vim_autoload} directory"
-            return 1
-        }
-    fi
-    if [ ! -d "${vim_plugged}" ]; then
-        echo "[vim] Create ${vim_plugged} plugin directory"
-        mkdir -p "${vim_plugged}" || {
-            error "[vim] FAILED: couldn't create ${vim_plugged} directory"
-            return 1
-        }
-    fi
-    if [ ! -e "${vim_autoload}/plug.vim" ]; then
-        echo "[vim] Install vim-plug"
-        curl -fLo "${vim_autoload}/plug.vim" "${vim_plug}" || {
-            error "[vim] FAILED: couldn't download vim-plug"
-            return 1
-        }
-    fi
-}
-
 # Compare the major and minor parts of two version strings
 # Usage: compare_version <required> <installed>
 # Example: compare_version "1.2.0" "1.3.0"
@@ -777,9 +750,6 @@ install_requirements
 
 # Configure zsh
 configure_zsh
-
-# Configure vim
-setup_vim
 
 # Setup dotfile symlinks
 setup_dotfile_symlinks
