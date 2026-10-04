@@ -11,12 +11,13 @@ syntax on
 
 filetype plugin indent on
 set autoindent
-set smartindent
-set smarttab
-set softtabstop=4
-set tabstop=4
-set shiftwidth=4
+
+" Indent with four spaces where no .editorconfig applies. EditorConfig
+" overrides these for files it covers, which includes everything under
+" $HOME through the ~/.editorconfig this repository installs.
 set expandtab
+set shiftwidth=4
+set softtabstop=-1
 
 syntax enable
 set background=dark
