@@ -1,4 +1,0 @@
-#!/bin/zsh
-
-echo "deprecated: try 'x' instead of 'g'" >&2
-return 1

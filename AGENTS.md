@@ -61,9 +61,8 @@ module directory:
   in `$HOME`, and runs `compinit` before completion modules. Sheldon is the
   only supported plugin manager; without its config, zsh starts with no
   plugins.
-- `zsh/config.zsh` makes functions in `functions/` available through Zsh
-  autoloading. User-specific extensions live in the `user/` modules, and
-  `~/.localrc` is sourced last for unversioned local secrets.
+- User-specific extensions live in the `user/` modules, and `~/.localrc` is
+  sourced last for unversioned local secrets.
 
 Most tool directories therefore contain paired Bash and Zsh modules. Put PATH
 changes in `path.bash`/`path.zsh`, completion setup in

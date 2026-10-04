@@ -34,10 +34,6 @@ repos:
 
       # Check that all executables start with a shebang line.
       - id: check-executables-have-shebangs
-        exclude: >-
-          (?x)^(
-            functions/
-          )
 
   # Shell script formatting and coding style.
   - repo: https://github.com/syntaqx/git-hooks
