@@ -35,8 +35,8 @@ jobs:
       - name: Secure zsh completion directories (Linux)
         if: runner.os == 'Linux'
         run: |
-          zsh -c 'autoload -Uz compaudit; compaudit' | tee /dev/stderr \
-            | xargs -r sudo chmod g-w,o-w
+          zsh -c 'autoload -Uz compaudit; compaudit' | grep '^/' | sort -u \
+            | tee /dev/stderr | xargs -r sudo chmod g-w,o-w
 
       - uses: astral-sh/setup-uv@v10.2.0
 
