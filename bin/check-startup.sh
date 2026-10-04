@@ -57,21 +57,32 @@ done
 # shellcheck disable=SC2016
 loaded='alias dotfiles >/dev/null 2>&1 || { echo "modules not loaded: no dotfiles alias" >&2; exit 1; }'
 
-# run_check <name> <PATH> <files to link into HOME> <command...>
+# run_check <name> <PATH> [<file>...] -- <command...>
 #
-# The third argument lists the checkout's startup files the shell reads
-# from HOME, space-separated; pass "" when the command names its file
-# directly.
+# Each <file> is one of the checkout's startup files that the shell reads
+# from HOME, and is linked into the throwaway HOME. List none when the
+# command names its startup file directly.
 run_check() {
     local name=$1
     local check_path=$2
-    local link_files=$3
-    shift 3
+    shift 2
+    local link_files=()
+    while [ "$#" -gt 0 ] && [ "$1" != "--" ]; do
+        link_files+=("$1")
+        shift
+    done
+    if [ "$#" -eq 0 ]; then
+        echo "run_check: no -- before the command for ${name}" >&2
+        exit 2
+    fi
+    shift
     local tmp_home stderr_file status errors file
     tmp_home="$(mktemp -d)"
     stderr_file="$(mktemp)"
     status=0
-    for file in ${link_files}; do
+    # The ${...+...} form keeps an empty array from tripping `set -u` in
+    # bash 3.2, which is still /bin/bash on macOS.
+    for file in ${link_files[@]+"${link_files[@]}"}; do
         ln -s "${dotfiles}/${file}" "${tmp_home}/${file}"
     done
     env -i \
@@ -106,15 +117,15 @@ for search_path in "${check_paths[@]}"; do
         # Login and interactive, so zsh reads .zshenv, .zprofile and .zshrc.
         # They are linked into HOME rather than read via ZDOTDIR pointing at
         # the checkout, because compinit writes .zcompdump into ZDOTDIR.
-        run_check "zsh -il" "${search_path}" ".zshenv .zprofile .zshrc" \
+        run_check "zsh -il" "${search_path}" .zshenv .zprofile .zshrc -- \
             "${zsh_bin}" -i -l -c "${loaded}"
     else
         echo "SKIP  zsh -il  (zsh not found on PATH)"
     fi
-    run_check "bash -i" "${search_path}" "" \
+    run_check "bash -i" "${search_path}" -- \
         "${bash_bin}" --rcfile "${dotfiles}/.bashrc" -i -c "${loaded}"
     # shellcheck disable=SC2016
-    run_check "sh .profile" "${search_path}" "" /bin/sh -c '. "$1"' sh "${dotfiles}/.profile"
+    run_check "sh .profile" "${search_path}" -- /bin/sh -c '. "$1"' sh "${dotfiles}/.profile"
 done
 
 exit "${failed}"
