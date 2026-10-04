@@ -1,27 +1,6 @@
-call plug#begin()
-
-" https://github.com/junegunn/vim-easy-align
-Plug 'junegunn/vim-easy-align'
-
-Plug 'tpope/vim-sensible'
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-Plug 'kien/ctrlp.vim'
-Plug 'tpope/vim-fugitive'
-Plug 'scrooloose/nerdtree'
-
-" fzf installed with Homebrew
-Plug '/opt/homebrew/opt/fzf'
-" Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
-
-" Colors
-Plug 'dracula/vim', {'as': 'dracula'}
-
-" EditorConfig
-Plug 'editorconfig/editorconfig-vim'
-
-
-call plug#end()
+" EditorConfig support, bundled with Vim since 9.0.1799. `silent!` keeps
+" older Vims, which do not ship the package, from erroring.
+silent! packadd! editorconfig
 
 " Behave like Vim instead of Vi
 set nocompatible
@@ -32,53 +11,41 @@ syntax on
 
 filetype plugin indent on
 set autoindent
-set smartindent
-set smarttab
-set softtabstop=4
-set tabstop=4
-set shiftwidth=4
-set expandtab
 
-" http://ethanschoonover.com/solarized/vim-colors-solarized
+" Indent with four spaces where no .editorconfig applies. EditorConfig
+" overrides these for files it covers, which includes everything under
+" $HOME through the ~/.editorconfig this repository installs.
+set expandtab
+set shiftwidth=4
+set softtabstop=-1
+
 syntax enable
 set background=dark
-" colorscheme solarized
 
-" format with goimports instead of gofmt
-let g:go_fmt_command = "goimports"
-
+" Show directories as a tree in netrw, Vim's built-in file browser
+" (`vim .`, `:Explore`). 0 is the default one-file-per-line list.
 let g:netrw_liststyle=3
 
 " Ignore files when searching
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip
-let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
 
+" Use the mouse in all modes: click to move the cursor, drag to select in
+" visual mode, scroll the buffer with the wheel. Vim then owns mouse events,
+" so the terminal's own selection needs a modifier (Shift-drag in Ghostty,
+" Option-drag in Terminal.app and iTerm2).
 if has('mouse')
-  " Enable mouse use in all modes
   set mouse=a
-  "if exists('$ITERM_PROFILE')
-  "  autocmd VimEnter * set ttymouse=xterm2
-  "  autocmd FocusGained * set ttymouse=xterm2
-  "  autocmd BufEnter * set ttymouse=xterm2
-  "endif
 endif
 
+" Decode terminal mouse reports in the SGR format, which works in every
+" column; the older xterm format stops past column 223. Vim only detects SGR
+" for $TERM names starting with xterm, and Ghostty uses xterm-ghostty.
 if has('mouse_sgr')
   set ttymouse=sgr
 endif
 
-if has("gui_running")
-    " running MacVim
-else
-    " running inside terminal
-    set clipboard=unnamed
-endif
-
-" Navigate with split windows without ctrl-w prefix
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
+" Use the system clipboard for yank and put
+set clipboard=unnamed
 
 " Open new split panes to right and bottom
 set splitbelow
