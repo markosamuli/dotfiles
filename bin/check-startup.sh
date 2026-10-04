@@ -47,15 +47,16 @@ done
 # shellcheck disable=SC2016
 loaded='alias dotfiles >/dev/null 2>&1 || { echo "modules not loaded: no dotfiles alias" >&2; exit 1; }'
 
-# run_check <name> <files to link into HOME> <command...>
+# run_check <name> <PATH> <files to link into HOME> <command...>
 #
-# The second argument lists the checkout's startup files the shell reads
+# The third argument lists the checkout's startup files the shell reads
 # from HOME, space-separated; pass "" when the command names its file
 # directly.
 run_check() {
     local name=$1
-    local link_files=$2
-    shift 2
+    local check_path=$2
+    local link_files=$3
+    shift 3
     local tmp_home stderr_file status errors file
     tmp_home="$(mktemp -d)"
     stderr_file="$(mktemp)"
@@ -85,21 +86,21 @@ run_check() {
 zsh_bin="$(command -v zsh || true)"
 bash_bin="$(command -v bash)"
 
-for check_path in "${check_paths[@]}"; do
+for search_path in "${check_paths[@]}"; do
     if [ -n "${zsh_bin}" ]; then
         # Login and interactive, so zsh reads .zshenv, .zprofile and .zshrc.
         # They are linked into HOME rather than read via ZDOTDIR pointing at
         # the checkout, because compinit writes .zcompdump into ZDOTDIR.
-        run_check "zsh -il" ".zshenv .zprofile .zshrc" \
+        run_check "zsh -il" "${search_path}" ".zshenv .zprofile .zshrc" \
             "${zsh_bin}" -i -l -c "${loaded}"
     else
         echo "FAIL  zsh not found"
         failed=1
     fi
-    run_check "bash -i" "" \
+    run_check "bash -i" "${search_path}" "" \
         "${bash_bin}" --rcfile "${dotfiles}/.bashrc" -i -c "${loaded}"
     # shellcheck disable=SC2016
-    run_check "sh .profile" "" /bin/sh -c '. "$1"' sh "${dotfiles}/.profile"
+    run_check "sh .profile" "${search_path}" "" /bin/sh -c '. "$1"' sh "${dotfiles}/.profile"
 done
 
 exit "${failed}"
