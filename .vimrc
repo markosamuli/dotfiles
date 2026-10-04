@@ -22,16 +22,24 @@ set softtabstop=-1
 syntax enable
 set background=dark
 
+" Show directories as a tree in netrw, Vim's built-in file browser
+" (`vim .`, `:Explore`). 0 is the default one-file-per-line list.
 let g:netrw_liststyle=3
 
 " Ignore files when searching
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip
 
+" Use the mouse in all modes: click to move the cursor, drag to select in
+" visual mode, scroll the buffer with the wheel. Vim then owns mouse events,
+" so the terminal's own selection needs a modifier (Shift-drag in Ghostty,
+" Option-drag in Terminal.app and iTerm2).
 if has('mouse')
-  " Enable mouse use in all modes
   set mouse=a
 endif
 
+" Decode terminal mouse reports in the SGR format, which works in every
+" column; the older xterm format stops past column 223. Vim only detects SGR
+" for $TERM names starting with xterm, and Ghostty uses xterm-ghostty.
 if has('mouse_sgr')
   set ttymouse=sgr
 endif
