@@ -5,4 +5,3 @@ if [ -f "$HOME/.cargo/env" ]; then
 elif [ -d "$HOME/.cargo/bin" ]; then
     export PATH="$HOME/.cargo/bin:$PATH"
 fi
-
