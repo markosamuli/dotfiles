@@ -53,10 +53,11 @@ module directory:
 
 - `.bashrc` loads `*/path.bash` first, then other `*.bash` files, then
   `*/completion.bash` once Bash completion is initialised.
-- `.zshrc` follows the same phase order for `*.zsh`, initialises the selected
-  plugin manager between the path and general phases, and runs `compinit`
-  before completion modules. It selects Sheldon, Oh My Zsh or Antibody from
-  files already present in `$HOME`.
+- `.zshrc` follows the same phase order for `*.zsh`, runs `sheldon source`
+  between the path and general phases when a Sheldon `plugins.toml` exists
+  in `$HOME`, and runs `compinit` before completion modules. Sheldon is the
+  only supported plugin manager; without its config, zsh starts with no
+  plugins.
 - `zsh/config.zsh` makes functions in `functions/` available through Zsh
   autoloading. User-specific extensions live in the `user/` modules, and
   `~/.localrc` is sourced last for unversioned local secrets.
