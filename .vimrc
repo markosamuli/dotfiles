@@ -39,12 +39,6 @@ endif
 " Use the system clipboard for yank and put
 set clipboard=unnamed
 
-" Navigate with split windows without ctrl-w prefix
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
-
 " Open new split panes to right and bottom
 set splitbelow
 set splitright
