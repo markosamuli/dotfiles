@@ -47,18 +47,20 @@ done
 # shellcheck disable=SC2016
 loaded='alias dotfiles >/dev/null 2>&1 || { echo "modules not loaded: no dotfiles alias" >&2; exit 1; }'
 
-# run_check <name> <command...>
+# run_check <name> <files to link into HOME> <command...>
+#
+# The second argument lists the checkout's startup files the shell reads
+# from HOME, space-separated; pass "" when the command names its file
+# directly.
 run_check() {
     local name=$1
-    shift
+    local link_files=$2
+    shift 2
     local tmp_home stderr_file status errors file
     tmp_home="$(mktemp -d)"
     stderr_file="$(mktemp)"
     status=0
-    # zsh reads its startup files from ZDOTDIR, and compinit writes
-    # .zcompdump there too. Link the checkout's files into the throwaway HOME
-    # so that nothing is written into the checkout.
-    for file in .zshenv .zprofile .zshrc; do
+    for file in ${link_files}; do
         ln -s "${dotfiles}/${file}" "${tmp_home}/${file}"
     done
     env -i \
@@ -85,15 +87,19 @@ bash_bin="$(command -v bash)"
 
 for check_path in "${check_paths[@]}"; do
     if [ -n "${zsh_bin}" ]; then
-        # Login and interactive: .zshenv, .zprofile and .zshrc, linked into HOME.
-        run_check "zsh -il" "${zsh_bin}" -i -l -c "${loaded}"
+        # Login and interactive, so zsh reads .zshenv, .zprofile and .zshrc.
+        # They are linked into HOME rather than read via ZDOTDIR pointing at
+        # the checkout, because compinit writes .zcompdump into ZDOTDIR.
+        run_check "zsh -il" ".zshenv .zprofile .zshrc" \
+            "${zsh_bin}" -i -l -c "${loaded}"
     else
         echo "FAIL  zsh not found"
         failed=1
     fi
-    run_check "bash -i" "${bash_bin}" --rcfile "${dotfiles}/.bashrc" -i -c "${loaded}"
+    run_check "bash -i" "" \
+        "${bash_bin}" --rcfile "${dotfiles}/.bashrc" -i -c "${loaded}"
     # shellcheck disable=SC2016
-    run_check "sh .profile" /bin/sh -c '. "$1"' sh "${dotfiles}/.profile"
+    run_check "sh .profile" "" /bin/sh -c '. "$1"' sh "${dotfiles}/.profile"
 done
 
 exit "${failed}"
