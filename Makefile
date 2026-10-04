@@ -121,6 +121,10 @@ $(commit_msg_hooks): | setup-pre-commit
 lint: setup-lint ## run pre-commit hooks on all files
 	pre-commit run -a
 
+.PHONY: check-startup
+check-startup: ## start each shell against a throwaway HOME and fail on errors
+	./bin/check-startup.sh
+
 ###
 # Install
 ###
