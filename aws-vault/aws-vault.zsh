@@ -6,14 +6,6 @@ if [[ "${platform}" == "linux" ]]; then
     if [ -z "${AWS_VAULT_BACKEND}" ]; then
         export AWS_VAULT_BACKEND=pass
     fi
-    if [[ "${platform_wsl}" == "true" ]]; then
-        # Fix "gpg: decryption failed: No secret key" error
-        # https://www.krenger.ch/blog/gopass-gpg-decryption-failed-no-secret-key/
-        if [ -z "${GPG_TTY}" ]; then
-            GPG_TTY=$(tty)
-            export GPG_TTY
-        fi
-    fi
 fi
 
 aws_vault_prompt_precmd() {

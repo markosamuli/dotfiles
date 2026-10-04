@@ -28,18 +28,9 @@ fi
 unamestr=$(uname)
 if [[ "$unamestr" == 'Linux' ]]; then
   platform='linux'
-  if [[ -d "/run/WSL" ]]; then
-    platform_wsl='true'
-  elif grep -q Microsoft /proc/version; then
-    platform_wsl='true'
-  else
-    platform_wsl='false'
-  fi
 elif [[ "$unamestr" == 'Darwin' ]]; then
   # shellcheck disable=SC2034
   platform='macos'
-  # shellcheck disable=SC2034
-  platform_wsl='false'
   if [[ `uname -m` == 'arm64' ]]; then
     platform_apple_silicon='true'
   fi
@@ -109,7 +100,7 @@ for file in ${(M)config_files:#*/completion.zsh}; do
   source "$file"
 done
 
-unset config_files platform platform_wsl
+unset config_files platform
 
 # shellcheck disable=SC1090
 [ -f ~/.localrc ] && . ~/.localrc

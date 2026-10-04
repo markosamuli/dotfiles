@@ -92,7 +92,7 @@ longer used on any current machine — #15 tracks which.
   pre-commit hook rejects several direct PATH and version-manager
   initialisation patterns in those two entry points.
 - Guard optional tool integrations with availability or directory checks, as
-  existing modules do, and use the `platform` and `platform_wsl` variables
+  existing modules do, and use the `platform` variable (`linux` or `macos`)
   both entry points establish. `platform_apple_silicon` is set by `.zshrc`
   only, so Bash modules cannot rely on it.
 - **Bash and Zsh are deliberately separate implementations.** Never source a
