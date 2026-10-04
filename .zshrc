@@ -41,17 +41,6 @@ if [ -e "$HOME/.config/sheldon/plugins.toml" ]; then
   export ZSH_PLUGIN_MANAGER="sheldon"
 elif [ -e "$HOME/.sheldon/plugins.toml" ]; then
   export ZSH_PLUGIN_MANAGER="sheldon"
-elif [ -e "$HOME/.config/sheldon/plugins.toml" ]; then
-  export ZSH_PLUGIN_MANAGER="sheldon"
-elif [ -d "$HOME/.oh-my-zsh" ]; then
-  export ZSH="$HOME/.oh-my-zsh"
-  export ZSH_PLUGIN_MANAGER="oh-my-zsh"
-elif [ -e "$HOME/.bundles.txt" ]; then
-  export ZSH_PLUGIN_MANAGER="antibody"
-fi
-
-if [[ "${ZSH_PLUGIN_MANAGER}" == "oh-my-zsh" ]]; then
-  source "${DOTFILES}/oh-my-zsh/oh-my-zsh.zsh"
 fi
 
 ###
@@ -63,9 +52,6 @@ fi
 typeset -U config_files
 config_files=($DOTFILES/*/*.zsh)
 
-# remove oh-my-zsh configuration
-config_files=(${config_files:#*/oh-my-zsh/*.zsh})
-
 # load the path files
 for file in ${(M)config_files:#*/path.zsh}; do
   source "$file"
@@ -73,10 +59,6 @@ done
 
 if [[ "${ZSH_PLUGIN_MANAGER}" == "sheldon" ]]; then
   eval "$(sheldon source)"
-elif [[ "${ZSH_PLUGIN_MANAGER}" == "antibody" ]]; then
-  if [ -e "$HOME/.bundles.txt" ]; then
-    source "$HOME/.bundles.txt"
-  fi
 fi
 
 # load everything but the path and completion files
