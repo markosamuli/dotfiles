@@ -1,0 +1,51 @@
+---
+name: check
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install shell tools (macOS)
+        if: runner.os == 'macOS'
+        run: brew install shellcheck shfmt
+
+      - name: Install shell tools (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck shfmt zsh
+
+      # The runner image ships group-writable zsh function directories, so
+      # compinit refuses to load them ("insecure directories") and aborts.
+      # That is a property of the image, not of these dotfiles.
+      - name: Secure zsh completion directories (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          zsh -c 'autoload -Uz compaudit; compaudit' | grep '^/' | sort -u \
+            | tee /dev/stderr | xargs -r sudo chmod g-w,o-w
+
+      - uses: astral-sh/setup-uv@v10.2.0
+
+      - name: Run pre-commit hooks
+        run: >-
+          uvx --with-requirements requirements.dev.txt pre-commit
+          run --all-files --show-diff-on-failure
+
+      # Run even when a hook fails, so one run reports both.
+      - name: Check shell startup
+        if: ${{ !cancelled() }}
+        run: make check-startup

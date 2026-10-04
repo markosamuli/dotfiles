@@ -25,11 +25,17 @@ _dotfiles_init_rbenv() {
 }
 
 _dotfiles_add_ruby_from_homebrew_to_path() {
-    if ! command -v brew >/dev/null; then
-        return 0
+    # Build the path from the Homebrew prefix rather than asking
+    # `brew --prefix ruby`, which is slow and can fetch package metadata
+    # from the network on every new shell.
+    local brew_prefix="${HOMEBREW_PREFIX:-}"
+    if [ -z "${brew_prefix}" ]; then
+        if ! command -v brew >/dev/null; then
+            return 0
+        fi
+        brew_prefix=$(brew --prefix)
     fi
-    local ruby_prefix
-    ruby_prefix=$(brew --prefix ruby)
+    local ruby_prefix="${brew_prefix}/opt/ruby"
     if [ -n "${ruby_prefix}" ] && [ -d "${ruby_prefix}" ]; then
         export PATH="${ruby_prefix}/bin:$PATH"
     fi

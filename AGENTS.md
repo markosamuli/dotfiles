@@ -17,9 +17,25 @@ including commit messages. That constrains more than it first appears — see
 - Run checks for changed files: `pre-commit run --files path/to/file`.
   Run one hook for a file with `pre-commit run <hook-id> --files path/to/file`;
   relevant IDs include `shellcheck`, `shfmt`, and `shell-config`.
-- There is no build and no automated test suite. The closest targeted
-  validation for shell startup changes is a syntax check: `bash -n .bashrc` or
-  `zsh -n .zshrc`.
+- Check that every shell still starts cleanly: `make check-startup`. It runs
+  `zsh -il`, `bash -i` and `sh .profile` from this checkout against a
+  throwaway `HOME` with a cleared environment. It fails if an entry point
+  (`.bashrc`, `.zshrc`, `.zshenv`, `.zprofile`, `.profile`) is missing or
+  empty, if startup exits non-zero or writes anything to stderr beyond the
+  shell's own no-terminal messages, or if bash or zsh finish without the
+  `dotfiles` alias that the `dotfiles/` module defines — proof the modules
+  were loaded, not just that nothing complained. A missing bash is a hard
+  failure; a missing zsh skips the zsh check with a `SKIP` line, so read the
+  output rather than trusting the exit status on a machine without zsh. It runs once with only the system `PATH` and once with
+  Homebrew's `bin` added. **Run it after any change to an entry point or a
+  module.**
+- What `check-startup` cannot see: most modules guard on a tool or a file
+  under `$HOME`, and stay inert in an empty `HOME`. It proves the entry points
+  and every unguarded line run cleanly, not that a given tool integration
+  works. For that, open a new shell on a real machine.
+- There is no build and no test suite beyond that. A syntax check —
+  `bash -n .bashrc` or `zsh -n .zshrc` — is quicker but proves only that the
+  files parse.
 - `make install` runs the machine installer. It creates and backs up
   home-directory symlinks and can install or configure system tools. **Do not
   use it as a routine validation command** — it changes the machine, not just
@@ -154,8 +170,10 @@ Two facts about review state here, because the obvious queries mislead:
 - An approval appears in a **review's state**, not necessarily its body;
   `gh pr view <n> --json comments,reviews` lets you inspect both.
 
-There is no CI in this repository — no `.github/workflows/` — so pre-commit is
-the only gate. Run `make lint` before opening a pull request; nothing else will.
+CI runs `.github/workflows/check.yml` on every pull request and push to
+`master`: all pre-commit hooks, then `make check-startup`, on macOS and Ubuntu.
+Run both locally before opening a pull request rather than waiting for CI to
+report them. The Ubuntu job is the only place the Linux code paths run at all.
 
 ## Where work gets tracked
 
