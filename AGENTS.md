@@ -24,7 +24,9 @@ including commit messages. That constrains more than it first appears — see
   empty, if startup exits non-zero or writes anything to stderr beyond the
   shell's own no-terminal messages, or if bash or zsh finish without the
   `dotfiles` alias that the `dotfiles/` module defines — proof the modules
-  were loaded, not just that nothing complained. It runs once with only the system `PATH` and once with
+  were loaded, not just that nothing complained. A missing bash is a hard
+  failure; a missing zsh skips the zsh check with a `SKIP` line, so read the
+  output rather than trusting the exit status on a machine without zsh. It runs once with only the system `PATH` and once with
   Homebrew's `bin` added. **Run it after any change to an entry point or a
   module.**
 - What `check-startup` cannot see: most modules guard on a tool or a file

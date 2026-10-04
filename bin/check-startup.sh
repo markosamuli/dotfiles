@@ -10,6 +10,16 @@
 
 set -euo pipefail
 
+# bash is on every system these dotfiles target, so a missing bash means a
+# broken environment: stop before checking anything. zsh may legitimately be
+# absent, and its check is skipped below.
+bash_bin="$(command -v bash || true)"
+if [ -z "${bash_bin}" ]; then
+    echo "FAIL  bash not found on PATH" >&2
+    exit 1
+fi
+zsh_bin="$(command -v zsh || true)"
+
 dotfiles="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 # Lines an interactive shell prints when it has no terminal, and the `exit`
@@ -70,8 +80,16 @@ run_check() {
         PATH="${check_path}" \
         TERM=dumb \
         "$@" </dev/null >/dev/null 2>"${stderr_file}" || status=$?
-    errors="$(grep -v -E "${noise}" "${stderr_file}" || true)"
+    # grep exits 1 when every line was noise, which is the clean case. Any
+    # higher status means stderr was never read, so it must not pass.
+    local grep_status=0
+    errors="$(grep -v -E "${noise}" "${stderr_file}")" || grep_status=$?
     rm -rf "${tmp_home}" "${stderr_file}"
+    if [ "${grep_status}" -gt 1 ]; then
+        echo "FAIL  ${name}  (could not filter stderr: grep exited ${grep_status})"
+        failed=1
+        return
+    fi
     if [ "${status}" -ne 0 ] || [ -n "${errors}" ]; then
         echo "FAIL  ${name}  (exit ${status}, PATH=${check_path})"
         if [ -n "${errors}" ]; then
@@ -83,9 +101,6 @@ run_check() {
     fi
 }
 
-zsh_bin="$(command -v zsh || true)"
-bash_bin="$(command -v bash)"
-
 for search_path in "${check_paths[@]}"; do
     if [ -n "${zsh_bin}" ]; then
         # Login and interactive, so zsh reads .zshenv, .zprofile and .zshrc.
@@ -94,8 +109,7 @@ for search_path in "${check_paths[@]}"; do
         run_check "zsh -il" "${search_path}" ".zshenv .zprofile .zshrc" \
             "${zsh_bin}" -i -l -c "${loaded}"
     else
-        echo "FAIL  zsh not found"
-        failed=1
+        echo "SKIP  zsh -il  (zsh not found on PATH)"
     fi
     run_check "bash -i" "${search_path}" "" \
         "${bash_bin}" --rcfile "${dotfiles}/.bashrc" -i -c "${loaded}"
