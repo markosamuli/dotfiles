@@ -14,8 +14,3 @@ if [ -z "$GOPATH" ]; then
         export PATH=$PATH:$GOPATH/bin
     fi
 fi
-
-# Load GAE tools to Golang
-if [ -d "$HOME/opt/go_appengine" ]; then
-    export PATH=$PATH:$HOME/opt/go_appengine
-fi
