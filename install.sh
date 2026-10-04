@@ -515,18 +515,6 @@ setup_git_difftool() {
 
     local difftools=()
 
-    if command -v ksdiff >/dev/null; then
-        difftools+=("ksdiff")
-
-        echo '[git] Add Kaleidoscope (ksdiff) as a git diff tool'
-        # shellcheck disable=SC2016
-        git config --global difftool.ksdiff.cmd \
-            'ksdiff --partial-changeset --relative-path "$MERGED" -- "$LOCAL" "$REMOTE"'
-
-        # Exit difftool if the invoked diff tool returns a non-zero exit status.
-        git config --global difftool.ksdiff.trustexitcode 'true'
-    fi
-
     if command -v meld >/dev/null; then
         difftools+=("meld")
 
@@ -597,18 +585,6 @@ setup_git_mergetool() {
     fi
 
     local mergetools=()
-
-    if command -v ksdiff >/dev/null; then
-        mergetools+=("ksdiff")
-
-        echo '[git] Add Kaleidoscope (ksdiff) as a git merge tool'
-        # shellcheck disable=SC2016
-        git config --global mergetool.ksdiff.cmd \
-            'ksdiff --merge --output "$MERGED" --base "$BASE" -- "$LOCAL" --snapshot "$REMOTE" --snapshot'
-
-        # Exit mergetool if the invoked merge tool returns a non-zero exit status.
-        git config --global mergetool.ksdiff.trustExitCode 'true'
-    fi
 
     if command -v meld >/dev/null; then
         mergetools+=("meld")
