@@ -399,12 +399,6 @@ backup_dotfile() {
     mv "${HOME}/${dotfile}" "${HOME}/${dotfile}.$timestamp"
 }
 
-# Setup .tmux.conf symlink if tmux is installed
-setup_tmux() {
-    command -v tmux 1>/dev/null 2>&1 || return 0
-    setup_dotfile .tmux.conf
-}
-
 # Fix permissions
 fix_permissions() {
     user_only_directories=(
@@ -789,9 +783,6 @@ setup_vim
 
 # Setup dotfile symlinks
 setup_dotfile_symlinks
-
-# Setup tmux config if installed
-setup_tmux
 
 # Setup Git to include .gitconfig from .dotfiles
 setup_gitconfig
