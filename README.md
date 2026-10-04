@@ -6,59 +6,38 @@
 curl -s https://raw.githubusercontent.com/markosamuli/dotfiles/master/install.sh | bash -
 ```
 
-- Install and configure zsh as default shell.
-- Install [antibody](https://github.com/getantibody/antibody)
-- Create symlinks in `~/.zshrc` and `~/.bashrc`
-- Create [EditorConfig](http://editorconfig.org/) symlink in `~/.editorconfig`
+The installer clones this repository to `~/.dotfiles` if it is not there yet,
+then:
+
+- installs Homebrew (macOS only), zsh, [Sheldon](https://sheldon.cli.rs/),
+  Vim and the GitHub CLI where they are missing. Run from a terminal, it asks
+  before each of them except Vim; piped as above, it does not ask;
+- links `.zshrc`, `.zshenv`, `.zprofile`, `.bashrc`, `.profile`, `.aliases`,
+  `.vimrc`, `.editorconfig`, `.markdownlintrc` and `.gitignore_global` into
+  `~`, backing up any existing file;
+- links the Sheldon plugin list to `~/.config/sheldon/plugins.toml`;
+- configures Git to include this repository's [`.gitconfig`](.gitconfig) and
+  use `.gitignore_global`, unless your global Git configuration already sets
+  an `include.path` or an excludes file.
+
+It makes zsh your login shell only when run from a terminal. When piped, it
+prints the commands to finish that step:
+
+```bash
+cd ~/.dotfiles
+make install
+```
 
 ## Aliases
 
 Custom aliases and functions are in `.aliases`.
 
-## Machine Setup
-
-Read my [Machine Setup Guide](https://machine.msk.io/) that explains
-development environment set up using my playbooks.
-
-## Visual Studio Code
-
-Install [markosamuli.vscode-essentials] extension pack with common extensions I use daily.
-
-```bash
-code --install-extension markosamuli.vscode-essentials
-```
-
-[markosamuli.vscode-essentials]: https://marketplace.visualstudio.com/items?itemName=markosamuli.vscode-essentials
-
-## Kaleidoscope
-
-I'm using [Kaleidoscope](http://www.kaleidoscopeapp.com/) as my default diff/merge tool on Mac.
-
-```bash
-brew cask install kaleidoscope
-```
-
-## Setup iTerm
-
-I'm using [iTerm2](https://www.iterm2.com/) as my default terminal on Mac.
-
-```bash
-brew cask install iterm2
-```
-
-## tmux
-
-```bash
-brew install reattach-to-user-namespace
-```
-
 ## Git
 
-Copy [.gitconfig.example](.gitconfig.example) file for my aliases and few defaults:
-
-```bash
-cp ~/.dotfiles/.gitconfig.example ~/.gitconfig
-```
+The installer adds [`.gitconfig`](.gitconfig) to your global Git
+configuration with `include.path` (unless one is already set), so its aliases
+and defaults apply without copying anything. Settings for one machine only
+belong in `~/.gitconfig` itself, which takes precedence.
 
 My favourite aliases:
 
