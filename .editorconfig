@@ -42,6 +42,11 @@ indent_size = 4
 shell_variant = bash
 switch_case_indent = true
 
+[.profile]
+indent_size = 4
+shell_variant = posix
+switch_case_indent = true
+
 [*.py]
 indent_size = 4
 
