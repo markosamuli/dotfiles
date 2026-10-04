@@ -22,18 +22,9 @@ fi
 unamestr=$(uname)
 if [[ "$unamestr" == 'Linux' ]]; then
     platform='linux'
-    if [[ -d "/run/WSL" ]]; then
-        platform_wsl='true'
-    elif grep -q Microsoft /proc/version; then
-        platform_wsl='true'
-    else
-        platform_wsl='false'
-    fi
 elif [[ "$unamestr" == 'Darwin' ]]; then
     # shellcheck disable=SC2034
     platform='macos'
-    # shellcheck disable=SC2034
-    platform_wsl='false'
 fi
 unset unamestr
 
@@ -138,7 +129,7 @@ for file in "${completion_files[@]}"; do
     source "$file"
 done
 
-unset config_files platform platform_wsl completion_files path_files
+unset config_files platform completion_files path_files
 
 # shellcheck disable=SC1090
 [ -f ~/.localrc ] && . ~/.localrc
