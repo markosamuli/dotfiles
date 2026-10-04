@@ -2,9 +2,6 @@
 # vim :set ts=2 sw=2 sts=2 et :
 # ~/.zshrc: executed by zsh(1) for non-login shells.
 
-# your project folder that we can `c [tab]` to
-export PROJECTS="$HOME/projects"
-
 # path to the local dotfiles repository
 if [ -z "${DOTFILES}" ]; then
   if [ -d "${HOME}/.dotfiles" ]; then
