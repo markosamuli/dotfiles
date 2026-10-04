@@ -6,6 +6,7 @@ change it.
 
 **This repository is public.** Everything committed here is world-readable,
 including commit messages. That constrains more than it first appears — see
+[What must never land here](#what-must-never-land-here) and
 [Disclosure and commit messages](#disclosure-and-commit-messages).
 
 ## Commands
@@ -13,7 +14,9 @@ including commit messages. That constrains more than it first appears — see
 - Set up development tools and Git hooks: `make setup-dev`. It requires `uv`
   and `shellcheck`, installs a compatible pre-commit 4.x release with
   `uv tool`, and installs `shfmt` with Go when absent.
-- Run all configured checks: `make lint` (equivalent to `pre-commit run -a`).
+- Run all configured checks: `pre-commit run -a`. `make lint` runs the same
+  hooks, but first runs `setup-lint`, which may install pre-commit with `uv`
+  and `shfmt` with `go` — so it is setup plus check, not a pure check.
 - Run checks for changed files: `pre-commit run --files path/to/file`.
   Run one hook for a file with `pre-commit run <hook-id> --files path/to/file`;
   relevant IDs include `shellcheck`, `shfmt`, and `shell-config`.
@@ -66,6 +69,22 @@ changes in `path.bash`/`path.zsh`, completion setup in
 `completion.bash`/`completion.zsh`, and every other integration in another
 shell-specific module, so each runs in the right startup phase.
 
+The login files run before those and are not covered by the module model:
+
+- `.zshenv` (every zsh) loads Cargo's env file.
+- `.zprofile` (zsh login) runs Homebrew's `shellenv`, initialises pyenv when
+  present, and puts MacPorts ahead of Homebrew on `PATH`.
+- `.profile` (POSIX login shells) loads the env files for `~/.local/bin` and
+  Cargo.
+
+The `shell-config` hook checks only `.bashrc` and `.zshrc`, so a pattern it
+rejects there can still slip into a login file. Keep these files to what must
+run before `.zshrc` or `.bashrc`.
+
+Each top-level directory is one tool or concern; `ls -d */` is the inventory.
+Some modules are zsh-only, with no Bash pair, and several are for tools no
+longer used on any current machine — #15 tracks which.
+
 ## Shell conventions
 
 - **Preserve the dynamic module loading model.** Do not add tool-specific
@@ -73,14 +92,45 @@ shell-specific module, so each runs in the right startup phase.
   pre-commit hook rejects several direct PATH and version-manager
   initialisation patterns in those two entry points.
 - Guard optional tool integrations with availability or directory checks, as
-  existing modules do, and use the `platform`, `platform_wsl` and
-  `platform_apple_silicon` variables the entry points establish.
+  existing modules do, and use the `platform` and `platform_wsl` variables
+  both entry points establish. `platform_apple_silicon` is set by `.zshrc`
+  only, so Bash modules cannot rely on it.
 - **Bash and Zsh are deliberately separate implementations.** Never source a
   Bash module from Zsh or the reverse.
 - Four-space indentation in shell modules. `shellcheck` and `shfmt` run on Bash
   files; `*.zsh` is intentionally excluded from both.
 - Pre-commit also normalises whitespace and validates JSON and YAML. Markdown
   trailing whitespace is preserved, because it encodes hard line breaks.
+
+## Platforms
+
+- **macOS on Apple Silicon** is the primary platform, with Homebrew under
+  `/opt/homebrew`.
+- **macOS on Intel** is a legacy platform that may use MacPorts under
+  `/opt/local` instead of Homebrew. Keep it working; do not add Intel-only
+  paths such as `/usr/local/opt/...` without a guard.
+- **Linux** is supported but not verified on a real machine at present. Keep
+  its code paths guarded and working, and don't assume a change to them has
+  been tested by anyone.
+
+## What must never land here
+
+Everything in this repository is public, in files as much as in commit
+messages. Never commit:
+
+- host, device or network names — machine hostnames, private network or VPN
+  names, internal domains, IP addresses;
+- employer or client names, including their GitHub organisations;
+- the names of private repositories;
+- absolute paths under a home directory;
+- credentials, tokens, or anything copied from `~/.localrc` or another
+  unversioned file.
+
+Configuration that only one machine needs belongs outside the repository:
+`~/.localrc` for shell settings and secrets, `~/.gitconfig` (which includes
+this repository's `.gitconfig`) for Git, and `~/.ssh/config` for SSH. A
+setting that would identify a machine or an employer is, by definition, one
+machine's configuration.
 
 ## Two ignore files, and which one a rule belongs in
 
@@ -108,8 +158,9 @@ repositories belongs in `.gitignore_global`, not here.
 ## Commit messages
 
 **Conventional Commits.** `feat:`, `fix:`, `chore:`, `refactor:`, `docs:`,
-`style:`, optionally scoped. This reflects existing practice rather than
-changing it — the recent history is overwhelmingly Conventional.
+`style:`, optionally scoped. Most of the history follows it. Some recent
+commits do not; that is drift, not a second convention, and new commits
+should not copy it.
 
 Older documentation described `new:`/`chg:`/`fix:` subjects for `gitchangelog`.
 That scheme is not in use: no changelog is generated from this repository.
