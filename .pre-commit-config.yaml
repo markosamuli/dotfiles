@@ -3,7 +3,7 @@
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.1.0
+    rev: v6.0.0
     hooks:
       # Check for files that contain merge conflict strings.
       - id: check-merge-conflict
@@ -25,8 +25,8 @@ repos:
       # Prevent giant files from being committed. Default is 500kB.
       - id: check-added-large-files
 
-      # Forbid files which have a UTF-8 byte-order marker.
-      - id: check-byte-order-marker
+      # Remove a UTF-8 byte-order marker from files.
+      - id: fix-byte-order-marker
 
       # Check for files with names that would conflict on a case-insensitive
       # filesystem like MacOS HFS+ or Windows FAT.
@@ -37,7 +37,7 @@ repos:
 
   # Shell script formatting and coding style.
   - repo: https://github.com/syntaqx/git-hooks
-    rev: v0.0.17
+    rev: v0.0.18
     hooks:
       - id: shellcheck
         exclude: >-
