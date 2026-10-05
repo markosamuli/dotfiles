@@ -77,9 +77,9 @@ The login files run before those and are not covered by the module model:
 - `.profile` (POSIX login shells) loads the env files for `~/.local/bin` and
   Cargo.
 
-The `shell-config` hook checks only `.bashrc` and `.zshrc`, so a pattern it
-rejects there can still slip into a login file. Keep these files to what must
-run before `.zshrc` or `.bashrc`.
+The `shell-config` hook checks all five entry points (`.bashrc`, `.zshrc`,
+`.zshenv`, `.zprofile`, `.profile`). Keep the login files to what must run
+before `.zshrc` or `.bashrc`.
 
 Each top-level directory is one tool or concern; `ls -d */` is the inventory.
 Some modules are zsh-only, with no Bash pair, and several are for tools no
@@ -88,9 +88,14 @@ longer used on any current machine — #15 tracks which.
 ## Shell conventions
 
 - **Preserve the dynamic module loading model.** Do not add tool-specific
-  initialisation directly to `.bashrc` or `.zshrc`. The `shell-config`
-  pre-commit hook rejects several direct PATH and version-manager
-  initialisation patterns in those two entry points.
+  initialisation directly to the entry points. The `shell-config` pre-commit
+  hook rejects several direct PATH and version-manager initialisation
+  patterns in them, and any absolute home directory path.
+- **Tool installers edit the entry points.** Installers such as bun's append
+  their own setup to `~/.zshrc` or `~/.bashrc`, which are symlinks into this
+  repository, so the edit lands in the checkout. Move what is needed into a
+  module and restore the entry point; the `shell-config` hook catches the
+  absolute home path these blocks usually contain.
 - Guard optional tool integrations with availability or directory checks, as
   existing modules do, and use the `platform` variable (`linux` or `macos`)
   both entry points establish. `platform_apple_silicon` is set by `.zshrc`
