@@ -16,6 +16,11 @@ blacklist=(
     'export PATH=(.*)/.tfenv'
     'rbenv init'
     'pyenv init'
+    # An absolute home directory path. Tool installers append their own
+    # setup with one (bun's completion block, for example) when they edit
+    # the shell config, which here writes through the symlink into this
+    # public repository. Setup belongs in a module, with $HOME.
+    '/(Users|home)/'
 )
 
 find_blacklisted_patterns() {
