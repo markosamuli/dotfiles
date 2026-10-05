@@ -1,6 +1,11 @@
 ---
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
+
+# Same lower bound as requirements.dev.txt. An older pre-commit stops with
+# an upgrade message instead of failing on a hook feature it lacks.
+minimum_pre_commit_version: '4.6.1'
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
