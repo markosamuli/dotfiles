@@ -29,9 +29,9 @@ including commit messages. That constrains more than it first appears — see
   `dotfiles` alias that the `dotfiles/` module defines — proof the modules
   were loaded, not just that nothing complained. A missing bash is a hard
   failure; a missing zsh skips the zsh check with a `SKIP` line, so read the
-  output rather than trusting the exit status on a machine without zsh. It runs once with only the system `PATH` and once with
-  Homebrew's `bin` added. **Run it after any change to an entry point or a
-  module.**
+  output rather than trusting the exit status on a machine without zsh. It
+  runs once with only the system `PATH` and once with Homebrew's `bin` added.
+  **Run it after any change to an entry point or a module.**
 - What `check-startup` cannot see: most modules guard on a tool or a file
   under `$HOME`, and stay inert in an empty `HOME`. It proves the entry points
   and every unguarded line run cleanly, not that a given tool integration
@@ -42,7 +42,8 @@ including commit messages. That constrains more than it first appears — see
 - `make install` runs the machine installer. It creates and backs up
   home-directory symlinks and can install or configure system tools. **Do not
   use it as a routine validation command** — it changes the machine, not just
-  the checkout.
+  the checkout. When `install.sh` changes what it modifies on a machine, update
+  the "What could go wrong" section of `README.md` to match.
 
 ## Architecture
 
@@ -69,21 +70,19 @@ changes in `path.bash`/`path.zsh`, completion setup in
 `completion.bash`/`completion.zsh`, and every other integration in another
 shell-specific module, so each runs in the right startup phase.
 
-The login files run before those and are not covered by the module model:
-
-- `.zshenv` (every zsh) loads Cargo's env file.
-- `.zprofile` (zsh login) runs Homebrew's `shellenv` and puts MacPorts ahead
-  of Homebrew on `PATH`.
-- `.profile` (POSIX login shells) loads the env files for `~/.local/bin` and
-  Cargo.
+The other entry points run before those and are not covered by the module
+model. `.zshenv` runs for every zsh, `.zprofile` for zsh login shells and
+`.profile` for POSIX login shells. They hold environment setup that must exist
+before `.zshrc` or `.bashrc` runs, such as `PATH` for package managers and
+toolchains. Read the files for their current contents rather than relying on
+this description; each carries a comment on anything non-obvious.
 
 The `shell-config` hook checks all five entry points (`.bashrc`, `.zshrc`,
 `.zshenv`, `.zprofile`, `.profile`). Keep the login files to what must run
 before `.zshrc` or `.bashrc`.
 
 Each top-level directory is one tool or concern; `ls -d */` is the inventory.
-Some modules are zsh-only, with no Bash pair, and several are for tools no
-longer used on any current machine — #15 tracks which.
+Some modules are zsh-only, with no Bash pair.
 
 ## Shell conventions
 

@@ -1,5 +1,6 @@
 #!/bin/zsh
 
+# Apple Silicon Homebrew prefix; sets PATH and related variables.
 if [ -d "/opt/homebrew" ]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
