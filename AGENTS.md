@@ -29,9 +29,9 @@ including commit messages. That constrains more than it first appears — see
   `dotfiles` alias that the `dotfiles/` module defines — proof the modules
   were loaded, not just that nothing complained. A missing bash is a hard
   failure; a missing zsh skips the zsh check with a `SKIP` line, so read the
-  output rather than trusting the exit status on a machine without zsh. It runs once with only the system `PATH` and once with
-  Homebrew's `bin` added. **Run it after any change to an entry point or a
-  module.**
+  output rather than trusting the exit status on a machine without zsh. It
+  runs once with only the system `PATH` and once with Homebrew's `bin` added.
+  **Run it after any change to an entry point or a module.**
 - What `check-startup` cannot see: most modules guard on a tool or a file
   under `$HOME`, and stay inert in an empty `HOME`. It proves the entry points
   and every unguarded line run cleanly, not that a given tool integration
@@ -42,7 +42,8 @@ including commit messages. That constrains more than it first appears — see
 - `make install` runs the machine installer. It creates and backs up
   home-directory symlinks and can install or configure system tools. **Do not
   use it as a routine validation command** — it changes the machine, not just
-  the checkout.
+  the checkout. When `install.sh` changes what it modifies on a machine, update
+  the "What could go wrong" section of `README.md` to match.
 
 ## Architecture
 
@@ -81,8 +82,7 @@ The `shell-config` hook checks all five entry points (`.bashrc`, `.zshrc`,
 before `.zshrc` or `.bashrc`.
 
 Each top-level directory is one tool or concern; `ls -d */` is the inventory.
-Some modules are zsh-only, with no Bash pair, and several are for tools no
-longer used on any current machine — #15 tracks which.
+Some modules are zsh-only, with no Bash pair.
 
 ## Shell conventions
 
