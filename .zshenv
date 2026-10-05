@@ -2,6 +2,6 @@ if [ -f "$HOME/.cargo/env" ]; then
     . "$HOME/.cargo/env"
 fi
 
-if [ -f "$HOME/.dotfiles/bun/path.zsh" ]; then
-    . "$HOME/.dotfiles/bun/path.zsh"
+if [ -f "${DOTFILES:-$HOME/.dotfiles}/bun/path.zsh" ]; then
+    . "${DOTFILES:-$HOME/.dotfiles}/bun/path.zsh"
 fi
