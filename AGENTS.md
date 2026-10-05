@@ -69,13 +69,12 @@ changes in `path.bash`/`path.zsh`, completion setup in
 `completion.bash`/`completion.zsh`, and every other integration in another
 shell-specific module, so each runs in the right startup phase.
 
-The login files run before those and are not covered by the module model:
-
-- `.zshenv` (every zsh) loads Cargo's env file.
-- `.zprofile` (zsh login) runs Homebrew's `shellenv` and puts MacPorts ahead
-  of Homebrew on `PATH`.
-- `.profile` (POSIX login shells) loads the env files for `~/.local/bin` and
-  Cargo.
+The other entry points run before those and are not covered by the module
+model. `.zshenv` runs for every zsh, `.zprofile` for zsh login shells and
+`.profile` for POSIX login shells. They hold environment setup that must exist
+before `.zshrc` or `.bashrc` runs, such as `PATH` for package managers and
+toolchains. Read the files for their current contents rather than relying on
+this description; each carries a comment on anything non-obvious.
 
 The `shell-config` hook checks all five entry points (`.bashrc`, `.zshrc`,
 `.zshenv`, `.zprofile`, `.profile`). Keep the login files to what must run
