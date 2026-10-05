@@ -2,6 +2,24 @@
 
 ## Install
 
+> [!WARNING]
+> These are my personal dotfiles, and the installer changes the machine it
+> runs on. Read [`install.sh`](install.sh) before you run it, and consider
+> forking this repository instead of installing from it directly. See
+> [What could go wrong](#what-could-go-wrong).
+
+To read the code first, clone the repository, review `install.sh`, then run it
+from a terminal:
+
+```bash
+git clone https://github.com/markosamuli/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
+make install
+```
+
+Run from a terminal, the installer asks before most installs and finishes the
+login shell step itself. The one-line form skips the reading and the prompts:
+
 ```bash
 curl -s https://raw.githubusercontent.com/markosamuli/dotfiles/master/install.sh | bash -
 ```
@@ -30,9 +48,11 @@ make install
 
 ## What could go wrong
 
-`install.sh` changes the machine, not only `~/.dotfiles`. Read it before
-running it, and do not pipe it to `bash` on a machine you cannot repair.
-This section lists the risks, not every step; the script is the inventory.
+`install.sh` changes the machine, not only `~/.dotfiles`. These are the
+highlights, not a full list: `install.sh` is the authority, and this section
+can fall behind it. Do not pipe the installer to `bash` on a machine you
+cannot repair. Piped, it installs without asking, so run it from a clone
+instead.
 
 - **Your dotfiles are moved aside.** A real `~/.zshrc`, `~/.bashrc` or similar
   file is renamed to `~/.<name>.<timestamp>` and replaced with a symlink. An
