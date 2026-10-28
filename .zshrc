@@ -81,5 +81,6 @@ done
 
 unset config_files platform
 
-# shellcheck disable=SC1090
-[ -f ~/.localrc ] && . ~/.localrc
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
+[[ -f ~/.localrc ]] && source ~/.localrc

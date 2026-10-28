@@ -132,4 +132,7 @@ done
 unset config_files platform completion_files path_files
 
 # shellcheck disable=SC1090
+[ -f ~/.bashrc.local ] && . ~/.bashrc.local
+
+# shellcheck disable=SC1090
 [ -f ~/.localrc ] && . ~/.localrc
