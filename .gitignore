@@ -15,3 +15,7 @@
 .env
 .env.*
 !.env.example
+
+# Do not track local shell config
+.bashrc.local
+.zshrc.local
